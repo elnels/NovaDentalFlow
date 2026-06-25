@@ -99,27 +99,95 @@ Esta es la parte más importante. Aquí crearemos nuestra "base de datos".
         git push
         ```
 
-### **Paso 3: Desplegar en Vercel**
+### **Paso 3: Desplegar localmente (sin Vercel)**
 
-1.  **Sube tu proyecto a GitHub:**
-    *   Crea un nuevo repositorio en tu cuenta de GitHub y sube el código que clonaste.
+Si prefieres ejecutar DentalFlow en tu máquina local en lugar de desplegar en Vercel, sigue estos pasos:
 
-2.  **Importa el Proyecto en Vercel:**
-    *   Regístrate o inicia sesión en [Vercel](https://vercel.com/) con tu cuenta de GitHub.
-    *   Haz clic en `Add New...` > `Project`.
-    *   Importa el repositorio de DentalFlow desde tu GitHub.
+1.  **Crear el archivo de entorno**
 
-3.  **Configura las Variables de Entorno en Vercel:**
-    *   Durante la configuración del proyecto, busca la sección `Environment Variables`.
-    *   Añade una nueva variable:
-        *   **Name:** `NEXT_PUBLIC_API_URL`
-        *   **Value:** Pega la misma URL de tu aplicación web de Apps Script que guardaste anteriormente.
-    *   Haz clic en `Add`.
+    Crea un archivo `.env.local` en la raíz del proyecto con la URL de tu App Script (la obtenida en Paso 1):
 
-4.  **Despliega:**
-    *   Haz clic en el botón **`Deploy`**. Vercel construirá y desplegará tu aplicación automáticamente. ¡Y listo! Tu plataforma DentalFlow estará en línea.
+    ```bash
+    # desde PowerShell
+    echo "NEXT_PUBLIC_API_URL=https://tu-apps-script-url" > .env.local
+
+    # o desde cmd.exe
+    echo NEXT_PUBLIC_API_URL=https://tu-apps-script-url > .env.local
+    ```
+
+2.  **Instalar dependencias**
+
+    Ejecuta `npm install`. Si PowerShell bloquea la ejecución de scripts (error con `npm.ps1`), usa una de estas opciones:
+
+    - Temporalmente para la sesión actual (PowerShell):
+      ```powershell
+      Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
+      npm install
+      ```
+
+    - Usar el wrapper de CMD sin cambiar la política:
+      ```powershell
+      npm.cmd install
+      ```
+
+    - O abrir una terminal `cmd.exe` y ejecutar:
+      ```cmd
+      npm install
+      ```
+
+3.  **Ejecutar en desarrollo**
+
+    Inicia el servidor de desarrollo (por defecto escucha en el puerto `9004` según `package.json`):
+
+    ```bash
+    npm run dev
+    ```
+
+    Luego abre `http://localhost:9004` en tu navegador.
+
+4.  **Compilar y ejecutar la versión de producción (opcional)**
+
+    ```bash
+    npm run build
+    npm run start
+    ```
+
+5.  **Scripts adicionales**
+
+    - Para trabajar con `genkit` (si lo usas):
+      - `npm run genkit:dev` — inicia `genkit` con `src/ai/dev.ts`.
+      - `npm run genkit:watch` — lo mismo en modo watch.
+
+Nota: No es necesario cambiar la política de ejecución del sistema de forma permanente; la opción `-Scope Process` solo afecta la sesión actual y es la más segura para desarrollo local.
 
 ---
+
+### **Nota: Mantener este repositorio solo localmente (no subir)**
+
+Si quieres trabajar en tu copia local y evitar subir cambios al repositorio original, puedes desvincular el `remote` o usar una rama/local-only.
+
+- Para eliminar la referencia al repositorio remoto (no se podrá hacer `git push` accidentalmente):
+
+```bash
+# elimina el remote llamado 'origin'
+git remote remove origin
+```
+
+- Si prefieres mantener el `remote` pero evitar pushes accidentales, configura el siguiente alias seguro:
+
+```bash
+git config --local --add remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+git config --local receive.denyCurrentBranch updateInstead
+```
+
+- Otra opción: crear un nuevo repositorio privado y enlazarlo como `origin` si más tarde quieres respaldar los cambios:
+
+```bash
+git remote add origin https://github.com/tu-usuario/tu-repo-privado.git
+git push -u origin main
+```
+
+Ejecuta estos comandos desde la carpeta del proyecto. Dime si quieres que los ejecute por ti en la terminal o prefieres que te guíe paso a paso.
 
 ### 👨‍💻 Acerca del Desarrollo
 
