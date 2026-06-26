@@ -551,7 +551,7 @@ const PatientRow = memo(({ patient }: { patient: Patient }) => {
           </Avatar>
           <div className="flex-1">
             <p className="font-semibold text-gray-900 text-base">{`${patient.Nombres} ${patient.Apellidos}`}</p>
-            <p className="text-sm text-gray-500 font-medium">DNI: {patient.DNI}</p>
+            <p className="text-sm text-gray-500 font-medium">DNI: {patient.DNI || "No registrado"}</p>
           </div>
         </div>
       </TableCell>

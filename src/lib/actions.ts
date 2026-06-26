@@ -26,7 +26,7 @@ function getBaseUrl() {
 const FULL_API_URL = IS_CLIENT ? API_URL : `${getBaseUrl()}${API_URL}`;
 
 const patientSchema = z.object({
-  DNI: z.string().min(8, "El DNI debe tener al menos 8 caracteres"),
+  DNI: z.string().optional().or(z.literal("")),
   Nombres: z.string().min(2, "El nombre es requerido"),
   Apellidos: z.string().min(2, "El apellido es requerido"),
   Fecha_Nacimiento: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Formato de fecha inválido (YYYY-MM-DD)"),

@@ -1,6 +1,6 @@
 export interface Patient {
   ID_Paciente: string;
-  DNI: string;
+  DNI?: string;
   Nombres: string;
   Apellidos: string;
   Fecha_Nacimiento: string;

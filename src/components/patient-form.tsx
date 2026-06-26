@@ -29,7 +29,7 @@ import { useToast } from "@/hooks/use-toast";
 
 
 const patientSchema = z.object({
-  DNI: z.string().min(1, "El DNI es requerido").regex(/^[a-zA-Z0-9]+$/, "El DNI solo puede contener letras y números"),
+  DNI: z.string().optional().or(z.literal("")),
   Nombres: z.string().min(1, "El nombre es requerido").regex(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/, "El nombre solo puede contener letras"),
   Apellidos: z.string().min(1, "El apellido es requerido").regex(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/, "El apellido solo puede contener letras"),
   Fecha_Nacimiento: z.string().min(1, "La fecha de nacimiento es requerida"),

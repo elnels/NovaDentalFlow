@@ -441,7 +441,7 @@ export default function PatientDetailPage({
                  </div>
               </CardHeader>
               <CardContent className="space-y-4">
-                  <InfoItem icon={User} label="DNI" value={patient.DNI} />
+                  <InfoItem icon={User} label="DNI" value={patient.DNI || "No registrado"} />
                   <InfoItem icon={Cake} label="Fecha de Nacimiento" value={`${format(parseISO(patient.Fecha_Nacimiento), "d 'de' MMMM 'de' yyyy", { locale: es })} (${getAge(patient.Fecha_Nacimiento)} años)`} />
                   <InfoItem icon={Phone} label="Teléfono Principal" value={patient.Telefono_Principal} />
                   <InfoItem icon={Smartphone} label="Teléfono Alternativo" value={patient.Telefono_Alternativo} />
