@@ -9,19 +9,21 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Users, UserPlus, Activity, AlertCircle, RefreshCw } from "lucide-react";
+import { Users, UserPlus, Activity, AlertCircle, RefreshCw, CalendarDays } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { PatientsTable } from "@/components/patients-table";
 import { SequentialWorkflow } from "@/components/sequential-workflow";
+import { CalendarEmbed } from "@/components/calendar-embed";
 import { getPacientesWithAppointments } from "@/lib/api";
 import type { Patient } from "@/types";
 
 export default function HomePage() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showWorkflow, setShowWorkflow] = useState(false);
+  const [showCalendar, setShowCalendar] = useState(false);
   const [patients, setPatients] = useState<Patient[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -167,6 +169,16 @@ export default function HomePage() {
                   <UserPlus className="mr-2 h-5 w-5" />
                   Registrar Paciente
                 </Button>
+                
+                <Button 
+                  size="lg" 
+                  variant="outline"
+                  onClick={() => setShowCalendar(true)}
+                  className="border-2 border-green-200 text-green-600 hover:bg-green-50 px-8 py-4 text-lg font-semibold rounded-xl transition-all duration-200"
+                >
+                  <CalendarDays className="mr-2 h-5 w-5" />
+                  Calendario
+                </Button>
               </div>
             </div>
           </motion.div>
@@ -226,6 +238,40 @@ export default function HomePage() {
           onClose={handleWorkflowClose}
         />
       )}
+      
+      <AnimatePresence>
+        {showCalendar && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+            onClick={() => setShowCalendar(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.95 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.95 }}
+              className="w-full max-w-5xl max-h-[90vh] overflow-auto bg-white rounded-2xl shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex justify-end p-4 pb-0">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowCalendar(false)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  Cerrar
+                </Button>
+              </div>
+              <div className="px-6 pb-6">
+                <CalendarEmbed />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
