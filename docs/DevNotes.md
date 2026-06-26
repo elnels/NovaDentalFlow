@@ -95,7 +95,7 @@ Fixed Google Calendar sync not triggering when adding appointments from the pati
 | `AddressIsOptinal` | ✅ | Complete |
 | `google-calendar-embed` | ✅ | Complete |
 | `google-calendar-api-sync` | ✅ | Complete |
-| `workflow-reorder` | ❌ | In progress (calendar sync fix added) |
+| `workflow-reorder` | ✅ | Complete |
 
 ## Other Tasks
 - Fixed `JSX.IntrinsicElements` error by running `npm install`
