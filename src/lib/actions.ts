@@ -506,7 +506,11 @@ export async function updatePatientField(
     if (result.status === "success") {
       if (fieldName === 'Estado_Cita' && recordType === 'appointment') {
         postToActionAPI('getCitaById', { ID_Cita: recordId })
-          .then(appt => appt?.data && syncUpdateEvent(appt.data))
+          .then(appt => {
+            if (appt?.data) {
+              syncUpdateEvent({ ...appt.data, Estado_Cita: newValue });
+            }
+          })
           .catch(() => {});
       }
       return { success: true, message: "Campo actualizado correctamente." };
