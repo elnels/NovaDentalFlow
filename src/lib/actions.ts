@@ -504,8 +504,11 @@ export async function updatePatientField(
     });
 
     if (result.status === "success") {
-      // No revalidamos rutas específicas para evitar recargas innecesarias
-      // La sincronización manual manejará las actualizaciones
+      if (fieldName === 'Estado_Cita' && recordType === 'appointment') {
+        postToActionAPI('getCitaById', { ID_Cita: recordId })
+          .then(appt => appt?.data && syncUpdateEvent(appt.data))
+          .catch(() => {});
+      }
       return { success: true, message: "Campo actualizado correctamente." };
     } else {
       return { success: false, message: result.message || "Error al actualizar el campo." };
