@@ -7,7 +7,7 @@ export interface Patient {
   Telefono_Principal: string;
   Telefono_Alternativo?: string;
   Email: string;
-  Direccion: string;
+  Direccion?: string;
   Genero: 'Masculino' | 'Femenino' | 'Otro';
   Fecha_Registro: string;
   Estado: 'Activo' | 'Inactivo';

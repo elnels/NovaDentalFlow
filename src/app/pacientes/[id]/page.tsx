@@ -445,7 +445,7 @@ export default function PatientDetailPage({
                   <InfoItem icon={Phone} label="Teléfono Principal" value={patient.Telefono_Principal} />
                   <InfoItem icon={Smartphone} label="Teléfono Alternativo" value={patient.Telefono_Alternativo} />
                   <InfoItem icon={Mail} label="Email" value={patient.Email} />
-                  <InfoItem icon={Home} label="Dirección" value={patient.Direccion} />
+                  <InfoItem icon={Home} label="Dirección" value={patient.Direccion || "No registrada"} />
                   <InfoItem icon={FileClock} label="Fecha de Registro" value={format(parseISO(patient.Fecha_Registro), "dd/MM/yyyy", { locale: es })} />
               </CardContent>
             </Card>

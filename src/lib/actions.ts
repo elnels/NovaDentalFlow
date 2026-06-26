@@ -33,7 +33,7 @@ const patientSchema = z.object({
   Telefono_Principal: z.string().min(7, "El teléfono principal es requerido"),
   Telefono_Alternativo: z.string().optional(),
   Email: z.string().email("Email inválido"),
-  Direccion: z.string().min(5, "La dirección es requerida"),
+  Direccion: z.string().optional().or(z.literal("")),
   Genero: z.enum(["Masculino", "Femenino", "Otro"], { required_error: "El género es requerido"}),
 });
 
