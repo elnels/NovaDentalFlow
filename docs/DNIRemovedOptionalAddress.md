@@ -39,7 +39,7 @@ Added Google Calendar embed module:
 - Uses private Google Calendar sharing (not public) — users authenticate via their own Google account
 - **Architecture**: Independent module ready for Part 2 (Google Calendar API sync)
 
-### 5. `google-calendar-api-sync` (NOT merged — pending test)
+### 5. `google-calendar-api-sync` (merged to main)
 Added Google Calendar API sync for appointments:
 - **New dependency**: `googleapis` npm package
 - **New file**: `src/lib/calendar-api.ts`
@@ -50,14 +50,19 @@ Added Google Calendar API sync for appointments:
   - `getPatientName()` — fetches patient name from Apps Script by ID
   - Tracks statuses: `"Programada"` | `"Confirmada"` | `"Cancelada"`
 - **Modified**: `src/lib/actions.ts`
-  - `addCita` — after success → `syncCreateEvent()` (fire-and-forget)
-  - `addCitaFromObject` — after success → `syncCreateEvent()` (fire-and-forget)
-  - `updateCita` — after success → `syncUpdateEvent()` (fire-and-forget)
-  - `deleteCita` — after success → `syncDeleteEvent()` (fire-and-forget)
-  - All sync calls wrapped in `.catch()` — never block the user
-- **Issue #1**: `GOOGLE_APPLICATION_CREDENTIALS` path was `.\NovaDentalFlow\gcp-service-account-key.json` → doubled path. **Fixed** to Windows absolute: `C:\Users\TestMachine\TESTCODES\NovaDentalFlow\gcp-service-account-key.json`
-- **Issue #2**: WSL path `/mnt/c/...` doesn't work with Windows Node.js → resolved with Windows path above
-- **Test result**: Sync works for `"Programada"` appointments. `"Confirmada"` and `"Cancelada"` still need to be tested (likely via update flow)
+  - `addCita` / `addCitaFromObject` — after success → `syncCreateEvent()`
+  - `updateCita` — after success → `syncUpdateEvent()`
+  - `deleteCita` — after success → `syncDeleteEvent()`
+  - `updatePatientField` — **NEW**: when `Estado_Cita` changes on appointment, fetches full appointment + `syncUpdateEvent()`
+  - All sync calls fire-and-forget (`.catch()`) — never block the user
+- **Issues & fixes**:
+  | Issue | Fix |
+  |---|---|
+  | `GOOGLE_APPLICATION_CREDENTIALS` path doubled (`.\NovaDentalFlow\...`) | Windows absolute path |
+  | WSL path doesn't work with Windows Node.js | `C:\Users\...` path |
+  | Apps Script 5-min cache returns stale status | Overwrite `Estado_Cita` with `newValue` after fetch |
+  | `updatePatientField` bypassed sync | Added conditional sync on `Estado_Cita` changes |
+- **Test result**: All statuses sync correctly — `Programada` (create), `Confirmada` (update), `Cancelada` (cancelled in calendar)
 
 ## Current Branch Status
 | Branch | Merged to main | Status |
@@ -66,7 +71,7 @@ Added Google Calendar API sync for appointments:
 | `DNIremovedFromUI` | ✅ | Complete |
 | `AddressIsOptinal` | ✅ | Complete |
 | `google-calendar-embed` | ✅ | Complete |
-| `google-calendar-api-sync` | ❌ | Syncing — tested Programada OK |
+| `google-calendar-api-sync` | ✅ | Complete |
 
 ## Other Tasks
 - Fixed `JSX.IntrinsicElements` error by running `npm install`
