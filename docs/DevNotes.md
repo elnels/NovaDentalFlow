@@ -87,6 +87,15 @@ Fixed Google Calendar sync not triggering when adding appointments from the pati
   - Added logging of `result.data` response and warnings when `appointmentId` is missing
 - **Root cause**: `addCitaFromObject` read `result.data?.ID_Cita` while `addCita` read `result.data?.appointmentId`. If the Apps Script returned the other key, the sync silently skipped.
 
+### 8. `homepage-card-width` (merged to main)
+Increased the homepage hero card width:
+- **`src/app/page.tsx`**: `max-w-2xl` (672px) → `max-w-4xl` (896px), +112px each side
+
+### 9. `default-doctor` (merged to main)
+Pre-filled Doctor field with default value "Dra Elsa Hernandez":
+- **`src/components/appointment-form.tsx`**: Default value from `""` → `"Dra Elsa Hernandez"`, label from `"ID del Doctor"` → `"Doctor"`, placeholder from `"Ingrese el ID del doctor"` → `"Nombre del doctor"`
+- **`src/components/citas-table.tsx`**: Default value from `''` → `'Dra Elsa Hernandez'`
+
 ## Current Branch Status
 | Branch | Merged to main | Status |
 |---|---|---|
@@ -96,6 +105,8 @@ Fixed Google Calendar sync not triggering when adding appointments from the pati
 | `google-calendar-embed` | ✅ | Complete |
 | `google-calendar-api-sync` | ✅ | Complete |
 | `workflow-reorder` | ✅ | Complete |
+| `homepage-card-width` | ✅ | Complete |
+| `default-doctor` | ✅ | Complete |
 
 ## Other Tasks
 - Fixed `JSX.IntrinsicElements` error by running `npm install`
