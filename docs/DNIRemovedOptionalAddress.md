@@ -55,8 +55,9 @@ Added Google Calendar API sync for appointments:
   - `updateCita` — after success → `syncUpdateEvent()` (fire-and-forget)
   - `deleteCita` — after success → `syncDeleteEvent()` (fire-and-forget)
   - All sync calls wrapped in `.catch()` — never block the user
-- **Issue found**: `GOOGLE_APPLICATION_CREDENTIALS` path in `.env.local` was `.\NovaDentalFlow\gcp-service-account-key.json` causing a doubled path. **Fixed** to absolute WSL path: `/mnt/c/users/testmachine/testcodes/NovaDentalFlow/gcp-service-account-key.json`
-- **Pending**: Service account needs "Make changes to events" permission on the shared calendar
+- **Issue #1**: `GOOGLE_APPLICATION_CREDENTIALS` path was `.\NovaDentalFlow\gcp-service-account-key.json` → doubled path. **Fixed** to Windows absolute: `C:\Users\TestMachine\TESTCODES\NovaDentalFlow\gcp-service-account-key.json`
+- **Issue #2**: WSL path `/mnt/c/...` doesn't work with Windows Node.js → resolved with Windows path above
+- **Test result**: Sync works for `"Programada"` appointments. `"Confirmada"` and `"Cancelada"` still need to be tested (likely via update flow)
 
 ## Current Branch Status
 | Branch | Merged to main | Status |
@@ -65,7 +66,7 @@ Added Google Calendar API sync for appointments:
 | `DNIremovedFromUI` | ✅ | Complete |
 | `AddressIsOptinal` | ✅ | Complete |
 | `google-calendar-embed` | ✅ | Complete |
-| `google-calendar-api-sync` | ❌ | Pending test & fixes |
+| `google-calendar-api-sync` | ❌ | Syncing — tested Programada OK |
 
 ## Other Tasks
 - Fixed `JSX.IntrinsicElements` error by running `npm install`
