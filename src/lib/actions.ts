@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import type { PatientFormData } from "@/types";
+import { syncCreateEvent, syncUpdateEvent, syncDeleteEvent } from "@/lib/calendar-api";
 
 // Usar el proxy interno en lugar de la URL directa
 const API_URL = '/api/proxy';
@@ -253,12 +254,19 @@ export async function addCita(prevState: FormState, formData: FormData): Promise
 
     if (result.status === "success") {
       console.log('Cita created successfully, revalidating paths');
+      const appointmentId = result.data?.appointmentId;
+      if (appointmentId) {
+        syncCreateEvent({
+          ID_Cita: appointmentId,
+          ...validatedFields.data,
+        } as any).catch(() => {});
+      }
       revalidatePath("/");
       revalidatePath(`/pacientes/${validatedFields.data.ID_Paciente}`);
       return {
         message: "Cita programada correctamente.",
         success: true,
-        appointmentId: result.data?.appointmentId,
+        appointmentId,
       };
     } else {
       console.error('Error creating cita:', result.message);
@@ -292,12 +300,19 @@ export async function addCitaFromObject(citaData: any): Promise<FormState> {
     const result = await postToActionAPI("addCita", validatedFields.data);
 
     if (result.status === "success") {
+      const appointmentId = result.data?.ID_Cita;
+      if (appointmentId) {
+        syncCreateEvent({
+          ID_Cita: appointmentId,
+          ...validatedFields.data,
+        } as any).catch(() => {});
+      }
       revalidatePath("/");
       revalidatePath(`/pacientes/${validatedFields.data.ID_Paciente}`);
       return {
         message: "Cita programada correctamente.",
         success: true,
-        appointmentId: result.data?.ID_Cita,
+        appointmentId,
       };
     } else {
       return {
@@ -435,6 +450,10 @@ export async function updateCita(id: string, prevState: FormState, formData: For
     console.log('updateCita - API response:', result);
 
     if (result.status === "success") {
+      syncUpdateEvent({
+        ID_Cita: id,
+        ...validatedFields.data,
+      } as any).catch(() => {});
       revalidatePath("/");
       revalidatePath(`/pacientes/${validatedFields.data.ID_Paciente}`);
       return { message: "Cita actualizada con éxito.", success: true, appointmentId: id };
@@ -454,6 +473,7 @@ export async function deleteCita(id: string, patientId?: string): Promise<Delete
     const result = await postToActionAPI("deleteCita", { ID_Cita: id });
 
     if (result.status === "success") {
+      syncDeleteEvent(id).catch(() => {});
       revalidatePath("/");
       if (patientId) {
         revalidatePath(`/pacientes/${patientId}`);
