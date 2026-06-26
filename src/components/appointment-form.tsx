@@ -91,7 +91,7 @@ export function AppointmentForm({ action, initialData, onSuccess, patientId }: A
       Motivo_Cita: initialData?.Motivo_Cita || "",
       Estado_Cita: initialData?.Estado_Cita || "Programada",
       Notas_Cita: initialData?.Notas_Cita || "",
-      ID_Doctor: initialData?.ID_Doctor || "",
+        ID_Doctor: initialData?.ID_Doctor || "Dra Elsa Hernandez",
     },
   });
 
@@ -105,7 +105,7 @@ export function AppointmentForm({ action, initialData, onSuccess, patientId }: A
         Motivo_Cita: initialData?.Motivo_Cita || "",
         Estado_Cita: initialData?.Estado_Cita || "Programada",
         Notas_Cita: initialData?.Notas_Cita || "",
-        ID_Doctor: initialData?.ID_Doctor || "",
+      ID_Doctor: initialData?.ID_Doctor || "Dra Elsa Hernandez",
       });
       // Limpiar errores cuando se cargan nuevos datos iniciales
       clearErrorState();
@@ -284,10 +284,10 @@ export function AppointmentForm({ action, initialData, onSuccess, patientId }: A
             name="ID_Doctor"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>ID del Doctor</FormLabel>
+                <FormLabel>Doctor</FormLabel>
                 <FormControl>
                   <Input 
-                    placeholder="Ingrese el ID del doctor"
+                    placeholder="Nombre del doctor"
                     {...field}
                   />
                 </FormControl>

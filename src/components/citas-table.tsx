@@ -186,7 +186,7 @@ export function CitasTable({ data, onUpdateField, onDeleteCita, onAddCita, patie
     Hora_Inicio: '',
     Hora_Fin: '',
     Motivo_Cita: '',
-    ID_Doctor: '',
+    ID_Doctor: 'Dra Elsa Hernandez',
     Notas_Cita: '',
     Estado_Cita: 'Programada'
   });
@@ -219,7 +219,7 @@ export function CitasTable({ data, onUpdateField, onDeleteCita, onAddCita, patie
         Hora_Inicio: '',
         Hora_Fin: '',
         Motivo_Cita: '',
-        ID_Doctor: '',
+        ID_Doctor: 'Dra Elsa Hernandez',
         Notas_Cita: '',
         Estado_Cita: 'Programada'
       });
