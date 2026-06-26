@@ -39,6 +39,34 @@ Added Google Calendar embed module:
 - Uses private Google Calendar sharing (not public) — users authenticate via their own Google account
 - **Architecture**: Independent module ready for Part 2 (Google Calendar API sync)
 
+### 5. `google-calendar-api-sync` (NOT merged — pending test)
+Added Google Calendar API sync for appointments:
+- **New dependency**: `googleapis` npm package
+- **New file**: `src/lib/calendar-api.ts`
+  - `initCalendar()` — auth via `GoogleAuth` (auto-reads `GOOGLE_APPLICATION_CREDENTIALS`)
+  - `createCalendarEvent()` / `updateCalendarEvent()` / `deleteCalendarEvent()`
+  - `findEventByAppointmentId()` — searches by `DentalFlow|CITA-xxx|` marker in description
+  - `syncCreateEvent()` / `syncUpdateEvent()` / `syncDeleteEvent()` — fire-and-forget wrappers
+  - `getPatientName()` — fetches patient name from Apps Script by ID
+  - Tracks statuses: `"Programada"` | `"Confirmada"` | `"Cancelada"`
+- **Modified**: `src/lib/actions.ts`
+  - `addCita` — after success → `syncCreateEvent()` (fire-and-forget)
+  - `addCitaFromObject` — after success → `syncCreateEvent()` (fire-and-forget)
+  - `updateCita` — after success → `syncUpdateEvent()` (fire-and-forget)
+  - `deleteCita` — after success → `syncDeleteEvent()` (fire-and-forget)
+  - All sync calls wrapped in `.catch()` — never block the user
+- **Issue found**: `GOOGLE_APPLICATION_CREDENTIALS` path in `.env.local` was `.\NovaDentalFlow\gcp-service-account-key.json` causing a doubled path. **Fixed** to absolute WSL path: `/mnt/c/users/testmachine/testcodes/NovaDentalFlow/gcp-service-account-key.json`
+- **Pending**: Service account needs "Make changes to events" permission on the shared calendar
+
+## Current Branch Status
+| Branch | Merged to main | Status |
+|---|---|---|
+| `DNInoMandatory` | ✅ | Complete |
+| `DNIremovedFromUI` | ✅ | Complete |
+| `AddressIsOptinal` | ✅ | Complete |
+| `google-calendar-embed` | ✅ | Complete |
+| `google-calendar-api-sync` | ❌ | Pending test & fixes |
+
 ## Other Tasks
 - Fixed `JSX.IntrinsicElements` error by running `npm install`
 - Confirmed no unit test framework exists in the project
