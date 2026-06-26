@@ -115,7 +115,21 @@ Si prefieres ejecutar DentalFlow en tu máquina local en lugar de desplegar en V
     echo NEXT_PUBLIC_API_URL=https://tu-apps-script-url > .env.local
     ```
 
-2.  **Instalar dependencias**
+2.  **Configurar el Calendario (Opcional)**
+
+    Si deseas ver el calendario de citas en la aplicación, agrega el ID de tu calendario de Google al archivo `.env.local`:
+
+    ```bash
+    # desde PowerShell
+    echo "NEXT_PUBLIC_GOOGLE_CALENDAR_ID=tu-calendario@gmail.com" >> .env.local
+
+    # o desde cmd.exe
+    echo NEXT_PUBLIC_GOOGLE_CALENDAR_ID=tu-calendario@gmail.com >> .env.local
+    ```
+
+    Luego comparte tu calendario con los usuarios autorizados desde la configuración de Google Calendar (el calendario no necesita ser público).
+
+3.  **Instalar dependencias**
 
     Ejecuta `npm install`. Si PowerShell bloquea la ejecución de scripts (error con `npm.ps1`), usa una de estas opciones:
 
@@ -135,7 +149,7 @@ Si prefieres ejecutar DentalFlow en tu máquina local en lugar de desplegar en V
       npm install
       ```
 
-3.  **Ejecutar en desarrollo**
+4.  **Ejecutar en desarrollo**
 
     Inicia el servidor de desarrollo (por defecto escucha en el puerto `9004` según `package.json`):
 
@@ -145,14 +159,14 @@ Si prefieres ejecutar DentalFlow en tu máquina local en lugar de desplegar en V
 
     Luego abre `http://localhost:9004` en tu navegador.
 
-4.  **Compilar y ejecutar la versión de producción (opcional)**
+5.  **Compilar y ejecutar la versión de producción (opcional)**
 
     ```bash
     npm run build
     npm run start
     ```
 
-5.  **Scripts adicionales**
+6.  **Scripts adicionales**
 
     - Para trabajar con `genkit` (si lo usas):
       - `npm run genkit:dev` — inicia `genkit` con `src/ai/dev.ts`.
