@@ -29,7 +29,6 @@ import { useToast } from "@/hooks/use-toast";
 
 
 const patientSchema = z.object({
-  DNI: z.string().optional().or(z.literal("")),
   Nombres: z.string().min(1, "El nombre es requerido").regex(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/, "El nombre solo puede contener letras"),
   Apellidos: z.string().min(1, "El apellido es requerido").regex(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/, "El apellido solo puede contener letras"),
   Fecha_Nacimiento: z.string().min(1, "La fecha de nacimiento es requerida"),
@@ -86,7 +85,6 @@ export function PatientForm({ action, initialData, onSuccess }: PatientFormProps
   const form = useForm<z.infer<typeof patientSchema>>({
     resolver: zodResolver(patientSchema),
     defaultValues: initialData || {
-      DNI: "",
       Nombres: "",
       Apellidos: "",
       Fecha_Nacimiento: "",
@@ -185,19 +183,6 @@ export function PatientForm({ action, initialData, onSuccess }: PatientFormProps
                 )}
             />
             </div>
-            <FormField
-            control={form.control}
-            name="DNI"
-            render={({ field }) => (
-                <FormItem>
-                <FormLabel>DNI</FormLabel>
-                <FormControl>
-                    <Input placeholder="12345678A" {...field} />
-                </FormControl>
-                <FormMessage />
-                </FormItem>
-            )}
-            />
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <FormField
                 control={form.control}

@@ -50,7 +50,6 @@ export function EditPatientModal({
   const updatePatientWithId = updatePatient.bind(null, patient.ID_Paciente);
 
   const initialData: PatientFormData = {
-    DNI: patient.DNI,
     Nombres: patient.Nombres,
     Apellidos: patient.Apellidos,
     Fecha_Nacimiento: (() => {

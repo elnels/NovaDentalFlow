@@ -96,13 +96,11 @@ export function PatientsTable({
       const searchTerm = query.toLowerCase();
       const filtered = patientsList.filter(patient => {
         const fullName = `${patient.Nombres || ''} ${patient.Apellidos || ''}`.toLowerCase();
-        const dni = String(patient.DNI || '').toLowerCase();
         const phone = String(patient.Telefono_Principal || '').toLowerCase();
         const email = String(patient.Email || '').toLowerCase();
         const patientId = String(patient.ID_Paciente || '').toLowerCase();
         
         return fullName.includes(searchTerm) || 
-               dni.includes(searchTerm) || 
                phone.includes(searchTerm) || 
                email.includes(searchTerm) ||
                patientId.includes(searchTerm);
@@ -235,7 +233,7 @@ export function PatientsTable({
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
               type="text"
-              placeholder="Buscar por nombre, DNI, teléfono, email, ID paciente..."
+              placeholder="Buscar por nombre, teléfono, email, ID paciente..."
               className="pl-10 pr-10"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -551,7 +549,7 @@ const PatientRow = memo(({ patient }: { patient: Patient }) => {
           </Avatar>
           <div className="flex-1">
             <p className="font-semibold text-gray-900 text-base">{`${patient.Nombres} ${patient.Apellidos}`}</p>
-            <p className="text-sm text-gray-500 font-medium">DNI: {patient.DNI || "No registrado"}</p>
+              <p className="text-sm text-gray-500 font-medium">ID: {patient.ID_Paciente}</p>
           </div>
         </div>
       </TableCell>
