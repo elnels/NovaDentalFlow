@@ -49,7 +49,7 @@ interface MedicalHistoryFormProps {
   onSuccess: (result: FormState) => void;
   onCancel?: () => void;
   patientId: string;
-  appointmentId: string;
+  appointmentId?: string;
 }
 
 function SubmitButton({ isLoading }: { isLoading: boolean }) {
@@ -87,7 +87,7 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
         resolver: zodResolver(medicalHistorySchema),
         defaultValues: {
             ID_Paciente: patientId,
-            ID_Cita: appointmentId,
+            ID_Cita: appointmentId || "",
             Fecha_Historial: initialData?.Fecha_Historial || new Date().toISOString().split('T')[0],
             Diagnostico: initialData?.Diagnostico || "",
             Tratamiento_Realizado: initialData?.Tratamiento_Realizado || "",
@@ -102,7 +102,7 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
         if (initialData) {
             form.reset({
                 ID_Paciente: patientId,
-                ID_Cita: appointmentId,
+                ID_Cita: appointmentId || "",
                 Fecha_Historial: initialData.Fecha_Historial || new Date().toISOString().split('T')[0],
                 Diagnostico: initialData.Diagnostico || "",
                 Tratamiento_Realizado: initialData.Tratamiento_Realizado || "",
@@ -173,7 +173,7 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
                 )}
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                     <input type="hidden" {...form.register("ID_Paciente")} />
-                    <input type="hidden" {...form.register("ID_Cita")} />
+                    {appointmentId && <input type="hidden" {...form.register("ID_Cita")} />}
                     
                     <FormField
                         control={form.control}

@@ -64,6 +64,29 @@ Added Google Calendar API sync for appointments:
   | `updatePatientField` bypassed sync | Added conditional sync on `Estado_Cita` changes |
 - **Test result**: All statuses sync correctly — `Programada` (create), `Confirmada` (update), `Cancelada` (cancelled in calendar)
 
+### 6. `workflow-reorder` (not yet merged)
+Reordered the sequential registration flow from Paciente → Cita → Historial to Paciente → Historial → Cita:
+- **`src/components/sequential-workflow.tsx`**:
+  - Step definitions reordered (patient → history → appointment → completed)
+  - Handler transitions updated: `handlePatientSuccess` → history, `handleHistorySuccess` → appointment, `handleAppointmentSuccess` → completed, `handleSkipHistory` → appointment (no longer needs `appointmentId`)
+  - Rendering blocks swapped (history step renders before appointment)
+  - History step condition no longer requires `appointmentId` (only `patientId`)
+  - Skip button text: "Omitir y Finalizar Registro" → "Omitir y Continuar a Cita"
+  - Completed screen badges and messages reordered to reflect Paciente → Historial → Cita
+- **`src/components/medical-history-form.tsx`**:
+  - `appointmentId` prop made optional (`appointmentId?: string`)
+  - Default values and form reset handle `undefined` with fallback to `""`
+  - Hidden `ID_Cita` input rendered only when `appointmentId` is provided
+- **Build**: Verified passes
+
+### 7. `calendar-sync-from-profile` (added to `workflow-reorder` branch)
+Fixed Google Calendar sync not triggering when adding appointments from the patient profile page ("Programar Nueva Cita" modal):
+- **`src/lib/actions.ts`**:
+  - Both `addCita` and `addCitaFromObject` now try both `result.data?.ID_Cita` and `result.data?.appointmentId` key names (API response format was ambiguous)
+  - `.catch(() => {})` → `.catch((err) => console.error(...))` — calendar sync errors are now logged
+  - Added logging of `result.data` response and warnings when `appointmentId` is missing
+- **Root cause**: `addCitaFromObject` read `result.data?.ID_Cita` while `addCita` read `result.data?.appointmentId`. If the Apps Script returned the other key, the sync silently skipped.
+
 ## Current Branch Status
 | Branch | Merged to main | Status |
 |---|---|---|
@@ -72,9 +95,10 @@ Added Google Calendar API sync for appointments:
 | `AddressIsOptinal` | ✅ | Complete |
 | `google-calendar-embed` | ✅ | Complete |
 | `google-calendar-api-sync` | ✅ | Complete |
+| `workflow-reorder` | ❌ | In progress (calendar sync fix added) |
 
 ## Other Tasks
 - Fixed `JSX.IntrinsicElements` error by running `npm install`
 - Confirmed no unit test framework exists in the project
-- Created session notes file `docs/DNIRemovedOptionalAddress.md`
+- Created session notes file `docs/DNIRemovedOptionalAddress.md` → renamed to `docs/DevNotes.md`
 - Added Google Calendar config to README

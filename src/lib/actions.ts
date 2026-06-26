@@ -254,12 +254,16 @@ export async function addCita(prevState: FormState, formData: FormData): Promise
 
     if (result.status === "success") {
       console.log('Cita created successfully, revalidating paths');
-      const appointmentId = result.data?.appointmentId;
+      console.log('addCita API response data:', result.data);
+      const appointmentId = result.data?.ID_Cita || result.data?.appointmentId;
       if (appointmentId) {
+        console.log('Syncing new cita to calendar:', appointmentId);
         syncCreateEvent({
           ID_Cita: appointmentId,
           ...validatedFields.data,
-        } as any).catch(() => {});
+        } as any).catch((err) => console.error('Calendar sync error:', err));
+      } else {
+        console.warn('No appointmentId found in response, skipping calendar sync');
       }
       revalidatePath("/");
       revalidatePath(`/pacientes/${validatedFields.data.ID_Paciente}`);
@@ -300,12 +304,16 @@ export async function addCitaFromObject(citaData: any): Promise<FormState> {
     const result = await postToActionAPI("addCita", validatedFields.data);
 
     if (result.status === "success") {
-      const appointmentId = result.data?.ID_Cita;
+      console.log('addCitaFromObject API response data:', result.data);
+      const appointmentId = result.data?.ID_Cita || result.data?.appointmentId;
       if (appointmentId) {
+        console.log('Syncing new cita to calendar:', appointmentId);
         syncCreateEvent({
           ID_Cita: appointmentId,
           ...validatedFields.data,
-        } as any).catch(() => {});
+        } as any).catch((err) => console.error('Calendar sync error:', err));
+      } else {
+        console.warn('No appointmentId found in response, skipping calendar sync');
       }
       revalidatePath("/");
       revalidatePath(`/pacientes/${validatedFields.data.ID_Paciente}`);
