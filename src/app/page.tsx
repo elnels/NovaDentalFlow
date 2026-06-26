@@ -97,7 +97,7 @@ export default function HomePage() {
             exit={{ opacity: 0, y: -20 }}
             className="flex flex-col items-center justify-center text-center min-h-[80vh]"
           >
-            <div className="bg-white rounded-3xl shadow-2xl p-12 max-w-2xl mx-auto border border-blue-100">
+            <div className="bg-white rounded-3xl shadow-2xl p-12 max-w-4xl mx-auto border border-blue-100">
               <img 
                   src="/DentalFlow.png" 
                   alt="DentalFlow Logo" 
