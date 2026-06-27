@@ -96,16 +96,6 @@ Pre-filled Doctor field with default value "Dra Elsa Hernandez":
 - **`src/components/appointment-form.tsx`**: Default value from `""` → `"Dra Elsa Hernandez"`, label from `"ID del Doctor"` → `"Doctor"`, placeholder from `"Ingrese el ID del doctor"` → `"Nombre del doctor"`
 - **`src/components/citas-table.tsx`**: Default value from `''` → `'Dra Elsa Hernandez'`
 
-### 10. `historial-clinico-new-fields` (not yet merged)
-Added 9 new fields to Historial Clínico (Sexo, Estado Civil, Ocupación, Escolaridad, datos de padres/tutor, Motivo Consulta, Antecedentes Personales grid):
-- **`src/types/index.ts`**: Added 9 fields to `ClinicalHistory` interface
-- **`src/lib/actions.ts`**: Added fields to `medicalHistorySchema` (Sexo + Estado_Civil as required enums, rest optional)
-- **`src/components/medical-history-form.tsx`**: Added 4 new form sections above existing fields + Antecedentes grid
-- **`src/components/antecedentes-grid.tsx`**: New component — 28-condition grid (14 rows × 2) with Sí/No radios + Edad input, serializes to JSON
-- **`src/components/historial-table.tsx`**: Added 9 new columns to table + both add dialogs
-- **Build**: Verified passes
-- **Test**: All new fields sent correctly via API
-
 ## Current Branch Status
 | Branch | Merged to main | Status |
 |---|---|---|
@@ -117,7 +107,6 @@ Added 9 new fields to Historial Clínico (Sexo, Estado Civil, Ocupación, Escola
 | `workflow-reorder` | ✅ | Complete |
 | `homepage-card-width` | ✅ | Complete |
 | `default-doctor` | ✅ | Complete |
-| `historial-clinico-new-fields` | ❌ | Complete — not yet merged |
 
 ## Other Tasks
 - Fixed `JSX.IntrinsicElements` error by running `npm install`
