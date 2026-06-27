@@ -122,6 +122,13 @@ Added Sexo field (Masculino/Femenino) to Historial Clínico:
 ### 11. `historial-clinico-new-fields` (reverted)
 Experimented with adding 9 new fields to Historial Clínico (Sexo, Estado Civil, Ocupación, Escolaridad, datos de padres, Motivo Consulta, Antecedentes Personales grid). Required Apps Script changes failed to deploy — reverted completely.
 
+### 12. `HistoriaClinicaMods` (reverted — branch deleted)
+Second attempt at adding the same 8 fields (Estado Civil, Ocupación, Escolaridad, Nombre Padre/Madre, Teléfono, Motivo Consulta, Antecedentes grid). Followed the 5-step workflow (sheet → codigo.gs → test → UI → build). Step 3 test passed (local editor), but when deployed the live API silently ignored new fields after Sexo. Root cause unclear — possibly header/column misalignment between the row array and sheet layout. Rolled back to main (Sexo only) to re-plan.
+
+| Branch | Merged to main | Status |
+|---|---|---|
+| `HistoriaClinicaMods` | ❌ | Reverted |
+
 ## Other Tasks
 - Fixed `JSX.IntrinsicElements` error by running `npm install`
 - Confirmed no unit test framework exists in the project
