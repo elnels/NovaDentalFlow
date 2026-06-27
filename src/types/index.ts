@@ -32,6 +32,7 @@ export interface ClinicalHistory {
   Notas_Adicionales: string;
   Costo_Tratamiento: string;
   Estado_Pago: string;
+  Sexo?: 'Masculino' | 'Femenino' | '';
   ID_Doctor?: string;
 }
 

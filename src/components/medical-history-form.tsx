@@ -39,6 +39,7 @@ const medicalHistorySchema = z.object({
   Estado_Pago: z.enum(["Pendiente", "Pagado", "Parcial"], {
     required_error: "El estado de pago es requerido",
   }),
+  Sexo: z.enum(["Masculino", "Femenino"]).optional().or(z.literal("")),
 });
 
 type MedicalHistoryFormData = z.infer<typeof medicalHistorySchema>;
@@ -95,6 +96,7 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
             Notas_Adicionales: initialData?.Notas_Adicionales || "",
             Costo_Tratamiento: initialData?.Costo_Tratamiento || "",
             Estado_Pago: initialData?.Estado_Pago || "Pendiente",
+            Sexo: initialData?.Sexo || "",
         },
     });
 
@@ -110,6 +112,7 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
                 Notas_Adicionales: initialData.Notas_Adicionales || "",
                 Costo_Tratamiento: initialData.Costo_Tratamiento || "",
                 Estado_Pago: initialData.Estado_Pago || "Pendiente",
+                Sexo: initialData.Sexo || "",
             });
             clearErrorState();
         }
@@ -238,6 +241,28 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
                                         {...field}
                                     />
                                 </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        control={form.control}
+                        name="Sexo"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Sexo</FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Seleccione sexo" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        <SelectItem value="Masculino">Masculino</SelectItem>
+                                        <SelectItem value="Femenino">Femenino</SelectItem>
+                                    </SelectContent>
+                                </Select>
                                 <FormMessage />
                             </FormItem>
                         )}
