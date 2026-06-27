@@ -96,6 +96,16 @@ Pre-filled Doctor field with default value "Dra Elsa Hernandez":
 - **`src/components/appointment-form.tsx`**: Default value from `""` → `"Dra Elsa Hernandez"`, label from `"ID del Doctor"` → `"Doctor"`, placeholder from `"Ingrese el ID del doctor"` → `"Nombre del doctor"`
 - **`src/components/citas-table.tsx`**: Default value from `''` → `'Dra Elsa Hernandez'`
 
+### 10. `add-sexo-field` (merged to main)
+Added Sexo field (Masculino/Femenino) to Historial Clínico:
+- **Procedure**: Sheet column → Apps Script → Backend test (no deploy needed) → UI
+- **`codigo.gs`**: `addHistorial` & `updateHistorial` append `data.Sexo` to their row arrays
+- **`src/types/index.ts`**: `Sexo?: 'Masculino' | 'Femenino' | ''` on `ClinicalHistory`
+- **`src/lib/actions.ts`**: `Sexo: z.enum(["Masculino", "Femenino"]).optional().or(z.literal(""))` in `medicalHistorySchema`
+- **`src/components/medical-history-form.tsx`**: Sexo select field added to form (between Prescripciones and Costo/Estado grid)
+- **`src/components/historial-table.tsx`**: Sexo column in table (EditableCell with select), add dialog field
+- **Test**: Apps Script test function run directly in editor before any UI work
+
 ## Current Branch Status
 | Branch | Merged to main | Status |
 |---|---|---|
@@ -107,8 +117,9 @@ Pre-filled Doctor field with default value "Dra Elsa Hernandez":
 | `workflow-reorder` | ✅ | Complete |
 | `homepage-card-width` | ✅ | Complete |
 | `default-doctor` | ✅ | Complete |
+| `add-sexo-field` | ✅ | Complete |
 
-### 10. `historial-clinico-new-fields` (reverted)
+### 11. `historial-clinico-new-fields` (reverted)
 Experimented with adding 9 new fields to Historial Clínico (Sexo, Estado Civil, Ocupación, Escolaridad, datos de padres, Motivo Consulta, Antecedentes Personales grid). Required Apps Script changes failed to deploy — reverted completely.
 
 ## Other Tasks
