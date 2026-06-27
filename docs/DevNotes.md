@@ -108,6 +108,9 @@ Pre-filled Doctor field with default value "Dra Elsa Hernandez":
 | `homepage-card-width` | ✅ | Complete |
 | `default-doctor` | ✅ | Complete |
 
+### 10. `historial-clinico-new-fields` (reverted)
+Experimented with adding 9 new fields to Historial Clínico (Sexo, Estado Civil, Ocupación, Escolaridad, datos de padres, Motivo Consulta, Antecedentes Personales grid). Required Apps Script changes failed to deploy — reverted completely.
+
 ## Other Tasks
 - Fixed `JSX.IntrinsicElements` error by running `npm install`
 - Confirmed no unit test framework exists in the project
