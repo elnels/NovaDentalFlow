@@ -59,15 +59,6 @@ const medicalHistorySchema = z.object({
   Notas_Adicionales: z.string().optional().or(z.literal("")),
   Costo_Tratamiento: z.string().optional().or(z.literal("")),
   Estado_Pago: z.enum(["Pendiente", "Pagado", "Parcial", "Cancelado"], { required_error: "El estado de pago es requerido"}),
-  Sexo: z.enum(["Masculino", "Femenino"], { required_error: "El sexo es requerido" }),
-  Estado_Civil: z.enum(["Casado", "Soltero", "Otro"], { required_error: "El estado civil es requerido" }),
-  Ocupacion: z.string().optional().or(z.literal("")),
-  Escolaridad: z.string().optional().or(z.literal("")),
-  Nombre_Padre: z.string().optional().or(z.literal("")),
-  Nombre_Madre: z.string().optional().or(z.literal("")),
-  Telefono_Contacto: z.string().optional().or(z.literal("")),
-  Motivo_Consulta: z.string().optional().or(z.literal("")),
-  Antecedentes_Personales: z.string().optional().or(z.literal("")),
 });
 
 export type FormState = {

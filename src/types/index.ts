@@ -33,16 +33,6 @@ export interface ClinicalHistory {
   Costo_Tratamiento: string;
   Estado_Pago: string;
   ID_Doctor?: string;
-  // Nuevos campos de historial clínico
-  Sexo?: 'Masculino' | 'Femenino';
-  Estado_Civil?: 'Casado' | 'Soltero' | 'Otro';
-  Ocupacion?: string;
-  Escolaridad?: string;
-  Nombre_Padre?: string;
-  Nombre_Madre?: string;
-  Telefono_Contacto?: string;
-  Motivo_Consulta?: string;
-  Antecedentes_Personales?: string;
 }
 
 export interface Appointment {

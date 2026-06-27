@@ -26,7 +26,6 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import type { FormState } from "@/lib/actions";
 import { useToast } from "@/hooks/use-toast";
-import { AntecedentesGrid, parseAntecedentes, createDefaultAntecedentes } from "@/components/antecedentes-grid";
 
 const medicalHistorySchema = z.object({
   ID_Paciente: z.string().min(1, "El ID del paciente es requerido"),
@@ -40,15 +39,6 @@ const medicalHistorySchema = z.object({
   Estado_Pago: z.enum(["Pendiente", "Pagado", "Parcial"], {
     required_error: "El estado de pago es requerido",
   }),
-  Sexo: z.enum(["Masculino", "Femenino"], { required_error: "El sexo es requerido" }),
-  Estado_Civil: z.enum(["Casado", "Soltero", "Otro"], { required_error: "El estado civil es requerido" }),
-  Ocupacion: z.string().optional().or(z.literal("")),
-  Escolaridad: z.string().optional().or(z.literal("")),
-  Nombre_Padre: z.string().optional().or(z.literal("")),
-  Nombre_Madre: z.string().optional().or(z.literal("")),
-  Telefono_Contacto: z.string().optional().or(z.literal("")),
-  Motivo_Consulta: z.string().optional().or(z.literal("")),
-  Antecedentes_Personales: z.string().optional().or(z.literal("")),
 });
 
 type MedicalHistoryFormData = z.infer<typeof medicalHistorySchema>;
@@ -105,15 +95,6 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
             Notas_Adicionales: initialData?.Notas_Adicionales || "",
             Costo_Tratamiento: initialData?.Costo_Tratamiento || "",
             Estado_Pago: initialData?.Estado_Pago || "Pendiente",
-            Sexo: initialData?.Sexo || undefined,
-            Estado_Civil: initialData?.Estado_Civil || undefined,
-            Ocupacion: initialData?.Ocupacion || "",
-            Escolaridad: initialData?.Escolaridad || "",
-            Nombre_Padre: initialData?.Nombre_Padre || "",
-            Nombre_Madre: initialData?.Nombre_Madre || "",
-            Telefono_Contacto: initialData?.Telefono_Contacto || "",
-            Motivo_Consulta: initialData?.Motivo_Consulta || "",
-            Antecedentes_Personales: initialData?.Antecedentes_Personales || "",
         },
     });
 
@@ -129,15 +110,6 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
                 Notas_Adicionales: initialData.Notas_Adicionales || "",
                 Costo_Tratamiento: initialData.Costo_Tratamiento || "",
                 Estado_Pago: initialData.Estado_Pago || "Pendiente",
-                Sexo: initialData.Sexo || undefined,
-                Estado_Civil: initialData.Estado_Civil || undefined,
-                Ocupacion: initialData.Ocupacion || "",
-                Escolaridad: initialData.Escolaridad || "",
-                Nombre_Padre: initialData.Nombre_Padre || "",
-                Nombre_Madre: initialData.Nombre_Madre || "",
-                Telefono_Contacto: initialData.Telefono_Contacto || "",
-                Motivo_Consulta: initialData.Motivo_Consulta || "",
-                Antecedentes_Personales: initialData.Antecedentes_Personales || "",
             });
             clearErrorState();
         }
@@ -202,168 +174,7 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                     <input type="hidden" {...form.register("ID_Paciente")} />
                     {appointmentId && <input type="hidden" {...form.register("ID_Cita")} />}
-                    <input type="hidden" {...form.register("Antecedentes_Personales")} />
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <FormField
-                            control={form.control}
-                            name="Sexo"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Sexo *</FormLabel>
-                                    <Select onValueChange={field.onChange} value={field.value || ""}>
-                                        <FormControl>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Seleccione sexo" />
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            <SelectItem value="Masculino">Masculino</SelectItem>
-                                            <SelectItem value="Femenino">Femenino</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="Estado_Civil"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Estado Civil *</FormLabel>
-                                    <Select onValueChange={field.onChange} value={field.value || ""}>
-                                        <FormControl>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Seleccione estado civil" />
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            <SelectItem value="Casado">Casado</SelectItem>
-                                            <SelectItem value="Soltero">Soltero</SelectItem>
-                                            <SelectItem value="Otro">Otro</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <FormField
-                            control={form.control}
-                            name="Ocupacion"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Ocupación</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="Ocupación del paciente" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="Escolaridad"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Escolaridad</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="Nivel de escolaridad" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    </div>
-
-                    <div className="bg-muted/30 rounded-lg p-4 space-y-4">
-                        <h3 className="font-medium text-sm text-muted-foreground uppercase tracking-wide">Si es menor de edad:</h3>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <FormField
-                                control={form.control}
-                                name="Nombre_Padre"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Nombre del Padre</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="Nombre del padre" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="Nombre_Madre"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Nombre de la Madre</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="Nombre de la madre" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
-                        <FormField
-                            control={form.control}
-                            name="Telefono_Contacto"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Teléfono de Contacto</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="Teléfono del tutor" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    </div>
-
-                    <div className="bg-muted/30 rounded-lg p-4 space-y-4">
-                        <h3 className="font-medium text-sm text-muted-foreground uppercase tracking-wide">Motivo principal de la consulta:</h3>
-                        <FormField
-                            control={form.control}
-                            name="Motivo_Consulta"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Motivo</FormLabel>
-                                    <FormControl>
-                                        <Textarea
-                                            placeholder="Describa el motivo principal de la consulta..."
-                                            className="resize-none"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    </div>
-
-                    <div className="bg-muted/30 rounded-lg p-4 space-y-4">
-                        <h3 className="font-medium text-sm text-muted-foreground uppercase tracking-wide">Antecedentes Personales</h3>
-                        <FormField
-                            control={form.control}
-                            name="Antecedentes_Personales"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormControl>
-                                        <AntecedentesGrid
-                                            value={field.value ? parseAntecedentes(field.value) : createDefaultAntecedentes()}
-                                            onChange={(items) => field.onChange(JSON.stringify(items))}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    </div>
-
+                    
                     <FormField
                         control={form.control}
                         name="Fecha_Historial"
