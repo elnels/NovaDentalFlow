@@ -129,6 +129,55 @@ Second attempt at adding the same 8 fields (Estado Civil, Ocupación, Escolarida
 |---|---|---|
 | `HistoriaClinicaMods` | ❌ | Reverted |
 
+### 13. `historia-clinica` (active — diagnostic phase complete)
+Branch for exploring Historial Clínico expansion in small chunks. Diagnostic phase completed on 2026-06-27.
+
+#### Diagnostic: Column Mapping — `addHistorial()` Row Array vs Sheet
+Called `debugSheetHeaders()` via `GET /api/debug-headers` on the live Google Sheet. The `Historial_Clinico` sheet already has **19 columns** (added by the two previous failed attempts).
+
+| Array Index | Code Writes (`codigo.gs:374`) | Sheet Header | Status |
+|---|---|---|---|
+| 0 | `newId` | `ID_Historial` | ✅ |
+| 1 | `data.ID_Paciente` | `ID_Paciente` | ✅ |
+| 2 | `data.ID_Cita` | `ID_Cita` | ✅ |
+| 3 | `data.Fecha_Historial` | `Fecha_Tratamiento` | ✅ writes to right column (positional) |
+| 4 | `data.Diagnostico` | `Diagnostico` | ✅ |
+| 5 | `data.Tratamiento_Realizado` | `Tratamiento_Realizado` | ✅ |
+| 6 | `data.Prescripciones` | `Prescripciones` | ✅ |
+| 7 | `data.Notas_Adicionales` | `Notas_Adicionales` | ✅ |
+| 8 | `data.Costo_Tratamiento` | `Costo_Tratamiento` | ✅ |
+| 9 | `data.Estado_Pago` | `Estado_Pago` | ✅ |
+| 10 | `data.Sexo` | `sexo` | ⚠️ Case mismatch (`Sexo` vs `sexo`) |
+| 11 | *(not written)* | `Estado_Civil` | ❌ unused |
+| 12 | *(not written)* | `Ocupacion` | ❌ unused |
+| 13 | *(not written)* | `Escolaridad` | ❌ unused |
+| 14 | *(not written)* | `Nombre_Padre` | ❌ unused |
+| 15 | *(not written)* | `Nombre_Madre` | ❌ unused |
+| 16 | *(not written)* | `Telefono_Contacto` | ❌ unused |
+| 17 | *(not written)* | `Motivo_Consulta` | ❌ unused |
+| 18 | *(not written)* | `Antecedentes_Personales` | ❌ unused |
+
+Two misalignments found:
+1. **Sexo vs sexo** (case) — `updateField()` uses `headers.indexOf(fieldName)` which is case-sensitive. Editing Sexo via `historial-table.tsx` will fail with `Campo 'Sexo' no encontrado en la hoja.` Need to send lowercase `sexo` to the API, or map it.
+2. **Fecha_Historial vs Fecha_Tratamiento** — The sheet header uses `Fecha_Tratamiento` but the code throughout uses `Fecha_Historial`. Works positionally in `addHistorial`/`updateHistorial`, but `updateField` would fail if passed `Fecha_Historial` to the case-sensitive header lookup.
+
+#### Refined Chunk Plan
+| Chunk | What |
+|---|---|
+| 1 ✅ | Diagnostic — sheet mapped, bugs found |
+| 2 | Fix `Sexo` → `sexo` mapping in updateField calls |
+| 3 | Add `Estado_Civil` (enum) — validates the add-field pattern |
+| 4 | Add `Ocupacion` (text) |
+| 5 | Add `Escolaridad` (enum) |
+| 6 | Add `Nombre_Padre`, `Nombre_Madre`, `Telefono_Contacto` |
+| 7 | Add `Motivo_Consulta` (text) |
+| 8 | Add `Antecedentes_Personales` (textarea) |
+| 9 | Cleanup: `Fecha_Historial` vs `Fecha_Tratamiento` naming |
+
+#### Verification
+- `debugHeaders` + `debugSheetData` functions added to `src/lib/api.ts`
+- Endpoint `/api/debug-headers` confirms sheet columns match discovered layout
+
 ## Other Tasks
 - Fixed `JSX.IntrinsicElements` error by running `npm install`
 - Confirmed no unit test framework exists in the project

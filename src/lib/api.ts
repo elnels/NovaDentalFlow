@@ -86,6 +86,26 @@ export async function searchPacientes(query: string): Promise<Patient[]> {
 }
 
 
+// --- FUNCIONES DE DEBUG ---
+
+/**
+ * Obtiene los encabezados exactos de las columnas de todas las hojas.
+ * Útil para diagnosticar la alineación entre el código y la hoja de cálculo.
+ */
+export async function debugHeaders(): Promise<any> {
+    const url = `${FULL_API_URL}?action=debugHeaders&_t=${Date.now()}`;
+    return fetchAPI(url, false);
+}
+
+/**
+ * Obtiene datos de muestra de todas las hojas para verificar la integridad de lectura/escritura.
+ */
+export async function debugSheetData(): Promise<any> {
+    const url = `${FULL_API_URL}?action=debugData&_t=${Date.now()}`;
+    return fetchAPI(url, false);
+}
+
+
 // --- FUNCIONES OBSOLETAS ---
 // Estas funciones ya no son necesarias porque el problema de caché se resuelve en la raíz.
 
