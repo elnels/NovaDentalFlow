@@ -40,6 +40,14 @@ const medicalHistorySchema = z.object({
     required_error: "El estado de pago es requerido",
   }),
   Sexo: z.enum(["Masculino", "Femenino"]).optional().or(z.literal("")),
+  Estado_Civil: z.string().optional().or(z.literal("")),
+  Ocupacion: z.string().optional().or(z.literal("")),
+  Escolaridad: z.string().optional().or(z.literal("")),
+  Nombre_Padre: z.string().optional().or(z.literal("")),
+  Nombre_Madre: z.string().optional().or(z.literal("")),
+  Telefono_Contacto: z.string().optional().or(z.literal("")),
+  Motivo_Consulta: z.string().optional().or(z.literal("")),
+  Antecedentes_Personales: z.string().optional().or(z.literal("")),
 });
 
 type MedicalHistoryFormData = z.infer<typeof medicalHistorySchema>;
@@ -98,6 +106,13 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
             Estado_Pago: initialData?.Estado_Pago || "Pendiente",
             Sexo: initialData?.Sexo || "",
             Estado_Civil: initialData?.Estado_Civil || "",
+            Ocupacion: initialData?.Ocupacion || "",
+            Escolaridad: initialData?.Escolaridad || "",
+            Nombre_Padre: initialData?.Nombre_Padre || "",
+            Nombre_Madre: initialData?.Nombre_Madre || "",
+            Telefono_Contacto: initialData?.Telefono_Contacto || "",
+            Motivo_Consulta: initialData?.Motivo_Consulta || "",
+            Antecedentes_Personales: initialData?.Antecedentes_Personales || "",
         },
     });
 
@@ -115,6 +130,13 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
                 Estado_Pago: initialData.Estado_Pago || "Pendiente",
                 Sexo: initialData.Sexo || "",
                 Estado_Civil: initialData.Estado_Civil || "",
+                Ocupacion: initialData.Ocupacion || "",
+                Escolaridad: initialData.Escolaridad || "",
+                Nombre_Padre: initialData.Nombre_Padre || "",
+                Nombre_Madre: initialData.Nombre_Madre || "",
+                Telefono_Contacto: initialData.Telefono_Contacto || "",
+                Motivo_Consulta: initialData.Motivo_Consulta || "",
+                Antecedentes_Personales: initialData.Antecedentes_Personales || "",
             });
             clearErrorState();
         }
@@ -290,6 +312,114 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
                                         <SelectItem value="Unión Libre">Unión Libre</SelectItem>
                                     </SelectContent>
                                 </Select>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <FormField
+                            control={form.control}
+                            name="Ocupacion"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Ocupación</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="Ej: Ingeniero, Docente..." {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="Escolaridad"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Escolaridad</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="Ej: Universidad, Técnico..." {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <FormField
+                            control={form.control}
+                            name="Nombre_Padre"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Nombre del Padre</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="Nombre completo del padre..." {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="Nombre_Madre"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Nombre de la Madre</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="Nombre completo de la madre..." {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+
+                    <FormField
+                        control={form.control}
+                        name="Telefono_Contacto"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Teléfono de Contacto</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="Número de teléfono de contacto..." {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        control={form.control}
+                        name="Motivo_Consulta"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Motivo de Consulta</FormLabel>
+                                <FormControl>
+                                    <Textarea
+                                        placeholder="Describa el motivo de la consulta..."
+                                        className="resize-none"
+                                        {...field}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        control={form.control}
+                        name="Antecedentes_Personales"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Antecedentes Personales</FormLabel>
+                                <FormControl>
+                                    <Textarea
+                                        placeholder="Antecedentes médicos del paciente..."
+                                        className="resize-none"
+                                        {...field}
+                                    />
+                                </FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}

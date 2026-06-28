@@ -375,7 +375,9 @@ function addHistorial(data) {
     newId, data.ID_Paciente, data.ID_Cita, data.Fecha_Historial || new Date(), data.Diagnostico,
     data.Tratamiento_Realizado, data.Prescripciones, data.Notas_Adicionales,
     data.Costo_Tratamiento, data.Estado_Pago, data.Sexo || '',
-    data.Estado_Civil || ''
+    data.Estado_Civil || '', data.Ocupacion || '', data.Escolaridad || '',
+    data.Nombre_Padre || '', data.Nombre_Madre || '', data.Telefono_Contacto || '',
+    data.Motivo_Consulta || '', data.Antecedentes_Personales || ''
   ];
   SHEET_HISTORIAL.appendRow(newRow);
   clearCache(); // Limpiar caché después de agregar historial
@@ -390,7 +392,9 @@ function updateHistorial(data) {
     data.ID_Historial, data.ID_Paciente, data.ID_Cita, data.Fecha_Historial, data.Diagnostico,
     data.Tratamiento_Realizado, data.Prescripciones, data.Notas_Adicionales,
     data.Costo_Tratamiento, data.Estado_Pago, data.Sexo || '',
-    data.Estado_Civil || ''
+    data.Estado_Civil || '', data.Ocupacion || '', data.Escolaridad || '',
+    data.Nombre_Padre || '', data.Nombre_Madre || '', data.Telefono_Contacto || '',
+    data.Motivo_Consulta || '', data.Antecedentes_Personales || ''
   ];
   updateRowById(SHEET_HISTORIAL, data.ID_Historial, rowData);
 

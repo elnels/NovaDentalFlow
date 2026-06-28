@@ -166,7 +166,34 @@ Two misalignments found:
 - **Fix**: Changed `'Sexo'` → `'sexo'` in the EditableCell save call in `historial-table.tsx:509`
 - **Lesson**: All `fieldName` values passed to `updateField()` must match the sheet header **exactly** (case-sensitive)
 
-#### Chunk 3 — Add Estado_Civil field (complete)
+#### Chunk 3+4 — Add all remaining Historia Clinica fields (complete)
+After testing confirmed the backend works, expanded all 7 remaining fields (Ocupacion, Escolaridad, Nombre_Padre, Nombre_Madre, Telefono_Contacto, Motivo_Consulta, Antecedentes_Personales) across the full stack.
+
+**`codigo.gs`**: Both `addHistorial` and `updateHistorial` row arrays expanded to 19 elements (indices 0-18), matching all sheet columns.
+
+**`src/types/index.ts`**: Added 7 fields to `ClinicalHistory`:
+```
+  Ocupacion?: string;
+  Escolaridad?: string;
+  Nombre_Padre?: string;
+  Nombre_Madre?: string;
+  Telefono_Contacto?: string;
+  Motivo_Consulta?: string;
+  Antecedentes_Personales?: string;
+```
+
+**`src/lib/actions.ts`**: Added all 7 to `medicalHistorySchema` Zod validation.
+
+**`src/components/medical-history-form.tsx`**: Added form fields:
+- Ocupacion / Escolaridad (2-col grid)
+- Nombre_Padre / Nombre_Madre (2-col grid)
+- Telefono_Contacto (full width Input)
+- Motivo_Consulta (full width Textarea)
+- Antecedentes_Personales (full width Textarea)
+
+**`src/components/historial-table.tsx`**: Added columns, EditableCells, and fields in both add dialogs for all 7 fields.
+
+#### Chunk 3 — Add Estado_Civil field (complete - superseded by Chunk 3+4)
 Followed the Sexo pattern (sheet column already existed at index 11):
 1. **`codigo.gs`**: Added `data.Estado_Civil || ''` to both `addHistorial` and `updateHistorial` row arrays (after Sexo, index 11)
 2. **`src/types/index.ts`**: Added `Estado_Civil?: string` to `ClinicalHistory`

@@ -34,6 +34,13 @@ export interface ClinicalHistory {
   Estado_Pago: string;
   Sexo?: 'Masculino' | 'Femenino' | '';
   Estado_Civil?: string;
+  Ocupacion?: string;
+  Escolaridad?: string;
+  Nombre_Padre?: string;
+  Nombre_Madre?: string;
+  Telefono_Contacto?: string;
+  Motivo_Consulta?: string;
+  Antecedentes_Personales?: string;
   ID_Doctor?: string;
 }
 
