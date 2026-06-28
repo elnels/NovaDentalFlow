@@ -108,7 +108,7 @@ Added Sexo field (Masculino/Femenino) to Historial Clínico:
 
 ## Current Branch Status
 | Branch | Merged to main | Status |
-|---|---|---|
+|---|---|---|---|
 | `DNInoMandatory` | ✅ | Complete |
 | `DNIremovedFromUI` | ✅ | Complete |
 | `AddressIsOptinal` | ✅ | Complete |
@@ -118,6 +118,7 @@ Added Sexo field (Masculino/Femenino) to Historial Clínico:
 | `homepage-card-width` | ✅ | Complete |
 | `default-doctor` | ✅ | Complete |
 | `add-sexo-field` | ✅ | Complete |
+| `historia-clinica` | ✅ | Complete |
 
 ### 11. `historial-clinico-new-fields` (reverted)
 Experimented with adding 9 new fields to Historial Clínico (Sexo, Estado Civil, Ocupación, Escolaridad, datos de padres, Motivo Consulta, Antecedentes Personales grid). Required Apps Script changes failed to deploy — reverted completely.
@@ -129,7 +130,7 @@ Second attempt at adding the same 8 fields (Estado Civil, Ocupación, Escolarida
 |---|---|---|
 | `HistoriaClinicaMods` | ❌ | Reverted |
 
-### 13. `historia-clinica` (active — diagnostic phase complete)
+### 13. `historia-clinica` (merged to main)
 Branch for exploring Historial Clínico expansion in small chunks. Diagnostic phase completed on 2026-06-27.
 
 #### Diagnostic: Column Mapping — `addHistorial()` Row Array vs Sheet
@@ -147,15 +148,15 @@ Called `debugSheetHeaders()` via `GET /api/debug-headers` on the live Google She
 | 7 | `data.Notas_Adicionales` | `Notas_Adicionales` | ✅ |
 | 8 | `data.Costo_Tratamiento` | `Costo_Tratamiento` | ✅ |
 | 9 | `data.Estado_Pago` | `Estado_Pago` | ✅ |
-| 10 | `data.Sexo` | `sexo` | ⚠️ Case mismatch (`Sexo` vs `sexo`) |
-| 11 | *(not written)* | `Estado_Civil` | ❌ unused |
-| 12 | *(not written)* | `Ocupacion` | ❌ unused |
-| 13 | *(not written)* | `Escolaridad` | ❌ unused |
-| 14 | *(not written)* | `Nombre_Padre` | ❌ unused |
-| 15 | *(not written)* | `Nombre_Madre` | ❌ unused |
-| 16 | *(not written)* | `Telefono_Contacto` | ❌ unused |
-| 17 | *(not written)* | `Motivo_Consulta` | ❌ unused |
-| 18 | *(not written)* | `Antecedentes_Personales` | ❌ unused |
+| 10 | `data.Sexo` | `sexo` | ✅ case mismatch fixed (sends `'sexo'` to updateField) |
+| 11 | `data.Estado_Civil` | `Estado_Civil` | ✅ |
+| 12 | `data.Ocupacion` | `Ocupacion` | ✅ |
+| 13 | `data.Escolaridad` | `Escolaridad` | ✅ |
+| 14 | `data.Nombre_Padre` | `Nombre_Padre` | ✅ |
+| 15 | `data.Nombre_Madre` | `Nombre_Madre` | ✅ |
+| 16 | `data.Telefono_Contacto` | `Telefono_Contacto` | ✅ |
+| 17 | `data.Motivo_Consulta` | `Motivo_Consulta` | ✅ |
+| 18 | `data.Antecedentes_Personales` | `Antecedentes_Personales` | ✅ |
 
 Two misalignments found:
 1. **Sexo vs sexo** (case) — `updateField()` uses `headers.indexOf(fieldName)` which is case-sensitive. Editing Sexo via `historial-table.tsx` will fail with `Campo 'Sexo' no encontrado en la hoja.` Need to send lowercase `sexo` to the API, or map it.
@@ -193,27 +194,8 @@ After testing confirmed the backend works, expanded all 7 remaining fields (Ocup
 
 **`src/components/historial-table.tsx`**: Added columns, EditableCells, and fields in both add dialogs for all 7 fields.
 
-#### Chunk 3 — Add Estado_Civil field (complete - superseded by Chunk 3+4)
-Followed the Sexo pattern (sheet column already existed at index 11):
-1. **`codigo.gs`**: Added `data.Estado_Civil || ''` to both `addHistorial` and `updateHistorial` row arrays (after Sexo, index 11)
-2. **`src/types/index.ts`**: Added `Estado_Civil?: string` to `ClinicalHistory`
-3. **`src/lib/actions.ts`**: Added `Estado_Civil: z.string().optional().or(z.literal(""))` to `medicalHistorySchema`
-4. **`src/components/medical-history-form.tsx`**: Added Select field (Soltero/a, Casado/a, Divorciado/a, Viudo/a, Unión Libre) between Sexo and Costo grid; added default value
-5. **`src/components/historial-table.tsx`**: Added column header, EditableCell select, and fields in both add dialogs; added `estadoCivilOptions` array
-- **Pending**: Deploy Apps Script (requires user to open Script Editor, re-deploy)
-
-#### Refined Chunk Plan
-| Chunk | What |
-|---|---|
-| 1 ✅ | Diagnostic — sheet mapped, bugs found |
-| 2 | Fix `Sexo` → `sexo` mapping in updateField calls |
-| 3 | Add `Estado_Civil` (enum) — validates the add-field pattern |
-| 4 | Add `Ocupacion` (text) |
-| 5 | Add `Escolaridad` (enum) |
-| 6 | Add `Nombre_Padre`, `Nombre_Madre`, `Telefono_Contacto` |
-| 7 | Add `Motivo_Consulta` (text) |
-| 8 | Add `Antecedentes_Personales` (textarea) |
-| 9 | Cleanup: `Fecha_Historial` vs `Fecha_Tratamiento` naming |
+#### Chunk 3+4 — All fields deployed and verified
+All 8 fields (Estado_Civil + 7 from Chunk 4) are now saving to the sheet correctly from the UI. The key lesson: Apps Script **must be deployed as a new version** — saving the editor is not enough.
 
 #### Verification
 - `debugHeaders` + `debugSheetData` functions added to `src/lib/api.ts`
