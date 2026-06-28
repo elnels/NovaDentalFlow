@@ -21,7 +21,7 @@ export function CalendarEmbed() {
             Calendario no configurado
           </h3>
           <p className="text-amber-600 mb-4">
-            Configura la variable <code className="bg-amber-100 px-2 py-0.5 rounded">NEXT_PUBLIC_GOOGLE_CALENDAR_ID</code> en tu archivo <code className="bg-amber-100 px-2 py-0.5 rounded">.env.local</code> para mostrar el calendario.
+            Configura la variable <code className="bg-amber-100 px-2 py-0.5 rounded">NEXT_PUBLIC_GOOGLE_CALENDAR_ID</code> en tu archivo <code className="bg-amber-100 px-2 py-0.5 rounded">.env</code> para mostrar el calendario.
           </p>
           <a
             href="https://support.google.com/calendar/answer/37083"

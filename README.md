@@ -104,7 +104,7 @@ Si prefieres ejecutar DentalFlow en tu máquina local en lugar de desplegar en V
 
 1.  **Crear el archivo de entorno**
 
-    Copia `.env.example` a `.env.local` o crea el archivo con las siguientes variables:
+    Copia `.env.example` a `.env` o crea el archivo con las siguientes variables:
 
     ```bash
     DATABASE_URL=postgresql://postgres:postgres@localhost:5432/novadentalflow
@@ -114,13 +114,13 @@ Si prefieres ejecutar DentalFlow en tu máquina local en lugar de desplegar en V
 
 2.  **Configurar el Calendario (Opcional)**
 
-    Si deseas usar la sincronización con Google Calendar, agrega el ID de tu calendario al archivo `.env.local`:
+    Si deseas usar la sincronización con Google Calendar, agrega el ID de tu calendario al archivo `.env`:
 
     ```bash
     NEXT_PUBLIC_GOOGLE_CALENDAR_ID=tu-calendario@gmail.com
     ```
 
-    También necesitas un archivo de credenciales de servicio de Google (`gcp-service-account-key.json`) en la raíz del proyecto y configurar `GOOGLE_APPLICATION_CREDENTIALS` en `.env.local`.
+    También necesitas un archivo de credenciales de servicio de Google (`gcp-service-account-key.json`) en la raíz del proyecto y configurar `GOOGLE_APPLICATION_CREDENTIALS` en `.env`.
 
     Luego comparte tu calendario con el email de la cuenta de servicio desde la configuración de Google Calendar (el calendario no necesita ser público).
 

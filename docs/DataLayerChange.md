@@ -164,7 +164,7 @@ When the user skips Historial Clínico during registration, the system creates a
 
 ### Phase 0 — Docker + Prisma Setup ✅
 1. Create `docker-compose.yml` in project root
-2. Add `DATABASE_URL` + `DB_PASSWORD` to `.env.local`
+2. Add `DATABASE_URL` + `DB_PASSWORD` to `.env`
 3. `npm install prisma @prisma/client`
 4. `npx prisma init` — creates `prisma/schema.prisma`
 5. Define the full schema (6 models)
@@ -199,7 +199,7 @@ When the user skips Historial Clínico during registration, the system creates a
 | File | Status |
 |---|---|
 | `docker-compose.yml` | ✅ PostgreSQL 16 container |
-| `.env.local` | ✅ `DATABASE_URL`, `DB_PASSWORD`, `TIMEZONE` |
+| `.env` | ✅ `DATABASE_URL`, `DB_PASSWORD`, `TIMEZONE`, `NEXT_PUBLIC_GOOGLE_CALENDAR_ID` |
 | `prisma/schema.prisma` | ✅ 6 models with UUID PKs |
 | `prisma/migrations/` | ✅ Initial migration |
 | `prisma/seed.ts` | ✅ Data from Google Sheets → PostgreSQL |
