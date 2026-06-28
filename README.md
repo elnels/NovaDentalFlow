@@ -1,6 +1,6 @@
 # DentalFlow 🦷
 
-**Una plataforma de gestión de pacientes y citas, open-source y gratuita, diseñada para consultorios dentales modernos. Creada con Next.js y conectada a Google Sheets.**
+**Una plataforma de gestión de pacientes y citas, open-source y gratuita, diseñada para consultorios dentales modernos. Creada con Next.js y PostgreSQL.**
 
 ---
 
@@ -8,7 +8,7 @@
 
 **DentalFlow** es una aplicación web intuitiva y potente que simplifica la administración de un consultorio dental. Permite registrar pacientes, agendar citas y llevar un historial clínico detallado, todo desde una interfaz limpia y accesible.
 
-Lo mejor de todo es que utiliza **Google Sheets como base de datos**, lo que la hace increíblemente fácil de configurar y mantener, sin costos de hosting de base de datos. Este repositorio contiene todo el código fuente y las instrucciones para que puedas desplegar tu propia versión de DentalFlow de forma **completamente gratuita**.
+Utiliza **PostgreSQL como base de datos** corriendo en Docker para un rendimiento confiable y escalable. Este repositorio contiene todo el código fuente y las instrucciones para que puedas desplegar tu propia versión de DentalFlow de forma **completamente gratuita**.
 
 ### 🚀 Características Principales
 
@@ -22,14 +22,14 @@ Lo mejor de todo es que utiliza **Google Sheets como base de datos**, lo que la 
 *   **Dashboard del Paciente:**
     *   Consulta toda la información centralizada: datos personales, citas programadas e historial clínico.
     *   Añade nuevas citas o registros clínicos al historial del paciente en cualquier momento.
-*   **Backend sin Servidor:** Toda la lógica de datos es manejada por **Google Apps Script**, que se comunica directamente con tu hoja de cálculo de Google Sheets.
+*   **Base de datos local con PostgreSQL:** Datos persistentes y consultas eficientes a través de Prisma ORM.
 
 ### 🛠️ Stack Tecnológico
 
 *   **Framework Frontend:** [Next.js](https://nextjs.org/)
 *   **Librería UI:** [React](https://reactjs.org/)
 *   **Estilos:** [Tailwind CSS](https://tailwindcss.com/)
-*   **Backend / Base de Datos:** [Google Sheets](https://www.google.com/sheets/about/) + [Google Apps Script](https://developers.google.com/apps-script)
+*   **Base de Datos:** [PostgreSQL](https://www.postgresql.org/) via [Docker](https://www.docker.com/)
 *   **Despliegue Principal:** [GitHub](https://github.com/)
 *   **Despliegue:** [Vercel](https://vercel.com/)
 
@@ -39,30 +39,29 @@ Lo mejor de todo es que utiliza **Google Sheets como base de datos**, lo que la 
 
 Sigue estos pasos para tener tu propia versión de DentalFlow funcionando en minutos.
 
-### **Paso 1: Configurar el Backend (Google Sheets y Apps Script)**
+### **Paso 1: Configurar la Base de Datos (PostgreSQL con Docker)**
 
-Esta es la parte más importante. Aquí crearemos nuestra "base de datos".
+1.  **Instala Docker Desktop** en tu máquina si no lo tienes (https://www.docker.com/products/docker-desktop/).
 
-1.  **Crea una copia de la Hoja de Cálculo:**
-    *   Haz clic en este enlace para crear una copia de la plantilla de Google Sheets en tu propia cuenta de Google:
-        **[Plantilla de Google Sheets para DentalFlow](https://docs.google.com/spreadsheets/d/1pxNI3c3bJX7PALvEI7Ul8jxt8QnBxgIn1IPI3q84N-4/edit?usp=sharing)**.
-    *   Asegúrate de que tu hoja de cálculo tenga tres pestañas en la parte inferior con los nombres exactos: `Pacientes`, `Citas` e `Historial_Clínico`.
+2.  **Inicia el contenedor de PostgreSQL:**
 
-2.  **Configura el Código de Apps Script:**
-    *   Dentro de tu nueva hoja de cálculo, ve al menú `Extensiones` > `Apps Script`.
-    *   Se abrirá un editor de código. Borra todo el código que aparece por defecto.
-    *   Copia todo el contenido del archivo `codigo.gs` de este repositorio de GitHub y pégalo en el editor de Apps Script.
-    *   Guarda el proyecto (ícono de disquete).
+    ```bash
+    docker compose up -d
+    ```
 
-3.  **Despliega el Script como una Aplicación Web:**
-    *   En la parte superior derecha del editor de Apps Script, haz clic en el botón azul **`Implementar`** y selecciona **`Nueva implementación`**.
-    *   Haz clic en el ícono de engranaje (`Seleccionar tipo`) y elige **`Aplicación web`**.
-    *   En la configuración, asegúrate de que quede así:
-        *   **Ejecutar como:** `Yo (tu correo electrónico)`
-        *   **Quién tiene acceso:** `Cualquier usuario`
-    *   Haz clic en **`Implementar`**.
-    *   Google te pedirá que autorices los permisos del script. Acepta todos los permisos.
-    *   **¡IMPORTANTE!** Al finalizar, se te proporcionará una **URL de la aplicación web**. Cópiala y guárdala. La necesitarás en el siguiente paso.
+    Esto creará un contenedor con PostgreSQL 16 en el puerto `5432`.
+
+3.  **Ejecuta las migraciones de Prisma:**
+
+    ```bash
+    npx prisma migrate dev
+    ```
+
+4.  **(Opcional) Siembra datos de ejemplo:**
+
+    ```bash
+    npx prisma db seed
+    ```
 
 ### **Paso 2: Configurar el Proyecto Frontend (Next.js)**
 
@@ -105,29 +104,25 @@ Si prefieres ejecutar DentalFlow en tu máquina local en lugar de desplegar en V
 
 1.  **Crear el archivo de entorno**
 
-    Crea un archivo `.env.local` en la raíz del proyecto con la URL de tu App Script (la obtenida en Paso 1):
+    Copia `.env.example` a `.env.local` o crea el archivo con las siguientes variables:
 
     ```bash
-    # desde PowerShell
-    echo "NEXT_PUBLIC_API_URL=https://tu-apps-script-url" > .env.local
-
-    # o desde cmd.exe
-    echo NEXT_PUBLIC_API_URL=https://tu-apps-script-url > .env.local
+    DATABASE_URL=postgresql://postgres:postgres@localhost:5432/novadentalflow
+    DB_PASSWORD=postgres
+    TIMEZONE=America/Mexico_City
     ```
 
 2.  **Configurar el Calendario (Opcional)**
 
-    Si deseas ver el calendario de citas en la aplicación, agrega el ID de tu calendario de Google al archivo `.env.local`:
+    Si deseas usar la sincronización con Google Calendar, agrega el ID de tu calendario al archivo `.env.local`:
 
     ```bash
-    # desde PowerShell
-    echo "NEXT_PUBLIC_GOOGLE_CALENDAR_ID=tu-calendario@gmail.com" >> .env.local
-
-    # o desde cmd.exe
-    echo NEXT_PUBLIC_GOOGLE_CALENDAR_ID=tu-calendario@gmail.com >> .env.local
+    NEXT_PUBLIC_GOOGLE_CALENDAR_ID=tu-calendario@gmail.com
     ```
 
-    Luego comparte tu calendario con los usuarios autorizados desde la configuración de Google Calendar (el calendario no necesita ser público).
+    También necesitas un archivo de credenciales de servicio de Google (`gcp-service-account-key.json`) en la raíz del proyecto y configurar `GOOGLE_APPLICATION_CREDENTIALS` en `.env.local`.
+
+    Luego comparte tu calendario con el email de la cuenta de servicio desde la configuración de Google Calendar (el calendario no necesita ser público).
 
 3.  **Instalar dependencias**
 

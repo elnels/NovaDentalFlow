@@ -2,10 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
   try {
-    // Verificar variables de entorno
     const envVars = {
-      SCRIPT_URL: process.env.SCRIPT_URL || 'NOT_SET',
-      NEXT_PUBLIC_SCRIPT_URL: process.env.NEXT_PUBLIC_SCRIPT_URL || 'NOT_SET',
       NODE_ENV: process.env.NODE_ENV || 'NOT_SET',
       VERCEL: process.env.VERCEL || 'NOT_SET',
       VERCEL_ENV: process.env.VERCEL_ENV || 'NOT_SET'

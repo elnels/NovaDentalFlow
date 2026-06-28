@@ -12,10 +12,6 @@ export async function GET(request: NextRequest) {
     nodeEnv: process.env.NODE_ENV,
     vercelEnv: process.env.VERCEL_ENV,
     vercelUrl: process.env.VERCEL_URL,
-    hasApiUrl: !!process.env.NEXT_PUBLIC_API_URL,
-    apiUrlLength: process.env.NEXT_PUBLIC_API_URL?.length || 0,
-    apiUrlPreview: process.env.NEXT_PUBLIC_API_URL ? 
-      process.env.NEXT_PUBLIC_API_URL.substring(0, 50) + '...' : 'undefined',
     allEnvKeys: Object.keys(process.env).filter(key => 
       key.startsWith('NEXT_PUBLIC_') || 
       key.startsWith('VERCEL_') ||

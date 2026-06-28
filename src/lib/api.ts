@@ -15,7 +15,6 @@ const FULL_API_URL = IS_CLIENT ? API_URL : `${BASE_URL}${API_URL}`;
  */
 async function fetchAPI(url: string, returnArrayOnError = true) {
     try {
-        // Crear AbortController con timeout de 30 segundos para Google Apps Script
         const controller = new AbortController();
         const timeoutId = setTimeout(() => {
             controller.abort();
@@ -39,7 +38,6 @@ async function fetchAPI(url: string, returnArrayOnError = true) {
             throw new Error(data.message || 'Ocurrió un error en la API');
         }
         
-        // La respuesta de Google ya tiene una propiedad "data"
         return data.data; 
 
     } catch (error) {
