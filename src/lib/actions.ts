@@ -60,6 +60,7 @@ const medicalHistorySchema = z.object({
   Costo_Tratamiento: z.string().optional().or(z.literal("")),
   Estado_Pago: z.enum(["Pendiente", "Pagado", "Parcial", "Cancelado"], { required_error: "El estado de pago es requerido"}),
   Sexo: z.enum(["Masculino", "Femenino"]).optional().or(z.literal("")),
+  Estado_Civil: z.string().optional().or(z.literal("")),
 });
 
 export type FormState = {

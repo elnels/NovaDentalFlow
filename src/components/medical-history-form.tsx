@@ -97,6 +97,7 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
             Costo_Tratamiento: initialData?.Costo_Tratamiento || "",
             Estado_Pago: initialData?.Estado_Pago || "Pendiente",
             Sexo: initialData?.Sexo || "",
+            Estado_Civil: initialData?.Estado_Civil || "",
         },
     });
 
@@ -113,6 +114,7 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
                 Costo_Tratamiento: initialData.Costo_Tratamiento || "",
                 Estado_Pago: initialData.Estado_Pago || "Pendiente",
                 Sexo: initialData.Sexo || "",
+                Estado_Civil: initialData.Estado_Civil || "",
             });
             clearErrorState();
         }
@@ -261,6 +263,31 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
                                     <SelectContent>
                                         <SelectItem value="Masculino">Masculino</SelectItem>
                                         <SelectItem value="Femenino">Femenino</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        control={form.control}
+                        name="Estado_Civil"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Estado Civil</FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Seleccione estado civil" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        <SelectItem value="Soltero/a">Soltero/a</SelectItem>
+                                        <SelectItem value="Casado/a">Casado/a</SelectItem>
+                                        <SelectItem value="Divorciado/a">Divorciado/a</SelectItem>
+                                        <SelectItem value="Viudo/a">Viudo/a</SelectItem>
+                                        <SelectItem value="Unión Libre">Unión Libre</SelectItem>
                                     </SelectContent>
                                 </Select>
                                 <FormMessage />

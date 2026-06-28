@@ -54,6 +54,14 @@ const sexoOptions = [
   { value: 'Femenino', label: 'Femenino', color: 'secondary' as const },
 ];
 
+const estadoCivilOptions = [
+  { value: 'Soltero/a', label: 'Soltero/a', color: 'default' as const },
+  { value: 'Casado/a', label: 'Casado/a', color: 'primary' as const },
+  { value: 'Divorciado/a', label: 'Divorciado/a', color: 'warning' as const },
+  { value: 'Viudo/a', label: 'Viudo/a', color: 'secondary' as const },
+  { value: 'Unión Libre', label: 'Unión Libre', color: 'info' as const },
+];
+
 interface EditableCellProps {
   value: string | undefined;
   onSave: (newValue: string) => Promise<void>;
@@ -227,7 +235,8 @@ export function HistorialTable({ data, onUpdateField, onDeleteHistorial, onAddHi
     Notas_Adicionales: '',
     Costo_Tratamiento: '',
     Estado_Pago: 'Pendiente',
-    Sexo: ''
+    Sexo: '',
+    Estado_Civil: ''
   });
   const { toast } = useToast();
 
@@ -262,7 +271,8 @@ export function HistorialTable({ data, onUpdateField, onDeleteHistorial, onAddHi
         Notas_Adicionales: '',
         Costo_Tratamiento: '',
         Estado_Pago: 'Pendiente',
-        Sexo: ''
+        Sexo: '',
+        Estado_Civil: ''
       });
       toast({
         title: "Historial agregado",
@@ -404,6 +414,22 @@ export function HistorialTable({ data, onUpdateField, onDeleteHistorial, onAddHi
               </TextField>
               <TextField
                 select
+                label="Estado Civil"
+                value={newHistorial.Estado_Civil}
+                onChange={(e) => setNewHistorial({ ...newHistorial, Estado_Civil: e.target.value })}
+                fullWidth
+              >
+                <MenuItem value="">
+                  <em>No especificado</em>
+                </MenuItem>
+                {estadoCivilOptions.map((opt) => (
+                  <MenuItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <TextField
+                select
                 label="Estado del Pago"
                 value={newHistorial.Estado_Pago}
                 onChange={(e) => setNewHistorial({ ...newHistorial, Estado_Pago: e.target.value })}
@@ -454,6 +480,7 @@ export function HistorialTable({ data, onUpdateField, onDeleteHistorial, onAddHi
               <TableCell><strong>Observaciones</strong></TableCell>
               <TableCell><strong>Costo</strong></TableCell>
               <TableCell><strong>Sexo</strong></TableCell>
+              <TableCell><strong>Estado Civil</strong></TableCell>
               <TableCell><strong>Estado Pago</strong></TableCell>
               <TableCell align="center"><strong>Acciones</strong></TableCell>
             </TableRow>
@@ -506,9 +533,17 @@ export function HistorialTable({ data, onUpdateField, onDeleteHistorial, onAddHi
                 <TableCell>
                   <EditableCell
                     value={historial.Sexo || ''}
-                    onSave={(newValue) => onUpdateField(historial.ID_Historial, 'Sexo', newValue, 'history')}
+                    onSave={(newValue) => onUpdateField(historial.ID_Historial, 'sexo', newValue, 'history')}
                     type="select"
                     options={sexoOptions}
+                  />
+                </TableCell>
+                <TableCell>
+                  <EditableCell
+                    value={historial.Estado_Civil || ''}
+                    onSave={(newValue) => onUpdateField(historial.ID_Historial, 'Estado_Civil', newValue, 'history')}
+                    type="select"
+                    options={estadoCivilOptions}
                   />
                 </TableCell>
                 <TableCell>
@@ -606,6 +641,22 @@ export function HistorialTable({ data, onUpdateField, onDeleteHistorial, onAddHi
                 <em>No especificado</em>
               </MenuItem>
               {sexoOptions.map((opt) => (
+                <MenuItem key={opt.value} value={opt.value}>
+                  {opt.label}
+                </MenuItem>
+              ))}
+            </TextField>
+            <TextField
+              select
+              label="Estado Civil"
+              value={newHistorial.Estado_Civil}
+              onChange={(e) => setNewHistorial({ ...newHistorial, Estado_Civil: e.target.value })}
+              fullWidth
+            >
+              <MenuItem value="">
+                <em>No especificado</em>
+              </MenuItem>
+              {estadoCivilOptions.map((opt) => (
                 <MenuItem key={opt.value} value={opt.value}>
                   {opt.label}
                 </MenuItem>

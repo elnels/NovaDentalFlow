@@ -161,6 +161,20 @@ Two misalignments found:
 1. **Sexo vs sexo** (case) — `updateField()` uses `headers.indexOf(fieldName)` which is case-sensitive. Editing Sexo via `historial-table.tsx` will fail with `Campo 'Sexo' no encontrado en la hoja.` Need to send lowercase `sexo` to the API, or map it.
 2. **Fecha_Historial vs Fecha_Tratamiento** — The sheet header uses `Fecha_Tratamiento` but the code throughout uses `Fecha_Historial`. Works positionally in `addHistorial`/`updateHistorial`, but `updateField` would fail if passed `Fecha_Historial` to the case-sensitive header lookup.
 
+#### Chunk 2 — Fix Sexo/sexo case mismatch (complete)
+- **Root cause**: Sheet header is `sexo` (lowercase) but `historial-table.tsx` sent `'Sexo'` (capitalized) to `updateField()`. The Apps Script `updateField()` uses `headers.indexOf(fieldName)` which is case-sensitive, so inline edit of Sexo threw `Campo 'Sexo' no encontrado en la hoja.`
+- **Fix**: Changed `'Sexo'` → `'sexo'` in the EditableCell save call in `historial-table.tsx:509`
+- **Lesson**: All `fieldName` values passed to `updateField()` must match the sheet header **exactly** (case-sensitive)
+
+#### Chunk 3 — Add Estado_Civil field (complete)
+Followed the Sexo pattern (sheet column already existed at index 11):
+1. **`codigo.gs`**: Added `data.Estado_Civil || ''` to both `addHistorial` and `updateHistorial` row arrays (after Sexo, index 11)
+2. **`src/types/index.ts`**: Added `Estado_Civil?: string` to `ClinicalHistory`
+3. **`src/lib/actions.ts`**: Added `Estado_Civil: z.string().optional().or(z.literal(""))` to `medicalHistorySchema`
+4. **`src/components/medical-history-form.tsx`**: Added Select field (Soltero/a, Casado/a, Divorciado/a, Viudo/a, Unión Libre) between Sexo and Costo grid; added default value
+5. **`src/components/historial-table.tsx`**: Added column header, EditableCell select, and fields in both add dialogs; added `estadoCivilOptions` array
+- **Pending**: Deploy Apps Script (requires user to open Script Editor, re-deploy)
+
 #### Refined Chunk Plan
 | Chunk | What |
 |---|---|
