@@ -44,3 +44,4 @@ gcp-service-account-key.json
 # firebase
 firebase-debug.log
 firestore-debug.log
+/src/generated/prisma

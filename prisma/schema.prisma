@@ -1,0 +1,129 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Patient {
+  id                   String   @id @default(uuid())
+  serialNum            Int      @default(autoincrement()) @map("serial_num")
+  dni                  String?  @unique
+  nombres              String
+  apellidos            String
+  fechaNacimiento      DateTime? @map("fecha_nacimiento")
+  telefonoPrincipal    String?  @map("telefono_principal")
+  telefonoAlternativo  String?  @map("telefono_alternativo")
+  email                String?
+  direccion            String?
+  genero               String?
+  estado               String   @default("Activo")
+  fechaRegistro        DateTime @default(now()) @map("fecha_registro")
+
+  appointments     Appointment[]
+  clinicalHistory  ClinicalHistory[]
+  clinicalDetails  ClinicalDetails?
+  familyConditions FamilyCondition[]
+
+  @@map("patients")
+}
+
+model Appointment {
+  id         String   @id @default(uuid())
+  serialNum  Int      @default(autoincrement()) @map("serial_num")
+  patientId  String   @map("patient_id")
+  fechaCita  DateTime @map("fecha_cita")
+  horaInicio String?  @map("hora_inicio")
+  horaFin    String?  @map("hora_fin")
+  motivoCita String?  @map("motivo_cita")
+  idDoctor   String?  @map("id_doctor")
+  notasCita  String?  @map("notas_cita")
+  estadoCita String?  @map("estado_cita")
+
+  patient        Patient           @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  clinicalHistory ClinicalHistory[]
+
+  @@map("appointments")
+}
+
+model ClinicalHistory {
+  id                    String    @id @default(uuid())
+  serialNum             Int       @default(autoincrement()) @map("serial_num")
+  patientId             String    @map("patient_id")
+  appointmentId         String?   @map("appointment_id")
+  fechaHistorial        DateTime  @default(now()) @map("fecha_historial")
+  diagnostico           String?
+  tratamiento           String?
+  prescripciones        String?
+  notas                 String?
+  costoTratamiento      Decimal?  @map("costo_tratamiento")
+  estadoPago            String?   @map("estado_pago")
+  sexo                  String?
+  estadoCivil           String?   @map("estado_civil")
+  ocupacion             String?
+  escolaridad           String?
+  nombrePadre           String?   @map("nombre_padre")
+  nombreMadre           String?   @map("nombre_madre")
+  telefonoContacto      String?   @map("telefono_contacto")
+  motivoConsulta        String?   @map("motivo_consulta")
+  antecedentesPersonales String?  @map("antecedentes_personales")
+  exploracionBucal      String?   @map("exploracion_bucal")
+  observaciones         String?
+  diagnosticoPresuncion String?   @map("diagnostico_presuncion")
+  estudiosAuxiliares    String?   @map("estudios_auxiliares")
+  odontograma           Json?
+
+  patient    Patient      @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  appointment Appointment? @relation(fields: [appointmentId], references: [id], onDelete: SetNull)
+
+  @@map("clinical_history")
+}
+
+model ClinicalDetails {
+  id                     String    @id @default(uuid())
+  serialNum              Int       @default(autoincrement()) @map("serial_num")
+  patientId              String    @unique @map("patient_id")
+  nombreOdontologo       String?   @map("nombre_odontologo")
+  motivoConsulta         String?   @map("motivo_consulta")
+  antecedentesPersonales String?   @map("antecedentes_personales")
+  bajoTratamientoMedico  Boolean   @default(false) @map("bajo_tratamiento_medico")
+  motivo                 String?
+  tomaMedicamentos       Boolean   @default(false) @map("toma_medicamentos")
+  cualesMedicamentos     String?   @map("cuales_medicamentos")
+  embarazada             Boolean   @default(false)
+  fechaUltimaMenstruacion DateTime? @map("fecha_ultima_menstruacion")
+  transfusiones          Boolean   @default(false)
+  sangradoExcesivo       Boolean   @default(false) @map("sangrado_excesivo")
+  sangradoTiempo         String?   @map("sangrado_tiempo")
+  cirugias               Boolean   @default(false)
+  cirugiasDetalle        String?   @map("cirugias_detalle")
+  vacunasCompletas       Boolean   @default(false) @map("vacunas_completas")
+  alergicoMedicamentos   Boolean   @default(false) @map("alergico_medicamentos")
+  alergicoCual           String?   @map("alergico_cual")
+  consumeSustancias      Boolean   @default(false) @map("consume_sustancias")
+  cualesSustancias       String?   @map("cuales_sustancias")
+  frecuenciaSustancias   String?   @map("frecuencia_sustancias")
+  higieneBucal           Boolean   @default(false) @map("higiene_bucal")
+  frecuenciaHigiene      String?   @map("frecuencia_higiene")
+  observacionesHc5       String?   @map("observaciones_hc5")
+
+  patient Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@map("clinical_details")
+}
+
+model FamilyCondition {
+  id            String  @id @default(uuid())
+  patientId     String  @map("patient_id")
+  conditionName String  @map("condition_name")
+  hasCondition  Boolean @default(false) @map("has_condition")
+  tipo          String?
+  relatives     Json?
+
+  patient Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@unique([patientId, conditionName])
+  @@map("family_conditions")
+}
