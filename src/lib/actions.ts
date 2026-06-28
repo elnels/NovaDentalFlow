@@ -2,29 +2,9 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { prisma } from "@/lib/db";
 import type { PatientFormData } from "@/types";
 import { syncCreateEvent, syncUpdateEvent, syncDeleteEvent } from "@/lib/calendar-api";
-
-// Usar el proxy interno en lugar de la URL directa
-const API_URL = '/api/proxy';
-const IS_CLIENT = typeof window !== 'undefined';
-
-// Función para obtener la URL base correcta
-function getBaseUrl() {
-  if (IS_CLIENT) {
-    return window.location.origin;
-  }
-  
-  // En el servidor, usar la URL de Vercel si está disponible
-  if (process.env.VERCEL_URL) {
-    return `https://${process.env.VERCEL_URL}`;
-  }
-  
-  // En desarrollo local - usar el puerto correcto
-  return 'http://localhost:9004';
-}
-
-const FULL_API_URL = IS_CLIENT ? API_URL : `${getBaseUrl()}${API_URL}`;
 
 const patientSchema = z.object({
   DNI: z.string().optional().or(z.literal("")),
@@ -79,43 +59,6 @@ export type FormState = {
   historyId?: string;
 };
 
-async function postToActionAPI(action: string, data: any): Promise<any> {
-    console.log('Sending action to API:', {
-        action,
-        dataKeys: Object.keys(data || {}),
-        timestamp: new Date().toISOString()
-    });
-    
-    const response = await fetch(FULL_API_URL, {
-        method: "POST",
-        headers: { 
-            "Content-Type": "application/json",
-            "Accept": "application/json"
-        },
-        body: JSON.stringify({ action, data }),
-    });
-    
-    console.log('API response status:', response.status);
-    
-    if (!response.ok) {
-        const errorText = await response.text();
-        console.error('API error response:', {
-            status: response.status,
-            statusText: response.statusText,
-            body: errorText
-        });
-        throw new Error(`HTTP error! status: ${response.status}, details: ${errorText}`);
-    }
-    
-    const result = await response.json();
-    console.log('API success response:', {
-        status: result.status,
-        hasData: !!result.data
-    });
-    
-    return result;
-}
-
 export async function addPatient(prevState: FormState, formData: FormData): Promise<FormState> {
   const rawData = Object.fromEntries(formData.entries());
   const validatedFields = patientSchema.safeParse(rawData);
@@ -123,124 +66,88 @@ export async function addPatient(prevState: FormState, formData: FormData): Prom
   if (!validatedFields.success) {
     return {
       message: "Por favor, corrija los errores en el formulario.",
-      errors: validatedFields.error.flatten().fieldErrors as Record<keyof PatientFormData, string>,
+      errors: validatedFields.error.flatten().fieldErrors as unknown as Record<keyof PatientFormData, string>,
       success: false,
     };
   }
 
   try {
-    // Formatear números de teléfono con comilla simple al inicio para Google Sheets
-    const formattedData = {
-      ...validatedFields.data,
-      Telefono_Principal: `'${validatedFields.data.Telefono_Principal}`,
-      Telefono_Alternativo: validatedFields.data.Telefono_Alternativo ? `'${validatedFields.data.Telefono_Alternativo}` : "",
-    };
-    
-    const dataWithDefaults = {
-      ...formattedData,
-      Fecha_Registro: new Date().toISOString().split('T')[0],
-      Estado: "Activo",
-    }
-    const result = await postToActionAPI("addPaciente", dataWithDefaults);
+    const patient = await prisma.patient.create({
+      data: {
+        dni: validatedFields.data.DNI || null,
+        nombres: validatedFields.data.Nombres,
+        apellidos: validatedFields.data.Apellidos,
+        fechaNacimiento: new Date(validatedFields.data.Fecha_Nacimiento),
+        telefonoPrincipal: validatedFields.data.Telefono_Principal,
+        telefonoAlternativo: validatedFields.data.Telefono_Alternativo || null,
+        email: validatedFields.data.Email,
+        direccion: validatedFields.data.Direccion || null,
+        genero: validatedFields.data.Genero,
+      },
+    });
 
-    if (result.status === "success") {
-      revalidatePath("/");
-      return { message: "Paciente agregado con éxito.", success: true, patientId: result.data.ID_Paciente };
-    } else {
-      return { message: result.message || "Error al agregar el paciente.", success: false };
-    }
+    revalidatePath("/");
+    return { message: "Paciente agregado con éxito.", success: true, patientId: patient.id };
   } catch (e) {
-    const error = e as Error;
-    return { message: `Error de red: ${error.message}`, success: false };
+    return { message: `Error: ${(e as Error).message}`, success: false };
   }
 }
 
 export async function updatePatient(id: string, prevState: FormState, formData: FormData): Promise<FormState> {
-    const rawData = Object.fromEntries(formData.entries());
-    const validatedFields = patientSchema.safeParse(rawData);
+  const rawData = Object.fromEntries(formData.entries());
+  const validatedFields = patientSchema.safeParse(rawData);
 
-    if (!validatedFields.success) {
-        return {
-            message: "Por favor, corrija los errores en el formulario.",
-            errors: validatedFields.error.flatten().fieldErrors as Record<keyof PatientFormData, string>,
-            success: false,
-        };
-    }
+  if (!validatedFields.success) {
+    return {
+      message: "Por favor, corrija los errores en el formulario.",
+      errors: validatedFields.error.flatten().fieldErrors as unknown as Record<keyof PatientFormData, string>,
+      success: false,
+    };
+  }
 
-    try {
-        // Formatear números de teléfono con comilla simple al inicio para Google Sheets
-        const formattedData = {
-            ...validatedFields.data,
-            Telefono_Principal: `'${validatedFields.data.Telefono_Principal}`,
-            Telefono_Alternativo: validatedFields.data.Telefono_Alternativo ? `'${validatedFields.data.Telefono_Alternativo}` : "",
-        };
-        
-        const dataToUpdate = { ...formattedData, ID_Paciente: id };
-        const result = await postToActionAPI("updatePaciente", dataToUpdate);
-
-        if (result.status === "success") {
-            revalidatePath(`/pacientes/${id}`);
-            revalidatePath("/");
-            return { message: "Paciente actualizado con éxito.", success: true, patientId: id };
-        } else {
-            return { message: result.message || "Error al actualizar el paciente.", success: false };
-        }
-    } catch (e) {
-        const error = e as Error;
-        return { message: `Error de red: ${error.message}`, success: false };
-    }
-}
-
-type DeleteResult = {
-    success: boolean;
-    message: string;
-}
-
-export async function deletePatient(id: string): Promise<DeleteResult> {
-    try {
-        const result = await postToActionAPI("deletePaciente", { ID_Paciente: id });
-
-        if (result.status === "success") {
-            revalidatePath("/");
-            return { success: true, message: "Paciente eliminado correctamente." };
-        } else {
-            return { success: false, message: result.message || "Error al eliminar el paciente." };
-        }
-    } catch (e) {
-        const error = e as Error;
-        return { success: false, message: `Error de red: ${error.message}` };
-    }
-}
-
-export async function deletePaciente(id: string): Promise<{ success: boolean; message: string }> {
   try {
-    const response = await fetch(FULL_API_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
+    await prisma.patient.update({
+      where: { id },
+      data: {
+        dni: validatedFields.data.DNI || null,
+        nombres: validatedFields.data.Nombres,
+        apellidos: validatedFields.data.Apellidos,
+        fechaNacimiento: new Date(validatedFields.data.Fecha_Nacimiento),
+        telefonoPrincipal: validatedFields.data.Telefono_Principal,
+        telefonoAlternativo: validatedFields.data.Telefono_Alternativo || null,
+        email: validatedFields.data.Email,
+        direccion: validatedFields.data.Direccion || null,
+        genero: validatedFields.data.Genero,
       },
-      body: JSON.stringify({
-        action: 'deletePaciente',
-        id
-      })
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const result = await response.json();
-    
-    if (result.status === 'success') {
-      revalidatePath('/');
-      return { success: true, message: 'Paciente eliminado correctamente.' };
-    } else {
-      return { success: false, message: result.message || 'Error al eliminar el paciente.' };
-    }
+    revalidatePath(`/pacientes/${id}`);
+    revalidatePath("/");
+    return { message: "Paciente actualizado con éxito.", success: true, patientId: id };
   } catch (e) {
-    const error = e as Error;
-    return { success: false, message: `Error de red: ${error.message}` };
+    return { message: `Error: ${(e as Error).message}`, success: false };
+  }
+}
+
+type DeleteResult = { success: boolean; message: string };
+
+export async function deletePatient(id: string): Promise<DeleteResult> {
+  try {
+    await prisma.patient.delete({ where: { id } });
+    revalidatePath("/");
+    return { success: true, message: "Paciente eliminado correctamente." };
+  } catch (e) {
+    return { success: false, message: `Error: ${(e as Error).message}` };
+  }
+}
+
+export async function deletePaciente(id: string): Promise<DeleteResult> {
+  try {
+    await prisma.patient.delete({ where: { id } });
+    revalidatePath("/");
+    return { success: true, message: "Paciente eliminado correctamente." };
+  } catch (e) {
+    return { success: false, message: `Error: ${(e as Error).message}` };
   }
 }
 
@@ -249,7 +156,6 @@ export async function addCita(prevState: FormState, formData: FormData): Promise
   const validatedFields = appointmentSchema.safeParse(rawData);
 
   if (!validatedFields.success) {
-    console.error('Validation error for addCita:', validatedFields.error.flatten().fieldErrors);
     return {
       message: "Por favor, corrija los errores en el formulario.",
       errors: validatedFields.error.flatten().fieldErrors as Record<string, string>,
@@ -258,43 +164,33 @@ export async function addCita(prevState: FormState, formData: FormData): Promise
   }
 
   try {
-    console.log('Adding cita with data:', validatedFields.data);
-    const result = await postToActionAPI("addCita", validatedFields.data);
+    const appointment = await prisma.appointment.create({
+      data: {
+        patientId: validatedFields.data.ID_Paciente,
+        fechaCita: new Date(validatedFields.data.Fecha_Cita),
+        horaInicio: validatedFields.data.Hora_Inicio,
+        horaFin: validatedFields.data.Hora_Fin,
+        motivoCita: validatedFields.data.Motivo_Cita,
+        idDoctor: validatedFields.data.ID_Doctor,
+        notasCita: validatedFields.data.Notas_Cita || null,
+        estadoCita: validatedFields.data.Estado_Cita,
+      },
+    });
 
-    if (result.status === "success") {
-      console.log('Cita created successfully, revalidating paths');
-      console.log('addCita API response data:', result.data);
-      const appointmentId = result.data?.ID_Cita || result.data?.appointmentId;
-      if (appointmentId) {
-        console.log('Syncing new cita to calendar:', appointmentId);
-        syncCreateEvent({
-          ID_Cita: appointmentId,
-          ...validatedFields.data,
-        } as any).catch((err) => console.error('Calendar sync error:', err));
-      } else {
-        console.warn('No appointmentId found in response, skipping calendar sync');
-      }
-      revalidatePath("/");
-      revalidatePath(`/pacientes/${validatedFields.data.ID_Paciente}`);
-      return {
-        message: "Cita programada correctamente.",
-        success: true,
-        appointmentId,
-      };
-    } else {
-      console.error('Error creating cita:', result.message);
-      return {
-        message: result.message || "Error al programar la cita.",
-        success: false,
-      };
-    }
-  } catch (e) {
-    const error = e as Error;
-    console.error('Exception in addCita:', error);
+    syncCreateEvent({
+      ID_Cita: appointment.id,
+      ...validatedFields.data,
+    } as any).catch((err) => console.error("Calendar sync error:", err));
+
+    revalidatePath("/");
+    revalidatePath(`/pacientes/${validatedFields.data.ID_Paciente}`);
     return {
-      message: `Error de conexión: ${error.message}`,
-      success: false,
+      message: "Cita programada correctamente.",
+      success: true,
+      appointmentId: appointment.id,
     };
+  } catch (e) {
+    return { message: `Error: ${(e as Error).message}`, success: false };
   }
 }
 
@@ -310,48 +206,41 @@ export async function addCitaFromObject(citaData: any): Promise<FormState> {
   }
 
   try {
-    const result = await postToActionAPI("addCita", validatedFields.data);
+    const appointment = await prisma.appointment.create({
+      data: {
+        patientId: validatedFields.data.ID_Paciente,
+        fechaCita: new Date(validatedFields.data.Fecha_Cita),
+        horaInicio: validatedFields.data.Hora_Inicio,
+        horaFin: validatedFields.data.Hora_Fin,
+        motivoCita: validatedFields.data.Motivo_Cita,
+        idDoctor: validatedFields.data.ID_Doctor,
+        notasCita: validatedFields.data.Notas_Cita || null,
+        estadoCita: validatedFields.data.Estado_Cita,
+      },
+    });
 
-    if (result.status === "success") {
-      console.log('addCitaFromObject API response data:', result.data);
-      const appointmentId = result.data?.ID_Cita || result.data?.appointmentId;
-      if (appointmentId) {
-        console.log('Syncing new cita to calendar:', appointmentId);
-        syncCreateEvent({
-          ID_Cita: appointmentId,
-          ...validatedFields.data,
-        } as any).catch((err) => console.error('Calendar sync error:', err));
-      } else {
-        console.warn('No appointmentId found in response, skipping calendar sync');
-      }
-      revalidatePath("/");
-      revalidatePath(`/pacientes/${validatedFields.data.ID_Paciente}`);
-      return {
-        message: "Cita programada correctamente.",
-        success: true,
-        appointmentId,
-      };
-    } else {
-      return {
-        message: result.message || "Error al programar la cita.",
-        success: false,
-      };
-    }
-  } catch (e) {
-    const error = e as Error;
+    syncCreateEvent({
+      ID_Cita: appointment.id,
+      ...validatedFields.data,
+    } as any).catch((err) => console.error("Calendar sync error:", err));
+
+    revalidatePath("/");
+    revalidatePath(`/pacientes/${validatedFields.data.ID_Paciente}`);
     return {
-      message: `Error de red: ${error.message}`,
-      success: false,
+      message: "Cita programada correctamente.",
+      success: true,
+      appointmentId: appointment.id,
     };
+  } catch (e) {
+    return { message: `Error: ${(e as Error).message}`, success: false };
   }
- }
+}
 
 export async function addHistorial(prevState: FormState, formData: FormData): Promise<FormState> {
   const rawData = Object.fromEntries(formData.entries());
   const validatedFields = medicalHistorySchema.safeParse(rawData);
 
   if (!validatedFields.success) {
-    console.error('Validation error for addHistorial:', validatedFields.error.flatten().fieldErrors);
     return {
       message: "Por favor, corrija los errores en el formulario.",
       errors: validatedFields.error.flatten().fieldErrors as Record<string, string>,
@@ -360,22 +249,36 @@ export async function addHistorial(prevState: FormState, formData: FormData): Pr
   }
 
   try {
-    console.log('Adding historial with data:', validatedFields.data);
-    const result = await postToActionAPI("addHistorial", validatedFields.data);
+    const history = await prisma.clinicalHistory.create({
+      data: {
+        patientId: validatedFields.data.ID_Paciente,
+        appointmentId: validatedFields.data.ID_Cita || null,
+        fechaHistorial: new Date(validatedFields.data.Fecha_Historial),
+        diagnostico: validatedFields.data.Diagnostico || null,
+        tratamiento: validatedFields.data.Tratamiento_Realizado || null,
+        prescripciones: validatedFields.data.Prescripciones || null,
+        notas: validatedFields.data.Notas_Adicionales || null,
+        costoTratamiento: validatedFields.data.Costo_Tratamiento
+          ? Number(validatedFields.data.Costo_Tratamiento)
+          : null,
+        estadoPago: validatedFields.data.Estado_Pago,
+        sexo: validatedFields.data.Sexo || null,
+        estadoCivil: validatedFields.data.Estado_Civil || null,
+        ocupacion: validatedFields.data.Ocupacion || null,
+        escolaridad: validatedFields.data.Escolaridad || null,
+        nombrePadre: validatedFields.data.Nombre_Padre || null,
+        nombreMadre: validatedFields.data.Nombre_Madre || null,
+        telefonoContacto: validatedFields.data.Telefono_Contacto || null,
+        motivoConsulta: validatedFields.data.Motivo_Consulta || null,
+        antecedentesPersonales: validatedFields.data.Antecedentes_Personales || null,
+      },
+    });
 
-    if (result.status === "success") {
-      console.log('Historial created successfully, revalidating paths');
-      revalidatePath("/");
-      revalidatePath(`/pacientes/${validatedFields.data.ID_Paciente}`);
-      return { message: "Historial clínico agregado con éxito.", success: true, historyId: result.data.historyId || result.data.ID_Historial };
-    } else {
-      console.error('Error creating historial:', result.message);
-      return { message: result.message || "Error al agregar el historial clínico.", success: false };
-    }
+    revalidatePath("/");
+    revalidatePath(`/pacientes/${validatedFields.data.ID_Paciente}`);
+    return { message: "Historial clínico agregado con éxito.", success: true, historyId: history.id };
   } catch (e) {
-    const error = e as Error;
-    console.error('Exception in addHistorial:', error);
-    return { message: `Error de conexión: ${error.message}`, success: false };
+    return { message: `Error: ${(e as Error).message}`, success: false };
   }
 }
 
@@ -391,67 +294,69 @@ export async function addHistorialFromObject(historialData: any): Promise<FormSt
   }
 
   try {
-    const result = await postToActionAPI("addHistorial", validatedFields.data);
+    const history = await prisma.clinicalHistory.create({
+      data: {
+        patientId: validatedFields.data.ID_Paciente,
+        appointmentId: validatedFields.data.ID_Cita || null,
+        fechaHistorial: new Date(validatedFields.data.Fecha_Historial),
+        diagnostico: validatedFields.data.Diagnostico || null,
+        tratamiento: validatedFields.data.Tratamiento_Realizado || null,
+        prescripciones: validatedFields.data.Prescripciones || null,
+        notas: validatedFields.data.Notas_Adicionales || null,
+        costoTratamiento: validatedFields.data.Costo_Tratamiento
+          ? Number(validatedFields.data.Costo_Tratamiento)
+          : null,
+        estadoPago: validatedFields.data.Estado_Pago,
+        sexo: validatedFields.data.Sexo || null,
+        estadoCivil: validatedFields.data.Estado_Civil || null,
+        ocupacion: validatedFields.data.Ocupacion || null,
+        escolaridad: validatedFields.data.Escolaridad || null,
+        nombrePadre: validatedFields.data.Nombre_Padre || null,
+        nombreMadre: validatedFields.data.Nombre_Madre || null,
+        telefonoContacto: validatedFields.data.Telefono_Contacto || null,
+        motivoConsulta: validatedFields.data.Motivo_Consulta || null,
+        antecedentesPersonales: validatedFields.data.Antecedentes_Personales || null,
+      },
+    });
 
-    if (result.status === "success") {
-      revalidatePath("/");
-      revalidatePath(`/pacientes/${validatedFields.data.ID_Paciente}`);
-      return {
-        message: "Historial clínico agregado correctamente.",
-        success: true,
-        historyId: result.data?.historyId || result.data?.ID_Historial,
-        updatedData: result.data?.updatedData, // Incluir los datos actualizados del backend
-      };
-    } else {
-      return {
-        message: result.message || "Error al agregar el historial clínico.",
-        success: false,
-      };
-    }
+    revalidatePath("/");
+    revalidatePath(`/pacientes/${validatedFields.data.ID_Paciente}`);
+    return {
+      message: "Historial clínico agregado correctamente.",
+      success: true,
+      historyId: history.id,
+    };
   } catch (e) {
-    const error = e as Error;
-    return { message: `Error de red: ${error.message}`, success: false };
+    return { message: `Error: ${(e as Error).message}`, success: false };
   }
 }
 
 export async function addEmptyHistorial(patientId: string, appointmentId?: string): Promise<FormState> {
-  const emptyHistoryData = {
-    ID_Paciente: patientId,
-    ID_Cita: appointmentId || "",
-    Fecha_Historial: new Date().toISOString().split('T')[0], // Fecha actual
-    Diagnostico: "Pendiente de completar",
-    Tratamiento_Realizado: "Pendiente de completar",
-    Prescripciones: "",
-    Notas_Adicionales: "Historial creado automáticamente - Pendiente de completar",
-    Costo_Tratamiento: "0",
-    Estado_Pago: "Pendiente" as const,
-  };
-
   try {
-    const result = await postToActionAPI("addHistorial", emptyHistoryData);
+    const history = await prisma.clinicalHistory.create({
+      data: {
+        patientId,
+        appointmentId: appointmentId || null,
+        diagnostico: "Pendiente de completar",
+        tratamiento: "Pendiente de completar",
+        notas: "Historial creado automáticamente - Pendiente de completar",
+        estadoPago: "Pendiente",
+      },
+    });
 
-    if (result.status === "success") {
-      revalidatePath("/");
-      revalidatePath(`/pacientes/${patientId}`);
-      return { message: "Historial clínico creado (pendiente de completar).", success: true, historyId: result.data.historyId || result.data.ID_Historial };
-    } else {
-      return { message: result.message || "Error al crear el historial clínico.", success: false };
-    }
+    revalidatePath("/");
+    revalidatePath(`/pacientes/${patientId}`);
+    return { message: "Historial clínico creado (pendiente de completar).", success: true, historyId: history.id };
   } catch (e) {
-    const error = e as Error;
-    return { message: `Error de red: ${error.message}`, success: false };
+    return { message: `Error: ${(e as Error).message}`, success: false };
   }
 }
 
 export async function updateCita(id: string, prevState: FormState, formData: FormData): Promise<FormState> {
   const rawData = Object.fromEntries(formData.entries());
-  console.log('updateCita - Raw form data:', rawData);
-  console.log('updateCita - Appointment ID:', id);
-  
   const validatedFields = appointmentSchema.safeParse(rawData);
 
   if (!validatedFields.success) {
-    console.log('updateCita - Validation errors:', validatedFields.error.flatten().fieldErrors);
     return {
       message: "Por favor, corrija los errores en el formulario.",
       errors: validatedFields.error.flatten().fieldErrors as Record<string, string>,
@@ -460,83 +365,135 @@ export async function updateCita(id: string, prevState: FormState, formData: For
   }
 
   try {
-    const dataToUpdate = { ...validatedFields.data, ID_Cita: id };
-    console.log('updateCita - Data to update:', dataToUpdate);
-    
-    const result = await postToActionAPI("updateCita", dataToUpdate);
-    console.log('updateCita - API response:', result);
+    await prisma.appointment.update({
+      where: { id },
+      data: {
+        fechaCita: new Date(validatedFields.data.Fecha_Cita),
+        horaInicio: validatedFields.data.Hora_Inicio,
+        horaFin: validatedFields.data.Hora_Fin,
+        motivoCita: validatedFields.data.Motivo_Cita,
+        idDoctor: validatedFields.data.ID_Doctor,
+        notasCita: validatedFields.data.Notas_Cita || null,
+        estadoCita: validatedFields.data.Estado_Cita,
+      },
+    });
 
-    if (result.status === "success") {
-      syncUpdateEvent({
-        ID_Cita: id,
-        ...validatedFields.data,
-      } as any).catch(() => {});
-      revalidatePath("/");
-      revalidatePath(`/pacientes/${validatedFields.data.ID_Paciente}`);
-      return { message: "Cita actualizada con éxito.", success: true, appointmentId: id };
-    } else {
-      console.log('updateCita - API returned error:', result);
-      return { message: result.message || "Error al actualizar la cita.", success: false };
-    }
+    syncUpdateEvent({
+      ID_Cita: id,
+      ...validatedFields.data,
+    } as any).catch(() => {});
+
+    revalidatePath("/");
+    revalidatePath(`/pacientes/${validatedFields.data.ID_Paciente}`);
+    return { message: "Cita actualizada con éxito.", success: true, appointmentId: id };
   } catch (e) {
-    const error = e as Error;
-    console.log('updateCita - Network error:', error);
-    return { message: `Error de red: ${error.message}`, success: false };
+    return { message: `Error: ${(e as Error).message}`, success: false };
   }
 }
 
 export async function deleteCita(id: string, patientId?: string): Promise<DeleteResult> {
   try {
-    const result = await postToActionAPI("deleteCita", { ID_Cita: id });
+    await prisma.appointment.delete({ where: { id } });
 
-    if (result.status === "success") {
-      syncDeleteEvent(id).catch(() => {});
-      revalidatePath("/");
-      if (patientId) {
-        revalidatePath(`/pacientes/${patientId}`);
-      }
-      return { success: true, message: "Cita eliminada correctamente." };
-    } else {
-      return { success: false, message: result.message || "Error al eliminar la cita." };
-    }
+    syncDeleteEvent(id).catch(() => {});
+
+    revalidatePath("/");
+    if (patientId) revalidatePath(`/pacientes/${patientId}`);
+    return { success: true, message: "Cita eliminada correctamente." };
   } catch (e) {
-    const error = e as Error;
-    return { success: false, message: `Error de red: ${error.message}` };
+    return { success: false, message: `Error: ${(e as Error).message}` };
   }
 }
 
-// --- FUNCIÓN PARA ACTUALIZAR CAMPOS INDIVIDUALES ---
+const historyFieldMap: Record<string, string> = {
+  Diagnostico: "diagnostico",
+  Tratamiento_Realizado: "tratamiento",
+  Prescripciones: "prescripciones",
+  Notas_Adicionales: "notas",
+  Costo_Tratamiento: "costoTratamiento",
+  Estado_Pago: "estadoPago",
+  Sexo: "sexo",
+  Estado_Civil: "estadoCivil",
+  Ocupacion: "ocupacion",
+  Escolaridad: "escolaridad",
+  Nombre_Padre: "nombrePadre",
+  Nombre_Madre: "nombreMadre",
+  Telefono_Contacto: "telefonoContacto",
+  Motivo_Consulta: "motivoConsulta",
+  Antecedentes_Personales: "antecedentesPersonales",
+};
+
+const appointmentFieldMap: Record<string, string> = {
+  Fecha_Cita: "fechaCita",
+  Hora_Inicio: "horaInicio",
+  Hora_Fin: "horaFin",
+  Motivo_Cita: "motivoCita",
+  ID_Doctor: "idDoctor",
+  Notas_Cita: "notasCita",
+  Estado_Cita: "estadoCita",
+};
+
 export async function updatePatientField(
-  recordId: string, 
-  fieldName: string, 
-  newValue: string, 
-  recordType: 'history' | 'appointment'
+  recordId: string,
+  fieldName: string,
+  newValue: string,
+  recordType: "history" | "appointment"
 ): Promise<{ success: boolean; message: string }> {
   try {
-    const result = await postToActionAPI('updateField', {
-      recordId,
-      fieldName,
-      newValue,
-      recordType
-    });
+    if (recordType === "history") {
+      const prismaField = historyFieldMap[fieldName];
+      if (!prismaField) return { success: false, message: `Campo desconocido: ${fieldName}` };
 
-    if (result.status === "success") {
-      if (fieldName === 'Estado_Cita' && recordType === 'appointment') {
-        postToActionAPI('getCitaById', { ID_Cita: recordId })
-          .then(appt => {
-            if (appt?.data) {
-              syncUpdateEvent({ ...appt.data, Estado_Cita: newValue });
-            }
-          })
-          .catch(() => {});
+      const updateData: any = {};
+      updateData[prismaField] =
+        fieldName === "Costo_Tratamiento"
+          ? Number(newValue)
+          : fieldName === "Telefono_Contacto"
+            ? String(newValue)
+            : newValue;
+
+      await prisma.clinicalHistory.update({
+        where: { id: recordId },
+        data: updateData,
+      });
+    } else if (recordType === "appointment") {
+      const prismaField = appointmentFieldMap[fieldName];
+      if (!prismaField) return { success: false, message: `Campo desconocido: ${fieldName}` };
+
+      const updateData: any = {};
+      updateData[prismaField] =
+        fieldName === "Fecha_Cita"
+          ? new Date(newValue)
+          : fieldName === "ID_Doctor"
+            ? String(newValue)
+            : newValue;
+
+      await prisma.appointment.update({
+        where: { id: recordId },
+        data: updateData,
+      });
+
+      if (fieldName === "Estado_Cita") {
+        const appointment = await prisma.appointment.findUnique({
+          where: { id: recordId },
+        });
+        if (appointment) {
+          syncUpdateEvent({
+            ID_Cita: recordId,
+            ID_Paciente: appointment.patientId,
+            Fecha_Cita: appointment.fechaCita.toISOString().split("T")[0],
+            Hora_Inicio: appointment.horaInicio || "",
+            Hora_Fin: appointment.horaFin || "",
+            Motivo_Cita: appointment.motivoCita || "",
+            Estado_Cita: newValue,
+          } as any).catch(() => {});
+        }
       }
-      return { success: true, message: "Campo actualizado correctamente." };
-    } else {
-      return { success: false, message: result.message || "Error al actualizar el campo." };
     }
+
+    return { success: true, message: "Campo actualizado correctamente." };
   } catch (e) {
-    const error = e as Error;
-    return { success: false, message: `Error de red: ${error.message}` };
+    return { success: false, message: `Error: ${(e as Error).message}` };
   }
 }
 
@@ -553,41 +510,67 @@ export async function updateHistorial(id: string, prevState: FormState, formData
   }
 
   try {
-    const dataToUpdate = { ...validatedFields.data, ID_Historial: id };
-    const result = await postToActionAPI("updateHistorial", dataToUpdate);
+    await prisma.clinicalHistory.update({
+      where: { id },
+      data: {
+        fechaHistorial: new Date(validatedFields.data.Fecha_Historial),
+        diagnostico: validatedFields.data.Diagnostico || null,
+        tratamiento: validatedFields.data.Tratamiento_Realizado || null,
+        prescripciones: validatedFields.data.Prescripciones || null,
+        notas: validatedFields.data.Notas_Adicionales || null,
+        costoTratamiento: validatedFields.data.Costo_Tratamiento
+          ? Number(validatedFields.data.Costo_Tratamiento)
+          : null,
+        estadoPago: validatedFields.data.Estado_Pago,
+        sexo: validatedFields.data.Sexo || null,
+        estadoCivil: validatedFields.data.Estado_Civil || null,
+        ocupacion: validatedFields.data.Ocupacion || null,
+        escolaridad: validatedFields.data.Escolaridad || null,
+        nombrePadre: validatedFields.data.Nombre_Padre || null,
+        nombreMadre: validatedFields.data.Nombre_Madre || null,
+        telefonoContacto: validatedFields.data.Telefono_Contacto || null,
+        motivoConsulta: validatedFields.data.Motivo_Consulta || null,
+        antecedentesPersonales: validatedFields.data.Antecedentes_Personales || null,
+      },
+    });
 
-    if (result.status === "success") {
-      revalidatePath("/");
-      revalidatePath(`/pacientes/${validatedFields.data.ID_Paciente}`);
-      return { message: "Historial clínico actualizado con éxito.", success: true, historyId: id };
-    } else {
-      return { message: result.message || "Error al actualizar el historial clínico.", success: false };
-    }
+    revalidatePath("/");
+    revalidatePath(`/pacientes/${validatedFields.data.ID_Paciente}`);
+    return { message: "Historial clínico actualizado con éxito.", success: true, historyId: id };
   } catch (e) {
-    const error = e as Error;
-    return { message: `Error de red: ${error.message}`, success: false };
+    return { message: `Error: ${(e as Error).message}`, success: false };
   }
 }
 
 export async function deleteHistorial(id: string): Promise<DeleteResult> {
   try {
-    // Primero obtener el historial para conocer el ID del paciente
-    const historialData = await postToActionAPI("getHistorialById", { ID_Historial: id });
-    const patientId = historialData?.data?.ID_Paciente;
-    
-    const result = await postToActionAPI("deleteHistorial", { ID_Historial: id });
+    const history = await prisma.clinicalHistory.findUnique({
+      where: { id },
+      select: { patientId: true },
+    });
 
-    if (result.status === "success") {
-      revalidatePath("/");
-      if (patientId) {
-        revalidatePath(`/pacientes/${patientId}`);
-      }
-      return { success: true, message: "Historial clínico eliminado correctamente." };
-    } else {
-      return { success: false, message: result.message || "Error al eliminar el historial clínico." };
-    }
+    await prisma.clinicalHistory.delete({ where: { id } });
+
+    revalidatePath("/");
+    if (history?.patientId) revalidatePath(`/pacientes/${history.patientId}`);
+    return { success: true, message: "Historial clínico eliminado correctamente." };
   } catch (e) {
-    const error = e as Error;
-    return { success: false, message: `Error de red: ${error.message}` };
+    return { success: false, message: `Error: ${(e as Error).message}` };
   }
+}
+
+export async function updateAppointmentField(
+  recordId: string,
+  fieldName: string,
+  newValue: string
+): Promise<{ success: boolean; message: string }> {
+  return updatePatientField(recordId, fieldName, newValue, "appointment");
+}
+
+export async function updateHistoryField(
+  recordId: string,
+  fieldName: string,
+  newValue: string
+): Promise<{ success: boolean; message: string }> {
+  return updatePatientField(recordId, fieldName, newValue, "history");
 }

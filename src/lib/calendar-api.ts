@@ -1,8 +1,9 @@
 import { google } from "googleapis";
 import type { Appointment } from "@/types";
+import { prisma } from "@/lib/db";
 
 const CALENDAR_ID = process.env.NEXT_PUBLIC_GOOGLE_CALENDAR_ID;
-const SCRIPT_URL = process.env.NEXT_PUBLIC_API_URL;
+const TIMEZONE = process.env.TIMEZONE || "America/Mexico_City";
 const SYNC_MARKER = "DentalFlow|";
 
 let calendarClient: ReturnType<typeof google.calendar> | null = null;
@@ -26,14 +27,12 @@ function initCalendar() {
 }
 
 async function getPatientName(patientId: string): Promise<string> {
-  if (!SCRIPT_URL) return "Paciente";
   try {
-    const res = await fetch(
-      `${SCRIPT_URL}?action=getPacienteById&id=${encodeURIComponent(patientId)}`
-    );
-    const json = await res.json();
-    const p = json.data || json;
-    if (p?.Nombres && p?.Apellidos) return `${p.Nombres} ${p.Apellidos}`;
+    const patient = await prisma.patient.findUnique({
+      where: { id: patientId },
+      select: { nombres: true, apellidos: true },
+    });
+    if (patient) return `${patient.nombres} ${patient.apellidos}`;
   } catch {
     console.error("Error fetching patient name for calendar sync");
   }
@@ -88,11 +87,11 @@ export async function createCalendarEvent(
         description: parseEventDescription(appointment, patientName),
         start: {
           dateTime: buildEventTime(appointment.Fecha_Cita, appointment.Hora_Inicio),
-          timeZone: "America/Lima",
+          timeZone: TIMEZONE,
         },
         end: {
           dateTime: buildEventTime(appointment.Fecha_Cita, appointment.Hora_Fin),
-          timeZone: "America/Lima",
+          timeZone: TIMEZONE,
         },
         status: "confirmed",
       },
@@ -122,11 +121,11 @@ export async function updateCalendarEvent(
         description: parseEventDescription(appointment, patientName),
         start: {
           dateTime: buildEventTime(appointment.Fecha_Cita, appointment.Hora_Inicio),
-          timeZone: "America/Lima",
+          timeZone: TIMEZONE,
         },
         end: {
           dateTime: buildEventTime(appointment.Fecha_Cita, appointment.Hora_Fin),
-          timeZone: "America/Lima",
+          timeZone: TIMEZONE,
         },
         status: appointment.Estado_Cita === "Cancelada" ? "cancelled" : "confirmed",
       },

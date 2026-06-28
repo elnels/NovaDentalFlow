@@ -162,7 +162,7 @@ When the user skips Historial Clínico during registration, the system creates a
 
 ## Migration Phases
 
-### Phase 0 — Docker + Prisma Setup
+### Phase 0 — Docker + Prisma Setup ✅
 1. Create `docker-compose.yml` in project root
 2. Add `DATABASE_URL` + `DB_PASSWORD` to `.env.local`
 3. `npm install prisma @prisma/client`
@@ -174,12 +174,12 @@ When the user skips Historial Clínico during registration, the system creates a
 9. Create `prisma/seed.ts` — export Google Sheets data → import into PostgreSQL
 10. `npx prisma db seed` — run seed
 
-### Phase 1 — Replace Backend (app code unchanged)
+### Phase 1 — Replace Backend ✅
 1. Rewrite `src/lib/actions.ts` — replace all `postToActionAPI()` calls with Prisma queries
-2. Update `src/lib/api.ts` — replace proxy calls with direct DB calls (or keep server actions)
-3. Remove proxy routes (`/api/proxy/`, `/api/pacientes/`)
-4. Archive `codigo.gs` (no longer needed)
-5. Test all existing CRUD still works
+2. Rewrite `src/app/api/proxy/route.ts` — handle GET/POST actions with Prisma instead of forwarding to Google Sheets
+3. Remove `src/app/api/pacientes/route.ts` — redundant
+4. Rewrite `src/lib/calendar-api.ts` — `getPatientName()` now uses Prisma instead of Google Script URL, timezone configurable via `TIMEZONE` env var
+5. All existing CRUD works against PostgreSQL
 
 ### Phase 2 — Build Clinical Details (Multi-step HC Wizard)
 1. Extend Prisma schema with `clinical_details` + `family_conditions`
@@ -196,23 +196,23 @@ When the user skips Historial Clínico during registration, the system creates a
 
 ## Relevant Files
 
-| File | Role in Migration |
+| File | Status |
 |---|---|
-| `docker-compose.yml` | To be created |
-| `.env.local` | Add `DATABASE_URL` |
-| `prisma/schema.prisma` | To be created |
-| `src/lib/db.ts` | To be created — Prisma singleton |
-| `prisma/seed.ts` | To be created |
-| `src/lib/actions.ts` | Rewrite to use Prisma |
-| `src/lib/api.ts` | Deprecate proxy calls |
-| `src/app/api/proxy/route.ts` | Remove after migration |
-| `src/app/api/pacientes/route.ts` | Remove after migration |
-| `codigo.gs` | Archive after migration |
-| `src/types/index.ts` | Align with new schema |
-| `src/components/sequential-workflow.tsx` | Add 6-step HC sub-wizard |
-| `src/components/medical-history-form.tsx` | Replace with multi-step wizard |
-| `src/components/historial-table.tsx` | Becomes "Consultas" tab |
-| `src/app/pacientes/[id]/page.tsx` | Add tab/accordion layout |
+| `docker-compose.yml` | ✅ PostgreSQL 16 container |
+| `.env.local` | ✅ `DATABASE_URL`, `DB_PASSWORD`, `TIMEZONE` |
+| `prisma/schema.prisma` | ✅ 6 models with UUID PKs |
+| `prisma/migrations/` | ✅ Initial migration |
+| `prisma/seed.ts` | ✅ Data from Google Sheets → PostgreSQL |
+| `src/lib/db.ts` | ✅ Prisma 7 singleton with adapter-pg |
+| `src/lib/actions.ts` | ✅ All server actions use Prisma directly |
+| `src/lib/api.ts` | ✅ Still calls proxy GET (unchanged) |
+| `src/lib/calendar-api.ts` | ✅ Uses Prisma for patient lookups, configurable timezone |
+| `src/app/api/proxy/route.ts` | ✅ Handles all actions with Prisma |
+| `src/app/api/pacientes/route.ts` | ❌ Removed (redundant) |
+| `src/types/index.ts` | ⏳ Update in Phase 2 |
+| `src/components/sequential-workflow.tsx` | ⏳ Add 6-step HC sub-wizard in Phase 2 |
+| `src/components/medical-history-form.tsx` | ⏳ Replace with multi-step wizard in Phase 2 |
+| `src/app/pacientes/[id]/page.tsx` | ⏳ Add tab/accordion layout in Phase 2 |
 
 ---
 
@@ -226,3 +226,8 @@ When the user skips Historial Clínico during registration, the system creates a
 | 2026-06-28 | Google Calendar sync stays as-is (independent of the data layer) |
 | 2026-06-28 | PostgreSQL runs in Docker on Windows, not in WSL |
 | 2026-06-28 | Development machine: Windows (Next.js), WSL (bash/git) |
+| 2026-06-28 | Start clean — no backward-compatible ID mapping needed; UUIDs are the single ID format |
+| 2026-06-28 | Server actions use Prisma directly (no HTTP roundtrip through proxy) |
+| 2026-06-28 | Proxy route still handles GET data fetching for client-side `api.ts` |
+| 2026-06-28 | Google Calendar timezone set via `TIMEZONE` env var (default America/Mexico_City) |
+| 2026-06-28 | Patient name lookup in calendar sync uses Prisma, not Google Scripts |

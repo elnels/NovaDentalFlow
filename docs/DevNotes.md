@@ -119,6 +119,7 @@ Added Sexo field (Masculino/Femenino) to Historial Clínico:
 | `default-doctor` | ✅ | Complete |
 | `add-sexo-field` | ✅ | Complete |
 | `historia-clinica` | ✅ | Complete |
+| `DBMigration` | ❌ | Phase 0+1 done, awaiting Phase 2 |
 
 ### 11. `historial-clinico-new-fields` (reverted)
 Experimented with adding 9 new fields to Historial Clínico (Sexo, Estado Civil, Ocupación, Escolaridad, datos de padres, Motivo Consulta, Antecedentes Personales grid). Required Apps Script changes failed to deploy — reverted completely.
@@ -200,6 +201,24 @@ All 8 fields (Estado_Civil + 7 from Chunk 4) are now saving to the sheet correct
 #### Verification
 - `debugHeaders` + `debugSheetData` functions added to `src/lib/api.ts`
 - Endpoint `/api/debug-headers` confirms sheet columns match discovered layout
+
+### 14. `DBMigration` branch — Phase 0 & 1 (not merged)
+Complete data layer migration from Google Sheets to PostgreSQL.
+
+**Phase 0** — Infrastructure:
+- `docker-compose.yml` for PostgreSQL 16 in Docker
+- Prisma 7 with 6 models (UUID PKs + serial_num)
+- `src/lib/db.ts` — Prisma singleton with `@prisma/adapter-pg`
+- `prisma/seed.ts` — migrated 30 patients, 14 appointments, 20 history records
+
+**Phase 1** — Backend rewrite:
+- `src/lib/actions.ts`: all `postToActionAPI()` calls replaced with direct Prisma queries
+- `src/app/api/proxy/route.ts`: now handles all actions with Prisma instead of forwarding to Google Scripts
+- `src/app/api/pacientes/route.ts`: removed (redundant)
+- `src/lib/calendar-api.ts`: `getPatientName()` uses Prisma instead of Google Script URL; timezone configurable via `TIMEZONE` env var (default `America/Mexico_City`)
+- All CRUD operations verified working against PostgreSQL
+
+**Key lesson**: Prisma 7 uses a completely different config model than v6 — no `url` in schema, requires driver adapters (`@prisma/adapter-pg`), and `prisma.config.ts` for configuration. The migration `seed` config goes under `migrations.seed`.
 
 ## Other Tasks
 - Fixed `JSX.IntrinsicElements` error by running `npm install`
