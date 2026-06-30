@@ -8,6 +8,7 @@ import { Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -40,6 +41,10 @@ const patientSchema = z.object({
   estadoCivil: z.string().optional().or(z.literal("")),
   ocupacion: z.string().optional().or(z.literal("")),
   escolaridad: z.string().optional().or(z.literal("")),
+  nombrePadre: z.string().optional().or(z.literal("")),
+  nombreMadre: z.string().optional().or(z.literal("")),
+  telefonoPadre: z.string().optional().or(z.literal("")),
+  telefonoMadre: z.string().optional().or(z.literal("")),
 });
 
 
@@ -76,6 +81,7 @@ export function PatientForm({ action, initialData, onSuccess }: PatientFormProps
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [state, setState] = useState<FormState>({ message: "", success: false });
+  const [esMenorEdad, setEsMenorEdad] = useState(false);
 
   // Función para limpiar el estado de error
   const clearErrorState = () => {
@@ -96,6 +102,10 @@ export function PatientForm({ action, initialData, onSuccess }: PatientFormProps
       estadoCivil: "",
       ocupacion: "",
       escolaridad: "",
+      nombrePadre: "",
+      nombreMadre: "",
+      telefonoPadre: "",
+      telefonoMadre: "",
     },
   });
 
@@ -333,6 +343,75 @@ export function PatientForm({ action, initialData, onSuccess }: PatientFormProps
                 </FormItem>
             )}
             />
+            <div className="border rounded-lg p-4 space-y-3">
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="esMenorEdad"
+                  checked={esMenorEdad}
+                  onCheckedChange={(checked) => setEsMenorEdad(checked === true)}
+                />
+                <label htmlFor="esMenorEdad" className="text-sm font-medium cursor-pointer select-none">
+                  Si es menor de Edad
+                </label>
+                <input type="hidden" name="esMenorEdad" value={esMenorEdad ? "true" : ""} />
+              </div>
+              {esMenorEdad && (
+                <div className="space-y-3 pl-6 border-l-2 border-primary/30">
+                  <FormField
+                    control={form.control}
+                    name="nombrePadre"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Nombre del Padre</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Nombre del padre" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="telefonoPadre"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Teléfono del Padre</FormLabel>
+                        <FormControl>
+                          <Input placeholder="+51 987654321" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="nombreMadre"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Nombre de la Madre</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Nombre de la madre" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="telefonoMadre"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Teléfono de la Madre</FormLabel>
+                        <FormControl>
+                          <Input placeholder="+51 987654321" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              )}
+            </div>
             <SubmitButton isLoading={isLoading} />
         </form>
       </div>

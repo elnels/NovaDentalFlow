@@ -74,6 +74,10 @@ const patientSchema = z.object({
   estadoCivil: z.string().optional().or(z.literal("")),
   ocupacion: z.string().optional().or(z.literal("")),
   escolaridad: z.string().optional().or(z.literal("")),
+  nombrePadre: z.string().optional().or(z.literal("")),
+  nombreMadre: z.string().optional().or(z.literal("")),
+  telefonoPadre: z.string().optional().or(z.literal("")),
+  telefonoMadre: z.string().optional().or(z.literal("")),
 });
 
 const appointmentSchema = z.object({
@@ -97,8 +101,6 @@ const medicalHistorySchema = z.object({
   notas: z.string().optional().or(z.literal("")),
   costoTratamiento: z.string().optional().or(z.literal("")),
   estadoPago: z.enum(["Pendiente", "Pagado", "Parcial", "Cancelado"], { required_error: "El estado de pago es requerido"}),
-  nombrePadre: z.string().optional().or(z.literal("")),
-  nombreMadre: z.string().optional().or(z.literal("")),
   telefonoContacto: z.string().optional().or(z.literal("")),
   motivoConsulta: z.string().optional().or(z.literal("")),
   antecedentesPersonales: z.string().optional().or(z.literal("")),
@@ -143,6 +145,10 @@ export async function addPatient(prevState: FormState, formData: FormData): Prom
         estadoCivil: validatedFields.data.estadoCivil || null,
         ocupacion: validatedFields.data.ocupacion || null,
         escolaridad: validatedFields.data.escolaridad || null,
+        nombrePadre: validatedFields.data.nombrePadre || null,
+        nombreMadre: validatedFields.data.nombreMadre || null,
+        telefonoPadre: validatedFields.data.telefonoPadre || null,
+        telefonoMadre: validatedFields.data.telefonoMadre || null,
       },
     });
 
@@ -181,6 +187,10 @@ export async function updatePatient(id: string, prevState: FormState, formData: 
         estadoCivil: validatedFields.data.estadoCivil || null,
         ocupacion: validatedFields.data.ocupacion || null,
         escolaridad: validatedFields.data.escolaridad || null,
+        nombrePadre: validatedFields.data.nombrePadre || null,
+        nombreMadre: validatedFields.data.nombreMadre || null,
+        telefonoPadre: validatedFields.data.telefonoPadre || null,
+        telefonoMadre: validatedFields.data.telefonoMadre || null,
       },
     });
 
@@ -339,8 +349,6 @@ export async function addHistorial(prevState: FormState, formData: FormData): Pr
           ? Number(validatedFields.data.costoTratamiento)
           : null,
         estadoPago: validatedFields.data.estadoPago,
-        nombrePadre: validatedFields.data.nombrePadre || null,
-        nombreMadre: validatedFields.data.nombreMadre || null,
         telefonoContacto: validatedFields.data.telefonoContacto || null,
         motivoConsulta: validatedFields.data.motivoConsulta || null,
         antecedentesPersonales: validatedFields.data.antecedentesPersonales || null,
@@ -380,8 +388,6 @@ export async function addHistorialFromObject(historialData: any): Promise<FormSt
           ? Number(validatedFields.data.costoTratamiento)
           : null,
         estadoPago: validatedFields.data.estadoPago,
-        nombrePadre: validatedFields.data.nombrePadre || null,
-        nombreMadre: validatedFields.data.nombreMadre || null,
         telefonoContacto: validatedFields.data.telefonoContacto || null,
         motivoConsulta: validatedFields.data.motivoConsulta || null,
         antecedentesPersonales: validatedFields.data.antecedentesPersonales || null,

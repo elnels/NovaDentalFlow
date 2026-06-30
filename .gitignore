@@ -42,8 +42,8 @@ next-env.d.ts
 .env.local
 gcp-service-account-key.json
 
-# database dumps
-*.sql
+# database dumps (root level only, not prisma migrations)
+/*.sql
 
 # firebase
 firebase-debug.log

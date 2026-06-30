@@ -39,8 +39,6 @@ const medicalHistorySchema = z.object({
   estadoPago: z.enum(["Pendiente", "Pagado", "Parcial"], {
     required_error: "El estado de pago es requerido",
   }),
-  nombrePadre: z.string().optional().or(z.literal("")),
-  nombreMadre: z.string().optional().or(z.literal("")),
   telefonoContacto: z.string().optional().or(z.literal("")),
   motivoConsulta: z.string().optional().or(z.literal("")),
   antecedentesPersonales: z.string().optional().or(z.literal("")),
@@ -100,8 +98,6 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
             notas: initialData?.notas || "",
             costoTratamiento: initialData?.costoTratamiento || "",
             estadoPago: initialData?.estadoPago || "Pendiente",
-            nombrePadre: initialData?.nombrePadre || "",
-            nombreMadre: initialData?.nombreMadre || "",
             telefonoContacto: initialData?.telefonoContacto || "",
             motivoConsulta: initialData?.motivoConsulta || "",
             antecedentesPersonales: initialData?.antecedentesPersonales || "",
@@ -120,8 +116,6 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
                 notas: initialData.notas || "",
                 costoTratamiento: initialData.costoTratamiento || "",
                 estadoPago: initialData.estadoPago || "Pendiente",
-                nombrePadre: initialData.nombrePadre || "",
-                nombreMadre: initialData.nombreMadre || "",
                 telefonoContacto: initialData.telefonoContacto || "",
                 motivoConsulta: initialData.motivoConsulta || "",
                 antecedentesPersonales: initialData.antecedentesPersonales || "",
@@ -257,35 +251,6 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
                             </FormItem>
                         )}
                     />
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <FormField
-                            control={form.control}
-                            name="nombrePadre"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Nombre del Padre</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="Nombre completo del padre..." {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="nombreMadre"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Nombre de la Madre</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="Nombre completo de la madre..." {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    </div>
 
                     <FormField
                         control={form.control}

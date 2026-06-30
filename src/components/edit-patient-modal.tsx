@@ -81,6 +81,10 @@ export function EditPatientModal({
     estadoCivil: patient.estadoCivil,
     ocupacion: patient.ocupacion,
     escolaridad: patient.escolaridad,
+    nombrePadre: patient.nombrePadre,
+    nombreMadre: patient.nombreMadre,
+    telefonoPadre: patient.telefonoPadre,
+    telefonoMadre: patient.telefonoMadre,
   };
 
   return (

@@ -440,6 +440,10 @@ export default function PatientDetailPage({
                   <InfoItem icon={Smartphone} label="Teléfono Alternativo" value={patient.telefonoAlternativo} />
                   <InfoItem icon={Mail} label="Email" value={patient.email} />
                   <InfoItem icon={Home} label="Dirección" value={patient.direccion || "No registrada"} />
+                  {patient.nombrePadre && <InfoItem icon={User} label="Nombre del Padre" value={patient.nombrePadre} />}
+                  {patient.telefonoPadre && <InfoItem icon={Phone} label="Teléfono del Padre" value={patient.telefonoPadre} />}
+                  {patient.nombreMadre && <InfoItem icon={User} label="Nombre de la Madre" value={patient.nombreMadre} />}
+                  {patient.telefonoMadre && <InfoItem icon={Phone} label="Teléfono de la Madre" value={patient.telefonoMadre} />}
                   <InfoItem icon={FileClock} label="Fecha de Registro" value={format(parseISO(patient.fechaRegistro), "dd/MM/yyyy", { locale: es })} />
               </CardContent>
             </Card>

@@ -12,6 +12,10 @@ export interface Patient {
   estadoCivil?: string;
   ocupacion?: string;
   escolaridad?: string;
+  nombrePadre?: string;
+  nombreMadre?: string;
+  telefonoPadre?: string;
+  telefonoMadre?: string;
   fechaRegistro: string;
   estado: 'Activo' | 'Inactivo';
   historialClinico: ClinicalHistory[];
@@ -34,8 +38,6 @@ export interface ClinicalHistory {
   notas: string;
   costoTratamiento: string;
   estadoPago: string;
-  nombrePadre?: string;
-  nombreMadre?: string;
   telefonoContacto?: string;
   motivoConsulta?: string;
   antecedentesPersonales?: string;
