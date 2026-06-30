@@ -30,8 +30,7 @@ Utiliza **PostgreSQL como base de datos** corriendo en Docker para un rendimient
 *   **Librería UI:** [React](https://reactjs.org/)
 *   **Estilos:** [Tailwind CSS](https://tailwindcss.com/)
 *   **Base de Datos:** [PostgreSQL](https://www.postgresql.org/) via [Docker](https://www.docker.com/)
-*   **Despliegue Principal:** [GitHub](https://github.com/)
-*   **Despliegue:** [Vercel](https://vercel.com/)
+*   **Alojamiento:** Local con Docker
 
 ---
 
@@ -98,9 +97,9 @@ Sigue estos pasos para tener tu propia versión de DentalFlow funcionando en min
         git push
         ```
 
-### **Paso 3: Desplegar localmente (sin Vercel)**
+### **Paso 3: Ejecutar el Proyecto Localmente**
 
-Si prefieres ejecutar DentalFlow en tu máquina local en lugar de desplegar en Vercel, sigue estos pasos:
+Sigue estos pasos para ejecutar DentalFlow en tu máquina local:
 
 1.  **Crear el archivo de entorno**
 
