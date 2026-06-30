@@ -95,10 +95,10 @@ export function PatientsTable({
 
       const searchTerm = query.toLowerCase();
       const filtered = patientsList.filter(patient => {
-        const fullName = `${patient.Nombres || ''} ${patient.Apellidos || ''}`.toLowerCase();
-        const phone = String(patient.Telefono_Principal || '').toLowerCase();
-        const email = String(patient.Email || '').toLowerCase();
-        const patientId = String(patient.ID_Paciente || '').toLowerCase();
+        const fullName = `${patient.nombres || ''} ${patient.apellidos || ''}`.toLowerCase();
+        const phone = String(patient.telefonoPrincipal || '').toLowerCase();
+        const email = String(patient.email || '').toLowerCase();
+        const patientId = String(patient.id || '').toLowerCase();
         
         return fullName.includes(searchTerm) || 
                phone.includes(searchTerm) || 
@@ -350,7 +350,7 @@ export function PatientsTable({
                 <TableBody>
                   {paginatedPatients.map((patient, index) => (
                     <PatientRow 
-                      key={patient.ID_Paciente} 
+                      key={patient.id} 
                       patient={patient} 
                       isEven={index % 2 === 0}
                       onPatientSelect={onPatientSelect}
@@ -543,13 +543,13 @@ const PatientRow = memo(({ patient }: { patient: Patient }) => {
       <TableCell className="py-4">
         <div className="flex items-center gap-4">
           <Avatar className="h-12 w-12 ring-2 ring-white shadow-md">
-            <AvatarFallback className={`${getAvatarColor(patient.Nombres, patient.Apellidos)} text-white font-bold text-lg`}>
-              {patient.Nombres?.[0]}{patient.Apellidos?.[0]}
+            <AvatarFallback className={`${getAvatarColor(patient.nombres, patient.apellidos)} text-white font-bold text-lg`}>
+              {patient.nombres?.[0]}{patient.apellidos?.[0]}
             </AvatarFallback>
           </Avatar>
           <div className="flex-1">
-            <p className="font-semibold text-gray-900 text-base">{`${patient.Nombres} ${patient.Apellidos}`}</p>
-              <p className="text-sm text-gray-500 font-medium">ID: {patient.ID_Paciente}</p>
+            <p className="font-semibold text-gray-900 text-base">{`${patient.nombres} ${patient.apellidos}`}</p>
+              <p className="text-sm text-gray-500 font-medium">ID: {patient.id}</p>
           </div>
         </div>
       </TableCell>
@@ -557,11 +557,11 @@ const PatientRow = memo(({ patient }: { patient: Patient }) => {
         <div className="space-y-2">
           <div className="flex items-center gap-2 text-sm bg-green-50 px-3 py-1 rounded-full">
             <Phone className="h-4 w-4 text-green-600" />
-            <span className="font-medium text-green-800">{patient.Telefono_Principal}</span>
+            <span className="font-medium text-green-800">{patient.telefonoPrincipal}</span>
           </div>
           <div className="flex items-center gap-2 text-sm bg-blue-50 px-3 py-1 rounded-full">
             <Mail className="h-4 w-4 text-blue-600" />
-            <span className="font-medium text-blue-800 truncate max-w-40">{patient.Email}</span>
+            <span className="font-medium text-blue-800 truncate max-w-40">{patient.email}</span>
           </div>
         </div>
       </TableCell>
@@ -592,7 +592,7 @@ const PatientRow = memo(({ patient }: { patient: Patient }) => {
         </div>
       </TableCell>
       <TableCell className="py-4">
-        <Link href={`/pacientes/${patient.ID_Paciente}`}>
+        <Link href={`/pacientes/${patient.id}`}>
           <Button 
             variant="outline" 
             size="sm" 

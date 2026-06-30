@@ -38,7 +38,7 @@ export function EditPatientModal({
 
   const handleSuccess = () => {
     setOpen(false);
-    handlePatientSuccess(patient.ID_Paciente, 'update');
+    handlePatientSuccess(patient.id, 'update');
     onDataUpdate?.();
   };
 
@@ -47,13 +47,13 @@ export function EditPatientModal({
     setOpen(open);
   };
 
-  const updatePatientWithId = updatePatient.bind(null, patient.ID_Paciente);
+  const updatePatientWithId = updatePatient.bind(null, patient.id);
 
   const initialData = {
-    nombres: patient.Nombres,
-    apellidos: patient.Apellidos,
+    nombres: patient.nombres,
+    apellidos: patient.apellidos,
     fechaNacimiento: (() => {
-      const dateField = patient.Fecha_Nacimiento;
+      const dateField = patient.fechaNacimiento;
       if (!dateField || dateField === 'N/A') return '';
       try {
         // Si ya está en formato YYYY-MM-DD, devolverlo tal como está
@@ -73,11 +73,11 @@ export function EditPatientModal({
         return '';
       }
     })(),
-    telefonoPrincipal: patient.Telefono_Principal,
-    telefonoAlternativo: patient.Telefono_Alternativo,
-    email: patient.Email,
-    direccion: patient.Direccion,
-    genero: patient.Genero,
+    telefonoPrincipal: patient.telefonoPrincipal,
+    telefonoAlternativo: patient.telefonoAlternativo,
+    email: patient.email,
+    direccion: patient.direccion,
+    genero: patient.genero,
   };
 
   return (
