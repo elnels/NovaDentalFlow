@@ -205,11 +205,11 @@ When the user skips Historial Clínico during registration, the system creates a
 | `prisma/seed.ts` | ✅ Data from Google Sheets → PostgreSQL |
 | `src/lib/db.ts` | ✅ Prisma 7 singleton with adapter-pg |
 | `src/lib/actions.ts` | ✅ All server actions use Prisma directly |
-| `src/lib/api.ts` | ✅ Still calls proxy GET (unchanged) |
-| `src/lib/calendar-api.ts` | ✅ Uses Prisma for patient lookups, configurable timezone |
-| `src/app/api/proxy/route.ts` | ✅ Handles all actions with Prisma |
+| `src/lib/api.ts` | ✅ Calls proxy GET (returns raw Prisma data) |
+| `src/lib/calendar-api.ts` | ✅ Uses Prisma for patient lookups, configurable timezone, camelCase fields |
+| `src/app/api/proxy/route.ts` | ✅ Returns raw Prisma data (GET only); POST handlers removed (dead code) |
 | `src/app/api/pacientes/route.ts` | ❌ Removed (redundant) |
-| `src/types/index.ts` | ⏳ Update in Phase 2 |
+| `src/types/index.ts` | ✅ Updated to camelCase — `Patient`, `ClinicalHistory`, `Appointment` interfaces |
 | `src/components/sequential-workflow.tsx` | ⏳ Add 6-step HC sub-wizard in Phase 2 |
 | `src/components/medical-history-form.tsx` | ⏳ Replace with multi-step wizard in Phase 2 |
 | `src/app/pacientes/[id]/page.tsx` | ⏳ Add tab/accordion layout in Phase 2 |
@@ -231,3 +231,7 @@ When the user skips Historial Clínico during registration, the system creates a
 | 2026-06-28 | Proxy route still handles GET data fetching for client-side `api.ts` |
 | 2026-06-28 | Google Calendar timezone set via `TIMEZONE` env var (default America/Mexico_City) |
 | 2026-06-28 | Patient name lookup in calendar sync uses Prisma, not Google Scripts |
+| 2026-06-30 | All field names migrated from Google Sheets underscore style to Prisma-native camelCase across the entire stack |
+| 2026-06-30 | `patientToOld()` / `historyToOld()` / `appointmentToOld()` transforms deleted — proxy GET returns raw Prisma data |
+| 2026-06-30 | All 12 POST handlers in `/api/proxy` deleted — server actions handle all mutations directly |
+| 2026-06-30 | `PatientFormData` type removed — each form self-types from its own Zod schema via `z.infer<>` |

@@ -220,6 +220,27 @@ Complete data layer migration from Google Sheets to PostgreSQL.
 
 **Key lesson**: Prisma 7 uses a completely different config model than v6 — no `url` in schema, requires driver adapters (`@prisma/adapter-pg`), and `prisma.config.ts` for configuration. The migration `seed` config goes under `migrations.seed`.
 
+### 15. `refactor/camelcase-write-path` (merged to main)
+Renamed all write-path fields from Google Sheets underscore style to Prisma-native camelCase:
+- **`src/lib/actions.ts`**: All 3 Zod schemas (`patientSchema`, `appointmentSchema`, `medicalHistorySchema`) + Prisma `data` mappings → camelCase
+- **`src/components/patient-form.tsx`**: Zod schema, `defaultValues`, all `FormField name` props → camelCase
+- **`src/components/appointment-form.tsx`**: Same — all field names → camelCase
+- **`src/components/medical-history-form.tsx`**: Same — all field names → camelCase
+- **`src/lib/calendar-api.ts`**: All `Appointment` field refs in Google Calendar sync functions → camelCase
+- **`src/app/pacientes/[id]/page.tsx`**: Added old→new mapping in `handleAddCita`/`handleAddHistorial` callers (bridging table components still sending old names)
+- **`src/components/edit-patient-modal.tsx`**: Removed `PatientFormData` import; `initialData` builds camelCase keys from old-format GET data
+- **Architecture**: Server-action-first — write path updated before read path
+
+### 16. `refactor/camelcase-read-path` (merged to main)
+Renamed read-path fields and eliminated legacy transform layer:
+- **`src/types/index.ts`**: `Patient`, `ClinicalHistory`, `Appointment` interfaces → camelCase; removed `PatientFormData` (each form self-types from its Zod schema)
+- **`src/app/api/proxy/route.ts`**: Deleted `patientToOld()`, `historyToOld()`, `appointmentToOld()` transforms; deleted all 12 dead POST handlers (468→106 lines); GET returns raw Prisma data
+- **`src/components/citas-table.tsx`**: All field refs (data, state, string args, spread keys) → camelCase
+- **`src/components/historial-table.tsx`**: Same — all field refs → camelCase
+- **`src/components/patients-table.tsx`**: `patient.field` refs → camelCase
+- **`src/app/pacientes/[id]/page.tsx`**: Removed type import; all `patient.field` refs → camelCase; simplified `handleAddCita`/`handleAddHistorial` (table components now send camelCase)
+- **`src/components/edit-patient-modal.tsx`**: `patient.field` refs → camelCase
+
 ## Other Tasks
 - Fixed `JSX.IntrinsicElements` error by running `npm install`
 - Confirmed no unit test framework exists in the project
