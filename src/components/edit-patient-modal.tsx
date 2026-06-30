@@ -91,7 +91,7 @@ export function EditPatientModal({
   return (
     <Dialog open={open} onOpenChange={handleModalClose}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Editar Datos del Paciente</DialogTitle>
           <DialogDescription>

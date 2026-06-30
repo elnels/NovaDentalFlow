@@ -305,6 +305,29 @@ Added "Si es menor de Edad" checkbox to patient registration and moved parent fi
 **Fixed `.gitignore`:**
 - `*.sql` → `/*.sql` so Prisma migration files aren't blocked
 
+### 8. `esMenorBool` (merged to main)
+Persisted "Si es menor de Edad" checkbox state so it pre-checks correctly when editing a patient.
+
+**Schema + Migration:**
+- `Patient`: added `esMenor Boolean @default(false) @map("es_menor")`
+- Migration: `20260630225025_add_es_menor_to_patient`
+
+**Registration form (`patient-form.tsx`):**
+- Checkbox reads `initialData.esMenor` instead of hardcoded `false`
+- Hidden input name changed from `esMenorEdad` → `esMenor` to match Zod schema
+
+**Server actions (`actions.ts`):**
+- `patientSchema`: added `esMenor: z.string().optional()`
+- `addPatient` / `updatePatient`: convert `esMenor === "true"` to boolean for Prisma
+
+**Edit modal (`edit-patient-modal.tsx`):**
+- Passes `patient.esMenor` to `initialData.esMenor`
+- Added overflow scroll and widened to `max-w-4xl`
+
+**Fixed edit modal layout:**
+- Added `max-h-[85vh] overflow-y-auto` for scrolling support
+- Widened from `sm:max-w-[425px]` to `max-w-4xl` to match registro-completo form
+
 ## Other Tasks
 - Fixed `JSX.IntrinsicElements` error by running `npm install`
 - Confirmed no unit test framework exists in the project

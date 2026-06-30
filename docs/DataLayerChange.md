@@ -62,6 +62,11 @@ Replaces the `Pacientes` sheet.
 | estado_civil | TEXT? | Moved from `clinical_history` |
 | ocupacion | TEXT? | Moved from `clinical_history` |
 | escolaridad | TEXT? | Moved from `clinical_history` |
+| nombre_padre | TEXT? | Moved from `clinical_history`, esMenosConditional |
+| nombre_madre | TEXT? | Moved from `clinical_history`, esMenosConditional |
+| telefono_padre | TEXT? | Added in esMenosConditional |
+| telefono_madre | TEXT? | Added in esMenosConditional |
+| es_menor | BOOLEAN | Default false, esMenorBool branch |
 | estado | TEXT | Default `'Activo'` |
 | fecha_registro | TIMESTAMPTZ | Default `now()` |
 
@@ -97,8 +102,6 @@ Per-visit clinical records. Replaces `Historial_Clinico` sheet + new fields (HC5
 | notas | TEXT? | |
 | costo_tratamiento | DECIMAL? | |
 | estado_pago | TEXT? | |
-| nombre_padre | TEXT? | |
-| nombre_madre | TEXT? | |
 | telefono_contacto | TEXT? | |
 | motivo_consulta | TEXT? | |
 | antecedentes_personales | TEXT? | |
@@ -240,3 +243,4 @@ When the user skips Historial Clínico during registration, the system creates a
 | 2026-06-30 | HC1 implemented as review-only step (Fecha auto + odontólogo editable + read-only patient data). Workflow changed to: Registro → HC1 → Cita → Completed. |
 | 2026-06-30 | Proxy route added `mapPatientFields()` to rename Prisma field names (`appointments` → `citas`, `clinicalHistory` → `historialClinico`) for frontend compatibility. Hidden `<input>` elements added to shadcn Select components (sexo, estadoCivil) so their values appear in FormData. |
 | 2026-06-30 | Added "Si es menor de Edad" checkbox to patient registration. When checked, reveals 4 parent fields (nombrePadre, telefonoPadre, nombreMadre, telefonoMadre). Moved nombrePadre/nombreMadre from `ClinicalHistory` → `Patient`. Fixed .gitignore: `/*.sql` instead of `*.sql` to preserve Prisma migration files. |
+| 2026-06-30 | Persisted `esMenor` boolean on Patient to preserve checkbox state across edit cycles. Hidden input name changed from `esMenorEdad` → `esMenor` to match Zod schema. Edit modal widened and scrollable. |
