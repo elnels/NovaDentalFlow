@@ -119,7 +119,7 @@ Added Sexo field (Masculino/Femenino) to Historial Clínico:
 | `default-doctor` | ✅ | Complete |
 | `add-sexo-field` | ✅ | Complete |
 | `historia-clinica` | ✅ | Complete |
-| `DBMigration` | ❌ | Phase 0+1 done, awaiting Phase 2 |
+| `DBMigration` | ✅ | Phase 0+1 merged (full Prisma/PostgreSQL backend) |
 
 ### 11. `historial-clinico-new-fields` (reverted)
 Experimented with adding 9 new fields to Historial Clínico (Sexo, Estado Civil, Ocupación, Escolaridad, datos de padres, Motivo Consulta, Antecedentes Personales grid). Required Apps Script changes failed to deploy — reverted completely.
