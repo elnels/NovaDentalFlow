@@ -45,6 +45,7 @@ const patientSchema = z.object({
   nombreMadre: z.string().optional().or(z.literal("")),
   telefonoPadre: z.string().optional().or(z.literal("")),
   telefonoMadre: z.string().optional().or(z.literal("")),
+  esMenor: z.string().optional(),
 });
 
 
@@ -81,7 +82,9 @@ export function PatientForm({ action, initialData, onSuccess }: PatientFormProps
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [state, setState] = useState<FormState>({ message: "", success: false });
-  const [esMenorEdad, setEsMenorEdad] = useState(false);
+  const [esMenorEdad, setEsMenorEdad] = useState(
+    initialData?.esMenor === true || initialData?.esMenor === "true"
+  );
 
   // Función para limpiar el estado de error
   const clearErrorState = () => {
@@ -106,6 +109,7 @@ export function PatientForm({ action, initialData, onSuccess }: PatientFormProps
       nombreMadre: "",
       telefonoPadre: "",
       telefonoMadre: "",
+      esMenor: "",
     },
   });
 
@@ -353,7 +357,7 @@ export function PatientForm({ action, initialData, onSuccess }: PatientFormProps
                 <label htmlFor="esMenorEdad" className="text-sm font-medium cursor-pointer select-none">
                   Si es menor de Edad
                 </label>
-                <input type="hidden" name="esMenorEdad" value={esMenorEdad ? "true" : ""} />
+                <input type="hidden" name="esMenor" value={esMenorEdad ? "true" : ""} />
               </div>
               {esMenorEdad && (
                 <div className="space-y-3 pl-6 border-l-2 border-primary/30">

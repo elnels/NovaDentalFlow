@@ -26,6 +26,7 @@ model Patient {
   nombreMadre          String?  @map("nombre_madre")
   telefonoPadre        String?  @map("telefono_padre")
   telefonoMadre        String?  @map("telefono_madre")
+  esMenor              Boolean  @default(false) @map("es_menor")
   estado               String   @default("Activo")
   fechaRegistro        DateTime @default(now()) @map("fecha_registro")
 

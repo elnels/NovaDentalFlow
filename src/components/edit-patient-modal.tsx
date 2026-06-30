@@ -85,6 +85,7 @@ export function EditPatientModal({
     nombreMadre: patient.nombreMadre,
     telefonoPadre: patient.telefonoPadre,
     telefonoMadre: patient.telefonoMadre,
+    esMenor: patient.esMenor || false,
   };
 
   return (

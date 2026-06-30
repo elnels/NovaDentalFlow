@@ -16,6 +16,7 @@ export interface Patient {
   nombreMadre?: string;
   telefonoPadre?: string;
   telefonoMadre?: string;
+  esMenor?: boolean;
   fechaRegistro: string;
   estado: 'Activo' | 'Inactivo';
   historialClinico: ClinicalHistory[];

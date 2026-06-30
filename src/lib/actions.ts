@@ -78,6 +78,7 @@ const patientSchema = z.object({
   nombreMadre: z.string().optional().or(z.literal("")),
   telefonoPadre: z.string().optional().or(z.literal("")),
   telefonoMadre: z.string().optional().or(z.literal("")),
+  esMenor: z.string().optional(),
 });
 
 const appointmentSchema = z.object({
@@ -149,6 +150,7 @@ export async function addPatient(prevState: FormState, formData: FormData): Prom
         nombreMadre: validatedFields.data.nombreMadre || null,
         telefonoPadre: validatedFields.data.telefonoPadre || null,
         telefonoMadre: validatedFields.data.telefonoMadre || null,
+        esMenor: validatedFields.data.esMenor === "true",
       },
     });
 
@@ -191,6 +193,7 @@ export async function updatePatient(id: string, prevState: FormState, formData: 
         nombreMadre: validatedFields.data.nombreMadre || null,
         telefonoPadre: validatedFields.data.telefonoPadre || null,
         telefonoMadre: validatedFields.data.telefonoMadre || null,
+        esMenor: validatedFields.data.esMenor === "true",
       },
     });
 
