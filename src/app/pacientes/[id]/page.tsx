@@ -53,7 +53,7 @@ import { DeletePatientDialog } from "@/components/delete-patient-dialog";
 import { SequentialWorkflow } from "@/components/sequential-workflow";
 import CitasTable from "@/components/citas-table";
 import HistorialTable from "@/components/historial-table";
-import type { Appointment, ClinicalHistory } from "@/types";
+
 
 function getAge(dateString: string) {
   try {
@@ -170,18 +170,17 @@ export default function PatientDetailPage({
       );
       
       if (result.success) {
-        // Actualizar el estado local inmediatamente
         setPatient((prev: any) => {
           if (!prev) return prev;
           
           const updated = { ...prev };
           if (recordType === 'history') {
-            updated.Historial_Clinico = updated.Historial_Clinico?.map((item: any) => 
-              item.ID_Historial === recordId ? { ...item, [fieldName]: newValue } : item
+            updated.historialClinico = updated.historialClinico?.map((item: any) => 
+              item.id === recordId ? { ...item, [fieldName]: newValue } : item
             );
           } else {
-            updated.Citas = updated.Citas?.map((item: any) => 
-              item.ID_Cita === recordId ? { ...item, [fieldName]: newValue } : item
+            updated.citas = updated.citas?.map((item: any) => 
+              item.id === recordId ? { ...item, [fieldName]: newValue } : item
             );
           }
           return updated;
@@ -271,32 +270,23 @@ export default function PatientDetailPage({
 
   const handleAddCita = useCallback(async (citaData: any) => {
     try {
-      // Map old-format field names from table component to new camelCase
       const citaWithPatient = {
         patientId: id,
-        fechaCita: citaData.Fecha_Cita,
-        horaInicio: citaData.Hora_Inicio,
-        horaFin: citaData.Hora_Fin,
-        motivoCita: citaData.Motivo_Cita,
-        estadoCita: citaData.Estado_Cita || "Programada",
-        notasCita: citaData.Notas_Cita || "",
-        idDoctor: citaData.ID_Doctor,
+        ...citaData,
       };
       
       const result = await addCitaFromObject(citaWithPatient);
       if (result.success) {
-        // Actualizar el estado local inmediatamente agregando la nueva cita
         setPatient((prev: any) => {
           if (!prev) return prev;
           const newCita = {
-            ID_Cita: result.appointmentId || `CITA-${Date.now()}`,
-            ...citaData,
+            id: result.appointmentId || `CITA-${Date.now()}`,
             patientId: id,
-            estadoCita: citaData.estadoCita || 'Programada'
+            ...citaData,
           };
           return {
             ...prev,
-            Citas: [...(prev.Citas || []), newCita]
+            citas: [...(prev.citas || []), newCita]
           };
         });
         
@@ -319,42 +309,23 @@ export default function PatientDetailPage({
 
   const handleAddHistorial = useCallback(async (historialData: any) => {
     try {
-      // Map old-format field names from table component to new camelCase
       const historialWithPatient = {
         patientId: id,
-        appointmentId: historialData.ID_Cita || "",
-        fechaHistorial: historialData.Fecha_Historial,
-        diagnostico: historialData.Diagnostico || "",
-        tratamiento: historialData.Tratamiento_Realizado || "",
-        prescripciones: historialData.Prescripciones || "",
-        notas: historialData.Notas_Adicionales || "",
-        costoTratamiento: historialData.Costo_Tratamiento || "",
-        estadoPago: historialData.Estado_Pago || "Pendiente",
-        sexo: historialData.Sexo || "",
-        estadoCivil: historialData.Estado_Civil || "",
-        ocupacion: historialData.Ocupacion || "",
-        escolaridad: historialData.Escolaridad || "",
-        nombrePadre: historialData.Nombre_Padre || "",
-        nombreMadre: historialData.Nombre_Madre || "",
-        telefonoContacto: historialData.Telefono_Contacto || "",
-        motivoConsulta: historialData.Motivo_Consulta || "",
-        antecedentesPersonales: historialData.Antecedentes_Personales || "",
+        ...historialData,
       };
       
       const result = await addHistorialFromObject(historialWithPatient);
       if (result.success) {
-        // Actualizar el estado local inmediatamente agregando el nuevo historial
         setPatient((prev: any) => {
           if (!prev) return prev;
           const newHistorial = {
-            ID_Historial: result.historyId || `HIST-${Date.now()}`,
+            id: result.historyId || `HIST-${Date.now()}`,
+            patientId: id,
             ...historialData,
-            ID_Paciente: id,
-            Estado_Pago: historialData.Estado_Pago || 'Pendiente'
           };
           return {
             ...prev,
-            Historial_Clinico: [...(prev.Historial_Clinico || []), newHistorial]
+            historialClinico: [...(prev.historialClinico || []), newHistorial]
           };
         });
         
@@ -427,7 +398,7 @@ export default function PatientDetailPage({
               Registrar Paciente
             </Button>
             <EditOptionsMenu patient={patient} onDataUpdate={handleDataUpdate} />
-            <DeletePatientDialog patientId={patient.ID_Paciente} onDataUpdate={handleDataUpdate} />
+            <DeletePatientDialog patientId={patient.id} onDataUpdate={handleDataUpdate} />
           </div>
         </div>
       </header>
@@ -446,50 +417,50 @@ export default function PatientDetailPage({
             <Card>
               <CardHeader className="flex flex-col items-center text-center">
                 <Avatar className="h-24 w-24 mb-4">
-                  <AvatarImage src={`https://ui-avatars.com/api/?name=${patient.Nombres}+${patient.Apellidos}&background=random&size=128`} />
+                  <AvatarImage src={`https://ui-avatars.com/api/?name=${patient.nombres}+${patient.apellidos}&background=random&size=128`} />
                   <AvatarFallback className="text-3xl">
-                    {patient.Nombres?.[0]}
-                    {patient.Apellidos?.[0]}
+                    {patient.nombres?.[0]}
+                    {patient.apellidos?.[0]}
                   </AvatarFallback>
                 </Avatar>
                  <div className="flex items-center gap-2">
-                    <CardTitle className="text-2xl">{`${patient.Nombres} ${patient.Apellidos}`}</CardTitle>
-                    <GenderIcon gender={patient.Genero} />
+                    <CardTitle className="text-2xl">{`${patient.nombres} ${patient.apellidos}`}</CardTitle>
+                    <GenderIcon gender={patient.genero} />
                  </div>
                  <div className="flex items-center gap-2 text-sm mt-2">
-                    {patient.Estado === 'Activo' ? <CheckCircle2 className="h-4 w-4 text-green-500" /> : <XCircle className="h-4 w-4 text-red-500" />}
-                    <span className={patient.Estado === 'Activo' ? 'text-green-600' : 'text-red-600'}>
-                        {patient.Estado}
+                    {patient.estado === 'Activo' ? <CheckCircle2 className="h-4 w-4 text-green-500" /> : <XCircle className="h-4 w-4 text-red-500" />}
+                    <span className={patient.estado === 'Activo' ? 'text-green-600' : 'text-red-600'}>
+                        {patient.estado}
                     </span>
                  </div>
               </CardHeader>
               <CardContent className="space-y-4">
-                  <InfoItem icon={Cake} label="Fecha de Nacimiento" value={`${format(parseISO(patient.Fecha_Nacimiento), "d 'de' MMMM 'de' yyyy", { locale: es })} (${getAge(patient.Fecha_Nacimiento)} años)`} />
-                  <InfoItem icon={Phone} label="Teléfono Principal" value={patient.Telefono_Principal} />
-                  <InfoItem icon={Smartphone} label="Teléfono Alternativo" value={patient.Telefono_Alternativo} />
-                  <InfoItem icon={Mail} label="Email" value={patient.Email} />
-                  <InfoItem icon={Home} label="Dirección" value={patient.Direccion || "No registrada"} />
-                  <InfoItem icon={FileClock} label="Fecha de Registro" value={format(parseISO(patient.Fecha_Registro), "dd/MM/yyyy", { locale: es })} />
+                  <InfoItem icon={Cake} label="Fecha de Nacimiento" value={`${format(parseISO(patient.fechaNacimiento), "d 'de' MMMM 'de' yyyy", { locale: es })} (${getAge(patient.fechaNacimiento)} años)`} />
+                  <InfoItem icon={Phone} label="Teléfono Principal" value={patient.telefonoPrincipal} />
+                  <InfoItem icon={Smartphone} label="Teléfono Alternativo" value={patient.telefonoAlternativo} />
+                  <InfoItem icon={Mail} label="Email" value={patient.email} />
+                  <InfoItem icon={Home} label="Dirección" value={patient.direccion || "No registrada"} />
+                  <InfoItem icon={FileClock} label="Fecha de Registro" value={format(parseISO(patient.fechaRegistro), "dd/MM/yyyy", { locale: es })} />
               </CardContent>
             </Card>
           </div>
 
           <div className="lg:col-span-2 space-y-8">
             <HistorialTable 
-              data={patient.Historial_Clinico || []} 
+              data={patient.historialClinico || []} 
               onUpdateField={updateField}
               onDeleteHistorial={handleDeleteHistorial}
               onAddHistorial={handleAddHistorial}
-              patientId={patient.ID_Paciente}
-              availableCitas={patient.Citas || []}
+              patientId={patient.id}
+              availableCitas={patient.citas || []}
             />
 
             <CitasTable 
-              data={patient.Citas || []} 
+              data={patient.citas || []} 
               onUpdateField={updateField}
               onDeleteCita={handleDeleteCita}
               onAddCita={handleAddCita}
-              patientId={patient.ID_Paciente}
+              patientId={patient.id}
             />
           </div>
         </div>

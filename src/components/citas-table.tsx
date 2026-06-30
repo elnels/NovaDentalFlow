@@ -182,13 +182,13 @@ function StatusChip({ status }: { status: string }) {
 export function CitasTable({ data, onUpdateField, onDeleteCita, onAddCita, patientId }: CitasTableProps) {
   const [openAddDialog, setOpenAddDialog] = useState(false);
   const [newCita, setNewCita] = useState<Partial<Appointment>>({
-    Fecha_Cita: '',
-    Hora_Inicio: '',
-    Hora_Fin: '',
-    Motivo_Cita: '',
-    ID_Doctor: 'Dra Elsa Hernandez',
-    Notas_Cita: '',
-    Estado_Cita: 'Programada'
+    fechaCita: '',
+    horaInicio: '',
+    horaFin: '',
+    motivoCita: '',
+    idDoctor: 'Dra Elsa Hernandez',
+    notasCita: '',
+    estadoCita: 'Programada'
   });
   const { toast } = useToast();
 
@@ -215,13 +215,13 @@ export function CitasTable({ data, onUpdateField, onDeleteCita, onAddCita, patie
       await onAddCita?.(newCita);
       setOpenAddDialog(false);
       setNewCita({
-        Fecha_Cita: '',
-        Hora_Inicio: '',
-        Hora_Fin: '',
-        Motivo_Cita: '',
-        ID_Doctor: 'Dra Elsa Hernandez',
-        Notas_Cita: '',
-        Estado_Cita: 'Programada'
+        fechaCita: '',
+        horaInicio: '',
+        horaFin: '',
+        motivoCita: '',
+        idDoctor: 'Dra Elsa Hernandez',
+        notasCita: '',
+        estadoCita: 'Programada'
       });
       toast({
         title: "Cita agregada",
@@ -262,37 +262,37 @@ export function CitasTable({ data, onUpdateField, onDeleteCita, onAddCita, patie
               <TextField
                 label="Fecha de la Cita"
                 type="date"
-                value={newCita.Fecha_Cita}
-                onChange={(e) => setNewCita({ ...newCita, Fecha_Cita: e.target.value })}
+                value={newCita.fechaCita}
+                onChange={(e) => setNewCita({ ...newCita, fechaCita: e.target.value })}
                 InputLabelProps={{ shrink: true }}
                 fullWidth
               />
               <TextField
                 label="Hora de Inicio"
                 type="time"
-                value={newCita.Hora_Inicio}
-                onChange={(e) => setNewCita({ ...newCita, Hora_Inicio: e.target.value })}
+                value={newCita.horaInicio}
+                onChange={(e) => setNewCita({ ...newCita, horaInicio: e.target.value })}
                 InputLabelProps={{ shrink: true }}
                 fullWidth
               />
               <TextField
                 label="Hora de Fin"
                 type="time"
-                value={newCita.Hora_Fin}
-                onChange={(e) => setNewCita({ ...newCita, Hora_Fin: e.target.value })}
+                value={newCita.horaFin}
+                onChange={(e) => setNewCita({ ...newCita, horaFin: e.target.value })}
                 InputLabelProps={{ shrink: true }}
                 fullWidth
               />
               <TextField
                 label="Doctor"
-                value={newCita.ID_Doctor}
-                onChange={(e) => setNewCita({ ...newCita, ID_Doctor: e.target.value })}
+                value={newCita.idDoctor}
+                onChange={(e) => setNewCita({ ...newCita, idDoctor: e.target.value })}
                 fullWidth
               />
               <TextField
                 label="Motivo de la Cita"
-                value={newCita.Motivo_Cita}
-                onChange={(e) => setNewCita({ ...newCita, Motivo_Cita: e.target.value })}
+                value={newCita.motivoCita}
+                onChange={(e) => setNewCita({ ...newCita, motivoCita: e.target.value })}
                 multiline
                 rows={2}
                 fullWidth
@@ -300,8 +300,8 @@ export function CitasTable({ data, onUpdateField, onDeleteCita, onAddCita, patie
               />
               <TextField
                 label="Observaciones"
-                value={newCita.Notas_Cita}
-                onChange={(e) => setNewCita({ ...newCita, Notas_Cita: e.target.value })}
+                value={newCita.notasCita}
+                onChange={(e) => setNewCita({ ...newCita, notasCita: e.target.value })}
                 multiline
                 rows={2}
                 fullWidth
@@ -310,8 +310,8 @@ export function CitasTable({ data, onUpdateField, onDeleteCita, onAddCita, patie
               <TextField
                 select
                 label="Estado"
-                value={newCita.Estado_Cita}
-                onChange={(e) => setNewCita({ ...newCita, Estado_Cita: e.target.value as Appointment['Estado_Cita'] })}
+                value={newCita.estadoCita}
+                onChange={(e) => setNewCita({ ...newCita, estadoCita: e.target.value as Appointment['estadoCita'] })}
                 fullWidth
               >
                 {estadosCita.map((estado) => (
@@ -364,52 +364,52 @@ export function CitasTable({ data, onUpdateField, onDeleteCita, onAddCita, patie
           </TableHead>
           <TableBody>
             {data.map((cita) => (
-              <TableRow key={cita.ID_Cita} hover>
+              <TableRow key={cita.id} hover>
                 <TableCell>
                   <EditableCell
-                    value={cita.Fecha_Cita}
-                    onSave={(newValue) => onUpdateField(cita.ID_Cita, 'Fecha_Cita', newValue, 'appointment')}
+                    value={cita.fechaCita}
+                    onSave={(newValue) => onUpdateField(cita.id, 'fechaCita', newValue, 'appointment')}
                     type="date"
                   />
                 </TableCell>
                 <TableCell>
                   <EditableCell
-                    value={cita.Hora_Inicio}
-                    onSave={(newValue) => onUpdateField(cita.ID_Cita, 'Hora_Inicio', newValue, 'appointment')}
+                    value={cita.horaInicio}
+                    onSave={(newValue) => onUpdateField(cita.id, 'horaInicio', newValue, 'appointment')}
                     type="time"
                   />
                 </TableCell>
                 <TableCell>
                   <EditableCell
-                    value={cita.Hora_Fin}
-                    onSave={(newValue) => onUpdateField(cita.ID_Cita, 'Hora_Fin', newValue, 'appointment')}
+                    value={cita.horaFin}
+                    onSave={(newValue) => onUpdateField(cita.id, 'horaFin', newValue, 'appointment')}
                     type="time"
                   />
                 </TableCell>
                 <TableCell>
                   <EditableCell
-                    value={cita.Motivo_Cita}
-                    onSave={(newValue) => onUpdateField(cita.ID_Cita, 'Motivo_Cita', newValue, 'appointment')}
+                    value={cita.motivoCita}
+                    onSave={(newValue) => onUpdateField(cita.id, 'motivoCita', newValue, 'appointment')}
                     multiline
                   />
                 </TableCell>
                 <TableCell>
                   <EditableCell
-                    value={cita.ID_Doctor}
-                    onSave={(newValue) => onUpdateField(cita.ID_Cita, 'ID_Doctor', newValue, 'appointment')}
+                    value={cita.idDoctor}
+                    onSave={(newValue) => onUpdateField(cita.id, 'idDoctor', newValue, 'appointment')}
                   />
                 </TableCell>
                 <TableCell>
                   <EditableCell
-                    value={cita.Notas_Cita}
-                    onSave={(newValue) => onUpdateField(cita.ID_Cita, 'Notas_Cita', newValue, 'appointment')}
+                    value={cita.notasCita}
+                    onSave={(newValue) => onUpdateField(cita.id, 'notasCita', newValue, 'appointment')}
                     multiline
                   />
                 </TableCell>
                 <TableCell>
                   <EditableCell
-                    value={cita.Estado_Cita}
-                    onSave={(newValue) => onUpdateField(cita.ID_Cita, 'Estado_Cita', newValue, 'appointment')}
+                    value={cita.estadoCita}
+                    onSave={(newValue) => onUpdateField(cita.id, 'estadoCita', newValue, 'appointment')}
                     type="select"
                     options={estadosCita}
                   />
@@ -419,7 +419,7 @@ export function CitasTable({ data, onUpdateField, onDeleteCita, onAddCita, patie
                     {onDeleteCita && (
                       <IconButton
                         size="small"
-                        onClick={() => handleDelete(cita.ID_Cita)}
+                        onClick={() => handleDelete(cita.id)}
                         color="error"
                         title="Eliminar cita"
                       >
@@ -442,37 +442,37 @@ export function CitasTable({ data, onUpdateField, onDeleteCita, onAddCita, patie
             <TextField
               label="Fecha de la Cita"
               type="date"
-              value={newCita.Fecha_Cita}
-              onChange={(e) => setNewCita({ ...newCita, Fecha_Cita: e.target.value })}
+              value={newCita.fechaCita}
+              onChange={(e) => setNewCita({ ...newCita, fechaCita: e.target.value })}
               InputLabelProps={{ shrink: true }}
               fullWidth
             />
             <TextField
               label="Hora de Inicio"
               type="time"
-              value={newCita.Hora_Inicio}
-              onChange={(e) => setNewCita({ ...newCita, Hora_Inicio: e.target.value })}
+              value={newCita.horaInicio}
+              onChange={(e) => setNewCita({ ...newCita, horaInicio: e.target.value })}
               InputLabelProps={{ shrink: true }}
               fullWidth
             />
             <TextField
               label="Hora de Fin"
               type="time"
-              value={newCita.Hora_Fin}
-              onChange={(e) => setNewCita({ ...newCita, Hora_Fin: e.target.value })}
+              value={newCita.horaFin}
+              onChange={(e) => setNewCita({ ...newCita, horaFin: e.target.value })}
               InputLabelProps={{ shrink: true }}
               fullWidth
             />
             <TextField
               label="Doctor"
-              value={newCita.ID_Doctor}
-              onChange={(e) => setNewCita({ ...newCita, ID_Doctor: e.target.value })}
+              value={newCita.idDoctor}
+              onChange={(e) => setNewCita({ ...newCita, idDoctor: e.target.value })}
               fullWidth
             />
             <TextField
               label="Motivo de la Cita"
-              value={newCita.Motivo_Cita}
-              onChange={(e) => setNewCita({ ...newCita, Motivo_Cita: e.target.value })}
+              value={newCita.motivoCita}
+              onChange={(e) => setNewCita({ ...newCita, motivoCita: e.target.value })}
               multiline
               rows={2}
               fullWidth
@@ -480,8 +480,8 @@ export function CitasTable({ data, onUpdateField, onDeleteCita, onAddCita, patie
             />
             <TextField
               label="Observaciones"
-              value={newCita.Notas_Cita}
-              onChange={(e) => setNewCita({ ...newCita, Notas_Cita: e.target.value })}
+              value={newCita.notasCita}
+              onChange={(e) => setNewCita({ ...newCita, notasCita: e.target.value })}
               multiline
               rows={2}
               fullWidth
@@ -490,8 +490,8 @@ export function CitasTable({ data, onUpdateField, onDeleteCita, onAddCita, patie
             <TextField
               select
               label="Estado"
-              value={newCita.Estado_Cita}
-              onChange={(e) => setNewCita({ ...newCita, Estado_Cita: e.target.value as Appointment['Estado_Cita'] })}
+              value={newCita.estadoCita}
+              onChange={(e) => setNewCita({ ...newCita, estadoCita: e.target.value as Appointment['estadoCita'] })}
               fullWidth
             >
               {estadosCita.map((estado) => (
