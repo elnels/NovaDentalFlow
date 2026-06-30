@@ -13,7 +13,7 @@ import {
 import { PatientForm } from "@/components/patient-form";
 import { updatePatient } from "@/lib/actions";
 import { useAutoRefresh } from "@/hooks/use-auto-refresh";
-import type { Patient, PatientFormData } from "@/types";
+import type { Patient } from "@/types";
 
 export function EditPatientModal({
   patient,
@@ -49,10 +49,10 @@ export function EditPatientModal({
 
   const updatePatientWithId = updatePatient.bind(null, patient.ID_Paciente);
 
-  const initialData: PatientFormData = {
-    Nombres: patient.Nombres,
-    Apellidos: patient.Apellidos,
-    Fecha_Nacimiento: (() => {
+  const initialData = {
+    nombres: patient.Nombres,
+    apellidos: patient.Apellidos,
+    fechaNacimiento: (() => {
       const dateField = patient.Fecha_Nacimiento;
       if (!dateField || dateField === 'N/A') return '';
       try {
@@ -73,11 +73,11 @@ export function EditPatientModal({
         return '';
       }
     })(),
-    Telefono_Principal: patient.Telefono_Principal,
-    Telefono_Alternativo: patient.Telefono_Alternativo,
-    Email: patient.Email,
-    Direccion: patient.Direccion,
-    Genero: patient.Genero,
+    telefonoPrincipal: patient.Telefono_Principal,
+    telefonoAlternativo: patient.Telefono_Alternativo,
+    email: patient.Email,
+    direccion: patient.Direccion,
+    genero: patient.Genero,
   };
 
   return (

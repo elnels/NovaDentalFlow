@@ -28,16 +28,16 @@ import type { FormState } from "@/lib/actions";
 import { useToast } from "@/hooks/use-toast";
 
 const appointmentSchema = z.object({
-  ID_Paciente: z.string().min(1, "El ID del paciente es requerido"),
-  Fecha_Cita: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Debe proporcionar una fecha válida."),
-  Hora_Inicio: z.string().regex(/^\d{2}:\d{2}$/, "Debe proporcionar una hora de inicio válida."),
-  Hora_Fin: z.string().regex(/^\d{2}:\d{2}$/, "Debe proporcionar una hora de fin válida."),
-  Motivo_Cita: z.string().min(1, "El motivo de la cita es requerido"),
-  Estado_Cita: z.enum(["Programada", "Confirmada", "En Proceso", "Completada", "Cancelada"], {
+  patientId: z.string().min(1, "El ID del paciente es requerido"),
+  fechaCita: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Debe proporcionar una fecha válida."),
+  horaInicio: z.string().regex(/^\d{2}:\d{2}$/, "Debe proporcionar una hora de inicio válida."),
+  horaFin: z.string().regex(/^\d{2}:\d{2}$/, "Debe proporcionar una hora de fin válida."),
+  motivoCita: z.string().min(1, "El motivo de la cita es requerido"),
+  estadoCita: z.enum(["Programada", "Confirmada", "En Proceso", "Completada", "Cancelada"], {
     required_error: "Debe seleccionar un estado",
   }),
-  Notas_Cita: z.string().optional().or(z.literal("")),
-  ID_Doctor: z.string().min(1, "El ID del doctor es requerido"),
+  notasCita: z.string().optional().or(z.literal("")),
+  idDoctor: z.string().min(1, "El ID del doctor es requerido"),
 });
 
 type AppointmentFormData = z.infer<typeof appointmentSchema>;
@@ -84,28 +84,28 @@ export function AppointmentForm({ action, initialData, onSuccess, patientId }: A
   const form = useForm<AppointmentFormData>({
     resolver: zodResolver(appointmentSchema),
     defaultValues: {
-      ID_Paciente: initialData?.ID_Paciente || patientId || "",
-      Fecha_Cita: initialData?.Fecha_Cita || "",
-      Hora_Inicio: initialData?.Hora_Inicio || "",
-      Hora_Fin: initialData?.Hora_Fin || "",
-      Motivo_Cita: initialData?.Motivo_Cita || "",
-      Estado_Cita: initialData?.Estado_Cita || "Programada",
-      Notas_Cita: initialData?.Notas_Cita || "",
-        ID_Doctor: initialData?.ID_Doctor || "Dra Elsa Hernandez",
+      patientId: initialData?.patientId || patientId || "",
+      fechaCita: initialData?.fechaCita || "",
+      horaInicio: initialData?.horaInicio || "",
+      horaFin: initialData?.horaFin || "",
+      motivoCita: initialData?.motivoCita || "",
+      estadoCita: initialData?.estadoCita || "Programada",
+      notasCita: initialData?.notasCita || "",
+        idDoctor: initialData?.idDoctor || "Dra Elsa Hernandez",
     },
   });
 
   useEffect(() => {
     if (initialData) {
       form.reset({
-        ID_Paciente: initialData?.ID_Paciente || patientId || "",
-        Fecha_Cita: initialData?.Fecha_Cita || "",
-        Hora_Inicio: initialData?.Hora_Inicio || "",
-        Hora_Fin: initialData?.Hora_Fin || "",
-        Motivo_Cita: initialData?.Motivo_Cita || "",
-        Estado_Cita: initialData?.Estado_Cita || "Programada",
-        Notas_Cita: initialData?.Notas_Cita || "",
-      ID_Doctor: initialData?.ID_Doctor || "Dra Elsa Hernandez",
+        patientId: initialData?.patientId || patientId || "",
+        fechaCita: initialData?.fechaCita || "",
+        horaInicio: initialData?.horaInicio || "",
+        horaFin: initialData?.horaFin || "",
+        motivoCita: initialData?.motivoCita || "",
+        estadoCita: initialData?.estadoCita || "Programada",
+        notasCita: initialData?.notasCita || "",
+      idDoctor: initialData?.idDoctor || "Dra Elsa Hernandez",
       });
       // Limpiar errores cuando se cargan nuevos datos iniciales
       clearErrorState();
@@ -173,11 +173,11 @@ export function AppointmentForm({ action, initialData, onSuccess, patientId }: A
           </div>
         )}
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <input type="hidden" {...form.register("ID_Paciente")} />
+          <input type="hidden" {...form.register("patientId")} />
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <FormField
               control={form.control}
-              name="Fecha_Cita"
+              name="fechaCita"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Fecha de la Cita</FormLabel>
@@ -191,7 +191,7 @@ export function AppointmentForm({ action, initialData, onSuccess, patientId }: A
             
             <FormField
               control={form.control}
-              name="Hora_Inicio"
+              name="horaInicio"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Hora de Inicio</FormLabel>
@@ -205,7 +205,7 @@ export function AppointmentForm({ action, initialData, onSuccess, patientId }: A
             
             <FormField
               control={form.control}
-              name="Hora_Fin"
+              name="horaFin"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Hora de Fin</FormLabel>
@@ -219,7 +219,7 @@ export function AppointmentForm({ action, initialData, onSuccess, patientId }: A
             
             <FormField
               control={form.control}
-              name="Estado_Cita"
+              name="estadoCita"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Estado de la Cita</FormLabel>
@@ -245,7 +245,7 @@ export function AppointmentForm({ action, initialData, onSuccess, patientId }: A
           
           <FormField
             control={form.control}
-            name="Motivo_Cita"
+            name="motivoCita"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Motivo de la Cita</FormLabel>
@@ -263,7 +263,7 @@ export function AppointmentForm({ action, initialData, onSuccess, patientId }: A
           
           <FormField
             control={form.control}
-            name="Notas_Cita"
+            name="notasCita"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Notas Adicionales (Opcional)</FormLabel>
@@ -281,7 +281,7 @@ export function AppointmentForm({ action, initialData, onSuccess, patientId }: A
           
           <FormField
             control={form.control}
-            name="ID_Doctor"
+            name="idDoctor"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Doctor</FormLabel>

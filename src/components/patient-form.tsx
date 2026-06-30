@@ -24,19 +24,19 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import type { FormState } from "@/lib/actions";
-import type { PatientFormData } from "@/types";
 import { useToast } from "@/hooks/use-toast";
 
+type PatientFormData = z.infer<typeof patientSchema>;
 
 const patientSchema = z.object({
-  Nombres: z.string().min(1, "El nombre es requerido").regex(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/, "El nombre solo puede contener letras"),
-  Apellidos: z.string().min(1, "El apellido es requerido").regex(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/, "El apellido solo puede contener letras"),
-  Fecha_Nacimiento: z.string().min(1, "La fecha de nacimiento es requerida"),
-  Telefono_Principal: z.string().min(7, "El teléfono principal es requerido"),
-  Telefono_Alternativo: z.string().optional().or(z.literal("")),
-  Email: z.string().email("Email inválido"),
-  Direccion: z.string().optional().or(z.literal("")),
-  Genero: z.enum(["Masculino", "Femenino"], {
+  nombres: z.string().min(1, "El nombre es requerido").regex(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/, "El nombre solo puede contener letras"),
+  apellidos: z.string().min(1, "El apellido es requerido").regex(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/, "El apellido solo puede contener letras"),
+  fechaNacimiento: z.string().min(1, "La fecha de nacimiento es requerida"),
+  telefonoPrincipal: z.string().min(7, "El teléfono principal es requerido"),
+  telefonoAlternativo: z.string().optional().or(z.literal("")),
+  email: z.string().email("Email inválido"),
+  direccion: z.string().optional().or(z.literal("")),
+  genero: z.enum(["Masculino", "Femenino"], {
     required_error: "Debe seleccionar un género",
     invalid_type_error: "Debe seleccionar un género válido"
   }),
@@ -82,17 +82,17 @@ export function PatientForm({ action, initialData, onSuccess }: PatientFormProps
     setState({ message: "", success: false });
   };
 
-  const form = useForm<z.infer<typeof patientSchema>>({
+  const form = useForm<PatientFormData>({
     resolver: zodResolver(patientSchema),
     defaultValues: initialData || {
-      Nombres: "",
-      Apellidos: "",
-      Fecha_Nacimiento: "",
-      Telefono_Principal: "",
-      Telefono_Alternativo: "",
-      Email: "",
-      Direccion: "",
-      Genero: undefined,
+      nombres: "",
+      apellidos: "",
+      fechaNacimiento: "",
+      telefonoPrincipal: "",
+      telefonoAlternativo: "",
+      email: "",
+      direccion: "",
+      genero: undefined,
     },
   });
 
@@ -158,7 +158,7 @@ export function PatientForm({ action, initialData, onSuccess }: PatientFormProps
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <FormField
                 control={form.control}
-                name="Nombres"
+                name="nombres"
                 render={({ field }) => (
                 <FormItem>
                     <FormLabel>Nombres</FormLabel>
@@ -171,7 +171,7 @@ export function PatientForm({ action, initialData, onSuccess }: PatientFormProps
             />
             <FormField
                 control={form.control}
-                name="Apellidos"
+                name="apellidos"
                 render={({ field }) => (
                 <FormItem>
                     <FormLabel>Apellidos</FormLabel>
@@ -186,7 +186,7 @@ export function PatientForm({ action, initialData, onSuccess }: PatientFormProps
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <FormField
                 control={form.control}
-                name="Fecha_Nacimiento"
+                name="fechaNacimiento"
                 render={({ field }) => (
                     <FormItem>
                     <FormLabel>Fecha de Nacimiento</FormLabel>
@@ -199,7 +199,7 @@ export function PatientForm({ action, initialData, onSuccess }: PatientFormProps
                 />
                 <FormField
                 control={form.control}
-                name="Genero"
+                name="genero"
                 render={({ field }) => (
                     <FormItem>
                     <FormLabel>Género</FormLabel>
@@ -214,7 +214,7 @@ export function PatientForm({ action, initialData, onSuccess }: PatientFormProps
                         <SelectItem value="Femenino">Femenino</SelectItem>
                         </SelectContent>
                     </Select>
-                    <input type="hidden" name="Genero" value={field.value || ""} />
+                    <input type="hidden" name="genero" value={field.value || ""} />
                     <FormMessage />
                     </FormItem>
                 )}
@@ -223,7 +223,7 @@ export function PatientForm({ action, initialData, onSuccess }: PatientFormProps
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <FormField
                 control={form.control}
-                name="Telefono_Principal"
+                name="telefonoPrincipal"
                 render={({ field }) => (
                 <FormItem>
                     <FormLabel>Teléfono Principal</FormLabel>
@@ -236,7 +236,7 @@ export function PatientForm({ action, initialData, onSuccess }: PatientFormProps
             />
             <FormField
                 control={form.control}
-                name="Telefono_Alternativo"
+                name="telefonoAlternativo"
                 render={({ field }) => (
                 <FormItem>
                     <FormLabel>Teléfono Alternativo (Opcional)</FormLabel>
@@ -250,7 +250,7 @@ export function PatientForm({ action, initialData, onSuccess }: PatientFormProps
             </div>
             <FormField
                 control={form.control}
-                name="Email"
+                name="email"
                 render={({ field }) => (
                 <FormItem>
                     <FormLabel>Email</FormLabel>
@@ -263,7 +263,7 @@ export function PatientForm({ action, initialData, onSuccess }: PatientFormProps
             />
             <FormField
             control={form.control}
-            name="Direccion"
+            name="direccion"
             render={({ field }) => (
                 <FormItem>
                 <FormLabel>Dirección</FormLabel>
