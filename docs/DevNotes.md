@@ -276,6 +276,35 @@ Restructured Historial Clínico: moved 4 demographic fields from per-visit (`Cli
 **Proxy field-name mapping fix:**
 - The proxy route (`/api/proxy/route.ts`) returned raw Prisma data with field names `appointments` and `clinicalHistory`, but the frontend expects `citas` and `historialClinico`. Added `mapPatientFields()` in the `ok()` helper to rename these fields before returning. This fixed appointments showing in Google Calendar but not on the patient detail page.
 
+### 7. `esMenosConditional` (merged to main)
+Added "Si es menor de Edad" checkbox to patient registration and moved parent fields from ClinicalHistory to Patient.
+
+**Schema + Migration:**
+- `Patient`: added `nombrePadre`, `nombreMadre`, `telefonoPadre`, `telefonoMadre`
+- `ClinicalHistory`: removed `nombrePadre`, `nombreMadre`
+- Migration: `20260630215745_add_parent_fields_to_patient`
+
+**Registration form (`patient-form.tsx`):**
+- Added checkbox `[ ] Si es menor de Edad` (UI toggle, not stored)
+- When checked, reveals 4 fields: Nombre del Padre, Teléfono del Padre, Nombre de la Madre, Teléfono de la Madre
+- Hidden input for checkbox state (same pattern as Select fields)
+
+**Server actions (`actions.ts`):**
+- `patientSchema`: added `nombrePadre`, `nombreMadre`, `telefonoPadre`, `telefonoMadre`
+- `medicalHistorySchema`: removed `nombrePadre`, `nombreMadre`
+- `addPatient` / `updatePatient`: persist 4 parent fields to Patient
+- `addHistorial` / `addHistorialFromObject`: removed parent fields from Prisma create
+
+**Medical history form + edit modal:**
+- `medical-history-form.tsx`: removed nombrePadre/nombreMadre from schema, defaults, reset, and UI
+- `edit-patient-modal.tsx`: added 4 parent fields to `initialData`
+
+**Patient detail page (`pacientes/[id]/page.tsx`):**
+- Conditionally shows parent names/phones when present
+
+**Fixed `.gitignore`:**
+- `*.sql` → `/*.sql` so Prisma migration files aren't blocked
+
 ## Other Tasks
 - Fixed `JSX.IntrinsicElements` error by running `npm install`
 - Confirmed no unit test framework exists in the project

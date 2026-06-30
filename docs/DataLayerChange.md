@@ -213,7 +213,7 @@ When the user skips Historial Clínico during registration, the system creates a
 | `src/components/sequential-workflow.tsx` | ✅ HC1 step inserted between Paciente and Cita; old history step removed |
 | `src/components/medical-history-form.tsx` | ⏳ Still used from patient detail page; sexo/estadoCivil/ocupacion/escolaridad removed |
 | `src/components/hc1-form.tsx` | ✅ New — HC1 review step (read-only patient data + odontólogo) |
-| `src/app/pacientes/[id]/page.tsx` | ⏳ Add tab/accordion layout in Phase 2 |
+| `src/app/pacientes/[id]/page.tsx` | ⏳ Add tab/accordion layout in Phase 2; parent name/phone fields displayed when present |
 
 ---
 
@@ -239,3 +239,4 @@ When the user skips Historial Clínico during registration, the system creates a
 | 2026-06-30 | Moved sexo, estado_civil, ocupacion, escolaridad from `ClinicalHistory` (per-visit) → `Patient` (permanent demographics). Renamed `genero` → `sexo` on Patient. |
 | 2026-06-30 | HC1 implemented as review-only step (Fecha auto + odontólogo editable + read-only patient data). Workflow changed to: Registro → HC1 → Cita → Completed. |
 | 2026-06-30 | Proxy route added `mapPatientFields()` to rename Prisma field names (`appointments` → `citas`, `clinicalHistory` → `historialClinico`) for frontend compatibility. Hidden `<input>` elements added to shadcn Select components (sexo, estadoCivil) so their values appear in FormData. |
+| 2026-06-30 | Added "Si es menor de Edad" checkbox to patient registration. When checked, reveals 4 parent fields (nombrePadre, telefonoPadre, nombreMadre, telefonoMadre). Moved nombrePadre/nombreMadre from `ClinicalHistory` → `Patient`. Fixed .gitignore: `/*.sql` instead of `*.sql` to preserve Prisma migration files. |
