@@ -64,7 +64,7 @@ Added Google Calendar API sync for appointments:
   | `updatePatientField` bypassed sync | Added conditional sync on `Estado_Cita` changes |
 - **Test result**: All statuses sync correctly — `Programada` (create), `Confirmada` (update), `Cancelada` (cancelled in calendar)
 
-### 6. `workflow-reorder` (not yet merged)
+### 6. `workflow-reorder` (merged to main)
 Reordered the sequential registration flow from Paciente → Cita → Historial to Paciente → Historial → Cita:
 - **`src/components/sequential-workflow.tsx`**:
   - Step definitions reordered (patient → history → appointment → completed)
@@ -79,7 +79,7 @@ Reordered the sequential registration flow from Paciente → Cita → Historial 
   - Hidden `ID_Cita` input rendered only when `appointmentId` is provided
 - **Build**: Verified passes
 
-### 7. `calendar-sync-from-profile` (added to `workflow-reorder` branch)
+### 7. `calendar-sync-from-profile` (merged to main via `workflow-reorder`)
 Fixed Google Calendar sync not triggering when adding appointments from the patient profile page ("Programar Nueva Cita" modal):
 - **`src/lib/actions.ts`**:
   - Both `addCita` and `addCitaFromObject` now try both `result.data?.ID_Cita` and `result.data?.appointmentId` key names (API response format was ambiguous)
@@ -120,6 +120,8 @@ Added Sexo field (Masculino/Femenino) to Historial Clínico:
 | `add-sexo-field` | ✅ | Complete |
 | `historia-clinica` | ✅ | Complete |
 | `DBMigration` | ✅ | Phase 0+1 merged (full Prisma/PostgreSQL backend) |
+| `refactor/camelcase-write-path` | ✅ | Write-path fields → camelCase |
+| `refactor/camelcase-read-path` | ✅ | Read-path fields → camelCase; legacy transforms deleted |
 
 ### 11. `historial-clinico-new-fields` (reverted)
 Experimented with adding 9 new fields to Historial Clínico (Sexo, Estado Civil, Ocupación, Escolaridad, datos de padres, Motivo Consulta, Antecedentes Personales grid). Required Apps Script changes failed to deploy — reverted completely.
@@ -202,7 +204,7 @@ All 8 fields (Estado_Civil + 7 from Chunk 4) are now saving to the sheet correct
 - `debugHeaders` + `debugSheetData` functions added to `src/lib/api.ts`
 - Endpoint `/api/debug-headers` confirms sheet columns match discovered layout
 
-### 14. `DBMigration` branch — Phase 0 & 1 (not merged)
+### 14. `DBMigration` branch — Phase 0 & 1 (merged to main)
 Complete data layer migration from Google Sheets to PostgreSQL.
 
 **Phase 0** — Infrastructure:
