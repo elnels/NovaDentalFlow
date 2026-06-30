@@ -1,6 +1,17 @@
 import { google } from "googleapis";
-import type { Appointment } from "@/types";
 import { prisma } from "@/lib/db";
+
+interface CalendarAppointment {
+  id: string;
+  patientId: string;
+  fechaCita: string;
+  horaInicio: string;
+  horaFin: string;
+  motivoCita: string;
+  notasCita: string;
+  idDoctor: string;
+  estadoCita: string;
+}
 
 const CALENDAR_ID = process.env.NEXT_PUBLIC_GOOGLE_CALENDAR_ID;
 const TIMEZONE = process.env.TIMEZONE || "America/Mexico_City";
@@ -44,18 +55,18 @@ function buildAppointmentMarker(appointmentId: string): string {
 }
 
 function parseEventSummary(
-  appointment: Appointment,
+  appointment: CalendarAppointment,
   patientName: string
 ): string {
-  return `${patientName} — ${appointment.Motivo_Cita}`;
+  return `${patientName} — ${appointment.motivoCita}`;
 }
 
 function parseEventDescription(
-  appointment: Appointment,
+  appointment: CalendarAppointment,
   patientName: string
 ): string {
-  const marker = buildAppointmentMarker(appointment.ID_Cita);
-  return `${marker}\nPaciente: ${patientName}\nTeléfono: ${appointment.Notas_Cita || ""}\nDoctor: ${appointment.ID_Doctor}\nEstado: ${appointment.Estado_Cita}`;
+  const marker = buildAppointmentMarker(appointment.id);
+  return `${marker}\nPaciente: ${patientName}\nTeléfono: ${appointment.notasCita || ""}\nDoctor: ${appointment.idDoctor}\nEstado: ${appointment.estadoCita}`;
 }
 
 function buildEventTime(fecha: string, hora: string): string {
@@ -73,7 +84,7 @@ export function isStatusTracked(status: string): boolean {
 }
 
 export async function createCalendarEvent(
-  appointment: Appointment,
+  appointment: CalendarAppointment,
   patientName: string
 ): Promise<string | null> {
   try {
@@ -86,11 +97,11 @@ export async function createCalendarEvent(
         summary: parseEventSummary(appointment, patientName),
         description: parseEventDescription(appointment, patientName),
         start: {
-          dateTime: buildEventTime(appointment.Fecha_Cita, appointment.Hora_Inicio),
+          dateTime: buildEventTime(appointment.fechaCita, appointment.horaInicio),
           timeZone: TIMEZONE,
         },
         end: {
-          dateTime: buildEventTime(appointment.Fecha_Cita, appointment.Hora_Fin),
+          dateTime: buildEventTime(appointment.fechaCita, appointment.horaFin),
           timeZone: TIMEZONE,
         },
         status: "confirmed",
@@ -106,7 +117,7 @@ export async function createCalendarEvent(
 
 export async function updateCalendarEvent(
   eventId: string,
-  appointment: Appointment,
+  appointment: CalendarAppointment,
   patientName: string
 ): Promise<boolean> {
   try {
@@ -120,14 +131,14 @@ export async function updateCalendarEvent(
         summary: parseEventSummary(appointment, patientName),
         description: parseEventDescription(appointment, patientName),
         start: {
-          dateTime: buildEventTime(appointment.Fecha_Cita, appointment.Hora_Inicio),
+          dateTime: buildEventTime(appointment.fechaCita, appointment.horaInicio),
           timeZone: TIMEZONE,
         },
         end: {
-          dateTime: buildEventTime(appointment.Fecha_Cita, appointment.Hora_Fin),
+          dateTime: buildEventTime(appointment.fechaCita, appointment.horaFin),
           timeZone: TIMEZONE,
         },
-        status: appointment.Estado_Cita === "Cancelada" ? "cancelled" : "confirmed",
+        status: appointment.estadoCita === "Cancelada" ? "cancelled" : "confirmed",
       },
     });
 
@@ -178,24 +189,24 @@ export async function findEventByAppointmentId(
 }
 
 export async function syncCreateEvent(
-  appointment: Appointment
+  appointment: CalendarAppointment
 ): Promise<void> {
-  if (!isStatusTracked(appointment.Estado_Cita)) return;
-  const patientName = await getPatientName(appointment.ID_Paciente);
+  if (!isStatusTracked(appointment.estadoCita)) return;
+  const patientName = await getPatientName(appointment.patientId);
   await createCalendarEvent(appointment, patientName);
 }
 
 export async function syncUpdateEvent(
-  appointment: Appointment
+  appointment: CalendarAppointment
 ): Promise<void> {
-  const patientName = await getPatientName(appointment.ID_Paciente);
-  const eventId = await findEventByAppointmentId(appointment.ID_Cita);
+  const patientName = await getPatientName(appointment.patientId);
+  const eventId = await findEventByAppointmentId(appointment.id);
 
-  if (eventId && appointment.Estado_Cita === "Cancelada") {
+  if (eventId && appointment.estadoCita === "Cancelada") {
     await updateCalendarEvent(eventId, appointment, patientName);
   } else if (eventId) {
     await updateCalendarEvent(eventId, appointment, patientName);
-  } else if (isStatusTracked(appointment.Estado_Cita)) {
+  } else if (isStatusTracked(appointment.estadoCita)) {
     await createCalendarEvent(appointment, patientName);
   }
 }

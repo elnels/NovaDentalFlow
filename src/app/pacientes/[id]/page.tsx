@@ -271,10 +271,16 @@ export default function PatientDetailPage({
 
   const handleAddCita = useCallback(async (citaData: any) => {
     try {
-      // Agregar el ID del paciente a los datos de la cita
+      // Map old-format field names from table component to new camelCase
       const citaWithPatient = {
-        ...citaData,
-        ID_Paciente: id
+        patientId: id,
+        fechaCita: citaData.Fecha_Cita,
+        horaInicio: citaData.Hora_Inicio,
+        horaFin: citaData.Hora_Fin,
+        motivoCita: citaData.Motivo_Cita,
+        estadoCita: citaData.Estado_Cita || "Programada",
+        notasCita: citaData.Notas_Cita || "",
+        idDoctor: citaData.ID_Doctor,
       };
       
       const result = await addCitaFromObject(citaWithPatient);
@@ -284,8 +290,9 @@ export default function PatientDetailPage({
           if (!prev) return prev;
           const newCita = {
             ID_Cita: result.appointmentId || `CITA-${Date.now()}`,
-            ...citaWithPatient,
-            Estado_Cita: citaData.Estado_Cita || 'Programada'
+            ...citaData,
+            patientId: id,
+            estadoCita: citaData.estadoCita || 'Programada'
           };
           return {
             ...prev,
@@ -312,11 +319,26 @@ export default function PatientDetailPage({
 
   const handleAddHistorial = useCallback(async (historialData: any) => {
     try {
-      // Agregar el ID del paciente a los datos del historial
+      // Map old-format field names from table component to new camelCase
       const historialWithPatient = {
-        ...historialData,
-        ID_Paciente: id,
-        Fecha_Historial: historialData.Fecha_Historial
+        patientId: id,
+        appointmentId: historialData.ID_Cita || "",
+        fechaHistorial: historialData.Fecha_Historial,
+        diagnostico: historialData.Diagnostico || "",
+        tratamiento: historialData.Tratamiento_Realizado || "",
+        prescripciones: historialData.Prescripciones || "",
+        notas: historialData.Notas_Adicionales || "",
+        costoTratamiento: historialData.Costo_Tratamiento || "",
+        estadoPago: historialData.Estado_Pago || "Pendiente",
+        sexo: historialData.Sexo || "",
+        estadoCivil: historialData.Estado_Civil || "",
+        ocupacion: historialData.Ocupacion || "",
+        escolaridad: historialData.Escolaridad || "",
+        nombrePadre: historialData.Nombre_Padre || "",
+        nombreMadre: historialData.Nombre_Madre || "",
+        telefonoContacto: historialData.Telefono_Contacto || "",
+        motivoConsulta: historialData.Motivo_Consulta || "",
+        antecedentesPersonales: historialData.Antecedentes_Personales || "",
       };
       
       const result = await addHistorialFromObject(historialWithPatient);
@@ -326,7 +348,8 @@ export default function PatientDetailPage({
           if (!prev) return prev;
           const newHistorial = {
             ID_Historial: result.historyId || `HIST-${Date.now()}`,
-            ...historialWithPatient,
+            ...historialData,
+            ID_Paciente: id,
             Estado_Pago: historialData.Estado_Pago || 'Pendiente'
           };
           return {

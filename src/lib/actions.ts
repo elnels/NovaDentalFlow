@@ -3,51 +3,50 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { prisma } from "@/lib/db";
-import type { PatientFormData } from "@/types";
 import { syncCreateEvent, syncUpdateEvent, syncDeleteEvent } from "@/lib/calendar-api";
 
 const patientSchema = z.object({
-  DNI: z.string().optional().or(z.literal("")),
-  Nombres: z.string().min(2, "El nombre es requerido"),
-  Apellidos: z.string().min(2, "El apellido es requerido"),
-  Fecha_Nacimiento: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Formato de fecha inválido (YYYY-MM-DD)"),
-  Telefono_Principal: z.string().min(7, "El teléfono principal es requerido"),
-  Telefono_Alternativo: z.string().optional(),
-  Email: z.string().email("Email inválido"),
-  Direccion: z.string().optional().or(z.literal("")),
-  Genero: z.enum(["Masculino", "Femenino", "Otro"], { required_error: "El género es requerido"}),
+  dni: z.string().optional().or(z.literal("")),
+  nombres: z.string().min(2, "El nombre es requerido"),
+  apellidos: z.string().min(2, "El apellido es requerido"),
+  fechaNacimiento: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Formato de fecha inválido (YYYY-MM-DD)"),
+  telefonoPrincipal: z.string().min(7, "El teléfono principal es requerido"),
+  telefonoAlternativo: z.string().optional(),
+  email: z.string().email("Email inválido"),
+  direccion: z.string().optional().or(z.literal("")),
+  genero: z.enum(["Masculino", "Femenino", "Otro"], { required_error: "El género es requerido"}),
 });
 
 const appointmentSchema = z.object({
-  ID_Paciente: z.string().min(1, "El ID del paciente es requerido"),
-  Fecha_Cita: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Formato de fecha inválido (YYYY-MM-DD)"),
-  Hora_Inicio: z.string().regex(/^\d{2}:\d{2}$/, "Formato de hora inválido (HH:MM)"),
-  Hora_Fin: z.string().regex(/^\d{2}:\d{2}$/, "Formato de hora inválido (HH:MM)"),
-  Motivo_Cita: z.string().min(1, "El motivo de la cita es requerido"),
-  Estado_Cita: z.enum(["Programada", "Confirmada", "En Proceso", "Completada", "Cancelada"], { required_error: "El estado es requerido"}),
-  Notas_Cita: z.string().optional(),
-  ID_Doctor: z.string().min(1, "El ID del doctor es requerido"),
+  patientId: z.string().min(1, "El ID del paciente es requerido"),
+  fechaCita: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Formato de fecha inválido (YYYY-MM-DD)"),
+  horaInicio: z.string().regex(/^\d{2}:\d{2}$/, "Formato de hora inválido (HH:MM)"),
+  horaFin: z.string().regex(/^\d{2}:\d{2}$/, "Formato de hora inválido (HH:MM)"),
+  motivoCita: z.string().min(1, "El motivo de la cita es requerido"),
+  estadoCita: z.enum(["Programada", "Confirmada", "En Proceso", "Completada", "Cancelada"], { required_error: "El estado es requerido"}),
+  notasCita: z.string().optional(),
+  idDoctor: z.string().min(1, "El ID del doctor es requerido"),
 });
 
 const medicalHistorySchema = z.object({
-  ID_Paciente: z.string().min(1, "El ID del paciente es requerido"),
-  ID_Cita: z.string().optional().or(z.literal("")),
-  Fecha_Historial: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Formato de fecha inválido (YYYY-MM-DD)"),
-  Diagnostico: z.string().optional().or(z.literal("")),
-  Tratamiento_Realizado: z.string().optional().or(z.literal("")),
-  Prescripciones: z.string().optional().or(z.literal("")),
-  Notas_Adicionales: z.string().optional().or(z.literal("")),
-  Costo_Tratamiento: z.string().optional().or(z.literal("")),
-  Estado_Pago: z.enum(["Pendiente", "Pagado", "Parcial", "Cancelado"], { required_error: "El estado de pago es requerido"}),
-  Sexo: z.enum(["Masculino", "Femenino"]).optional().or(z.literal("")),
-  Estado_Civil: z.string().optional().or(z.literal("")),
-  Ocupacion: z.string().optional().or(z.literal("")),
-  Escolaridad: z.string().optional().or(z.literal("")),
-  Nombre_Padre: z.string().optional().or(z.literal("")),
-  Nombre_Madre: z.string().optional().or(z.literal("")),
-  Telefono_Contacto: z.string().optional().or(z.literal("")),
-  Motivo_Consulta: z.string().optional().or(z.literal("")),
-  Antecedentes_Personales: z.string().optional().or(z.literal("")),
+  patientId: z.string().min(1, "El ID del paciente es requerido"),
+  appointmentId: z.string().optional().or(z.literal("")),
+  fechaHistorial: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Formato de fecha inválido (YYYY-MM-DD)"),
+  diagnostico: z.string().optional().or(z.literal("")),
+  tratamiento: z.string().optional().or(z.literal("")),
+  prescripciones: z.string().optional().or(z.literal("")),
+  notas: z.string().optional().or(z.literal("")),
+  costoTratamiento: z.string().optional().or(z.literal("")),
+  estadoPago: z.enum(["Pendiente", "Pagado", "Parcial", "Cancelado"], { required_error: "El estado de pago es requerido"}),
+  sexo: z.enum(["Masculino", "Femenino"]).optional().or(z.literal("")),
+  estadoCivil: z.string().optional().or(z.literal("")),
+  ocupacion: z.string().optional().or(z.literal("")),
+  escolaridad: z.string().optional().or(z.literal("")),
+  nombrePadre: z.string().optional().or(z.literal("")),
+  nombreMadre: z.string().optional().or(z.literal("")),
+  telefonoContacto: z.string().optional().or(z.literal("")),
+  motivoConsulta: z.string().optional().or(z.literal("")),
+  antecedentesPersonales: z.string().optional().or(z.literal("")),
 });
 
 export type FormState = {
@@ -59,6 +58,9 @@ export type FormState = {
   historyId?: string;
 };
 
+type PatientFormFields = z.infer<typeof patientSchema>;
+type AppointmentFormFields = z.infer<typeof appointmentSchema>;
+
 export async function addPatient(prevState: FormState, formData: FormData): Promise<FormState> {
   const rawData = Object.fromEntries(formData.entries());
   const validatedFields = patientSchema.safeParse(rawData);
@@ -66,7 +68,7 @@ export async function addPatient(prevState: FormState, formData: FormData): Prom
   if (!validatedFields.success) {
     return {
       message: "Por favor, corrija los errores en el formulario.",
-      errors: validatedFields.error.flatten().fieldErrors as unknown as Record<keyof PatientFormData, string>,
+      errors: validatedFields.error.flatten().fieldErrors as unknown as Record<keyof PatientFormFields, string>,
       success: false,
     };
   }
@@ -74,15 +76,15 @@ export async function addPatient(prevState: FormState, formData: FormData): Prom
   try {
     const patient = await prisma.patient.create({
       data: {
-        dni: validatedFields.data.DNI || null,
-        nombres: validatedFields.data.Nombres,
-        apellidos: validatedFields.data.Apellidos,
-        fechaNacimiento: new Date(validatedFields.data.Fecha_Nacimiento),
-        telefonoPrincipal: validatedFields.data.Telefono_Principal,
-        telefonoAlternativo: validatedFields.data.Telefono_Alternativo || null,
-        email: validatedFields.data.Email,
-        direccion: validatedFields.data.Direccion || null,
-        genero: validatedFields.data.Genero,
+        dni: validatedFields.data.dni || null,
+        nombres: validatedFields.data.nombres,
+        apellidos: validatedFields.data.apellidos,
+        fechaNacimiento: new Date(validatedFields.data.fechaNacimiento),
+        telefonoPrincipal: validatedFields.data.telefonoPrincipal,
+        telefonoAlternativo: validatedFields.data.telefonoAlternativo || null,
+        email: validatedFields.data.email,
+        direccion: validatedFields.data.direccion || null,
+        genero: validatedFields.data.genero,
       },
     });
 
@@ -100,7 +102,7 @@ export async function updatePatient(id: string, prevState: FormState, formData: 
   if (!validatedFields.success) {
     return {
       message: "Por favor, corrija los errores en el formulario.",
-      errors: validatedFields.error.flatten().fieldErrors as unknown as Record<keyof PatientFormData, string>,
+      errors: validatedFields.error.flatten().fieldErrors as unknown as Record<keyof PatientFormFields, string>,
       success: false,
     };
   }
@@ -109,15 +111,15 @@ export async function updatePatient(id: string, prevState: FormState, formData: 
     await prisma.patient.update({
       where: { id },
       data: {
-        dni: validatedFields.data.DNI || null,
-        nombres: validatedFields.data.Nombres,
-        apellidos: validatedFields.data.Apellidos,
-        fechaNacimiento: new Date(validatedFields.data.Fecha_Nacimiento),
-        telefonoPrincipal: validatedFields.data.Telefono_Principal,
-        telefonoAlternativo: validatedFields.data.Telefono_Alternativo || null,
-        email: validatedFields.data.Email,
-        direccion: validatedFields.data.Direccion || null,
-        genero: validatedFields.data.Genero,
+        dni: validatedFields.data.dni || null,
+        nombres: validatedFields.data.nombres,
+        apellidos: validatedFields.data.apellidos,
+        fechaNacimiento: new Date(validatedFields.data.fechaNacimiento),
+        telefonoPrincipal: validatedFields.data.telefonoPrincipal,
+        telefonoAlternativo: validatedFields.data.telefonoAlternativo || null,
+        email: validatedFields.data.email,
+        direccion: validatedFields.data.direccion || null,
+        genero: validatedFields.data.genero,
       },
     });
 
@@ -166,24 +168,31 @@ export async function addCita(prevState: FormState, formData: FormData): Promise
   try {
     const appointment = await prisma.appointment.create({
       data: {
-        patientId: validatedFields.data.ID_Paciente,
-        fechaCita: new Date(validatedFields.data.Fecha_Cita),
-        horaInicio: validatedFields.data.Hora_Inicio,
-        horaFin: validatedFields.data.Hora_Fin,
-        motivoCita: validatedFields.data.Motivo_Cita,
-        idDoctor: validatedFields.data.ID_Doctor,
-        notasCita: validatedFields.data.Notas_Cita || null,
-        estadoCita: validatedFields.data.Estado_Cita,
+        patientId: validatedFields.data.patientId,
+        fechaCita: new Date(validatedFields.data.fechaCita),
+        horaInicio: validatedFields.data.horaInicio,
+        horaFin: validatedFields.data.horaFin,
+        motivoCita: validatedFields.data.motivoCita,
+        idDoctor: validatedFields.data.idDoctor,
+        notasCita: validatedFields.data.notasCita || null,
+        estadoCita: validatedFields.data.estadoCita,
       },
     });
 
     syncCreateEvent({
-      ID_Cita: appointment.id,
-      ...validatedFields.data,
+      id: appointment.id,
+      patientId: validatedFields.data.patientId,
+      fechaCita: validatedFields.data.fechaCita,
+      horaInicio: validatedFields.data.horaInicio,
+      horaFin: validatedFields.data.horaFin,
+      motivoCita: validatedFields.data.motivoCita,
+      notasCita: validatedFields.data.notasCita || "",
+      idDoctor: validatedFields.data.idDoctor,
+      estadoCita: validatedFields.data.estadoCita,
     } as any).catch((err) => console.error("Calendar sync error:", err));
 
     revalidatePath("/");
-    revalidatePath(`/pacientes/${validatedFields.data.ID_Paciente}`);
+    revalidatePath(`/pacientes/${validatedFields.data.patientId}`);
     return {
       message: "Cita programada correctamente.",
       success: true,
@@ -208,24 +217,31 @@ export async function addCitaFromObject(citaData: any): Promise<FormState> {
   try {
     const appointment = await prisma.appointment.create({
       data: {
-        patientId: validatedFields.data.ID_Paciente,
-        fechaCita: new Date(validatedFields.data.Fecha_Cita),
-        horaInicio: validatedFields.data.Hora_Inicio,
-        horaFin: validatedFields.data.Hora_Fin,
-        motivoCita: validatedFields.data.Motivo_Cita,
-        idDoctor: validatedFields.data.ID_Doctor,
-        notasCita: validatedFields.data.Notas_Cita || null,
-        estadoCita: validatedFields.data.Estado_Cita,
+        patientId: validatedFields.data.patientId,
+        fechaCita: new Date(validatedFields.data.fechaCita),
+        horaInicio: validatedFields.data.horaInicio,
+        horaFin: validatedFields.data.horaFin,
+        motivoCita: validatedFields.data.motivoCita,
+        idDoctor: validatedFields.data.idDoctor,
+        notasCita: validatedFields.data.notasCita || null,
+        estadoCita: validatedFields.data.estadoCita,
       },
     });
 
     syncCreateEvent({
-      ID_Cita: appointment.id,
-      ...validatedFields.data,
+      id: appointment.id,
+      patientId: validatedFields.data.patientId,
+      fechaCita: validatedFields.data.fechaCita,
+      horaInicio: validatedFields.data.horaInicio,
+      horaFin: validatedFields.data.horaFin,
+      motivoCita: validatedFields.data.motivoCita,
+      notasCita: validatedFields.data.notasCita || "",
+      idDoctor: validatedFields.data.idDoctor,
+      estadoCita: validatedFields.data.estadoCita,
     } as any).catch((err) => console.error("Calendar sync error:", err));
 
     revalidatePath("/");
-    revalidatePath(`/pacientes/${validatedFields.data.ID_Paciente}`);
+    revalidatePath(`/pacientes/${validatedFields.data.patientId}`);
     return {
       message: "Cita programada correctamente.",
       success: true,
@@ -251,31 +267,31 @@ export async function addHistorial(prevState: FormState, formData: FormData): Pr
   try {
     const history = await prisma.clinicalHistory.create({
       data: {
-        patientId: validatedFields.data.ID_Paciente,
-        appointmentId: validatedFields.data.ID_Cita || null,
-        fechaHistorial: new Date(validatedFields.data.Fecha_Historial),
-        diagnostico: validatedFields.data.Diagnostico || null,
-        tratamiento: validatedFields.data.Tratamiento_Realizado || null,
-        prescripciones: validatedFields.data.Prescripciones || null,
-        notas: validatedFields.data.Notas_Adicionales || null,
-        costoTratamiento: validatedFields.data.Costo_Tratamiento
-          ? Number(validatedFields.data.Costo_Tratamiento)
+        patientId: validatedFields.data.patientId,
+        appointmentId: validatedFields.data.appointmentId || null,
+        fechaHistorial: new Date(validatedFields.data.fechaHistorial),
+        diagnostico: validatedFields.data.diagnostico || null,
+        tratamiento: validatedFields.data.tratamiento || null,
+        prescripciones: validatedFields.data.prescripciones || null,
+        notas: validatedFields.data.notas || null,
+        costoTratamiento: validatedFields.data.costoTratamiento
+          ? Number(validatedFields.data.costoTratamiento)
           : null,
-        estadoPago: validatedFields.data.Estado_Pago,
-        sexo: validatedFields.data.Sexo || null,
-        estadoCivil: validatedFields.data.Estado_Civil || null,
-        ocupacion: validatedFields.data.Ocupacion || null,
-        escolaridad: validatedFields.data.Escolaridad || null,
-        nombrePadre: validatedFields.data.Nombre_Padre || null,
-        nombreMadre: validatedFields.data.Nombre_Madre || null,
-        telefonoContacto: validatedFields.data.Telefono_Contacto || null,
-        motivoConsulta: validatedFields.data.Motivo_Consulta || null,
-        antecedentesPersonales: validatedFields.data.Antecedentes_Personales || null,
+        estadoPago: validatedFields.data.estadoPago,
+        sexo: validatedFields.data.sexo || null,
+        estadoCivil: validatedFields.data.estadoCivil || null,
+        ocupacion: validatedFields.data.ocupacion || null,
+        escolaridad: validatedFields.data.escolaridad || null,
+        nombrePadre: validatedFields.data.nombrePadre || null,
+        nombreMadre: validatedFields.data.nombreMadre || null,
+        telefonoContacto: validatedFields.data.telefonoContacto || null,
+        motivoConsulta: validatedFields.data.motivoConsulta || null,
+        antecedentesPersonales: validatedFields.data.antecedentesPersonales || null,
       },
     });
 
     revalidatePath("/");
-    revalidatePath(`/pacientes/${validatedFields.data.ID_Paciente}`);
+    revalidatePath(`/pacientes/${validatedFields.data.patientId}`);
     return { message: "Historial clínico agregado con éxito.", success: true, historyId: history.id };
   } catch (e) {
     return { message: `Error: ${(e as Error).message}`, success: false };
@@ -296,31 +312,31 @@ export async function addHistorialFromObject(historialData: any): Promise<FormSt
   try {
     const history = await prisma.clinicalHistory.create({
       data: {
-        patientId: validatedFields.data.ID_Paciente,
-        appointmentId: validatedFields.data.ID_Cita || null,
-        fechaHistorial: new Date(validatedFields.data.Fecha_Historial),
-        diagnostico: validatedFields.data.Diagnostico || null,
-        tratamiento: validatedFields.data.Tratamiento_Realizado || null,
-        prescripciones: validatedFields.data.Prescripciones || null,
-        notas: validatedFields.data.Notas_Adicionales || null,
-        costoTratamiento: validatedFields.data.Costo_Tratamiento
-          ? Number(validatedFields.data.Costo_Tratamiento)
+        patientId: validatedFields.data.patientId,
+        appointmentId: validatedFields.data.appointmentId || null,
+        fechaHistorial: new Date(validatedFields.data.fechaHistorial),
+        diagnostico: validatedFields.data.diagnostico || null,
+        tratamiento: validatedFields.data.tratamiento || null,
+        prescripciones: validatedFields.data.prescripciones || null,
+        notas: validatedFields.data.notas || null,
+        costoTratamiento: validatedFields.data.costoTratamiento
+          ? Number(validatedFields.data.costoTratamiento)
           : null,
-        estadoPago: validatedFields.data.Estado_Pago,
-        sexo: validatedFields.data.Sexo || null,
-        estadoCivil: validatedFields.data.Estado_Civil || null,
-        ocupacion: validatedFields.data.Ocupacion || null,
-        escolaridad: validatedFields.data.Escolaridad || null,
-        nombrePadre: validatedFields.data.Nombre_Padre || null,
-        nombreMadre: validatedFields.data.Nombre_Madre || null,
-        telefonoContacto: validatedFields.data.Telefono_Contacto || null,
-        motivoConsulta: validatedFields.data.Motivo_Consulta || null,
-        antecedentesPersonales: validatedFields.data.Antecedentes_Personales || null,
+        estadoPago: validatedFields.data.estadoPago,
+        sexo: validatedFields.data.sexo || null,
+        estadoCivil: validatedFields.data.estadoCivil || null,
+        ocupacion: validatedFields.data.ocupacion || null,
+        escolaridad: validatedFields.data.escolaridad || null,
+        nombrePadre: validatedFields.data.nombrePadre || null,
+        nombreMadre: validatedFields.data.nombreMadre || null,
+        telefonoContacto: validatedFields.data.telefonoContacto || null,
+        motivoConsulta: validatedFields.data.motivoConsulta || null,
+        antecedentesPersonales: validatedFields.data.antecedentesPersonales || null,
       },
     });
 
     revalidatePath("/");
-    revalidatePath(`/pacientes/${validatedFields.data.ID_Paciente}`);
+    revalidatePath(`/pacientes/${validatedFields.data.patientId}`);
     return {
       message: "Historial clínico agregado correctamente.",
       success: true,
@@ -368,23 +384,30 @@ export async function updateCita(id: string, prevState: FormState, formData: For
     await prisma.appointment.update({
       where: { id },
       data: {
-        fechaCita: new Date(validatedFields.data.Fecha_Cita),
-        horaInicio: validatedFields.data.Hora_Inicio,
-        horaFin: validatedFields.data.Hora_Fin,
-        motivoCita: validatedFields.data.Motivo_Cita,
-        idDoctor: validatedFields.data.ID_Doctor,
-        notasCita: validatedFields.data.Notas_Cita || null,
-        estadoCita: validatedFields.data.Estado_Cita,
+        fechaCita: new Date(validatedFields.data.fechaCita),
+        horaInicio: validatedFields.data.horaInicio,
+        horaFin: validatedFields.data.horaFin,
+        motivoCita: validatedFields.data.motivoCita,
+        idDoctor: validatedFields.data.idDoctor,
+        notasCita: validatedFields.data.notasCita || null,
+        estadoCita: validatedFields.data.estadoCita,
       },
     });
 
     syncUpdateEvent({
-      ID_Cita: id,
-      ...validatedFields.data,
+      id,
+      patientId: validatedFields.data.patientId,
+      fechaCita: validatedFields.data.fechaCita,
+      horaInicio: validatedFields.data.horaInicio,
+      horaFin: validatedFields.data.horaFin,
+      motivoCita: validatedFields.data.motivoCita,
+      idDoctor: validatedFields.data.idDoctor,
+      notasCita: validatedFields.data.notasCita || "",
+      estadoCita: validatedFields.data.estadoCita,
     } as any).catch(() => {});
 
     revalidatePath("/");
-    revalidatePath(`/pacientes/${validatedFields.data.ID_Paciente}`);
+    revalidatePath(`/pacientes/${validatedFields.data.patientId}`);
     return { message: "Cita actualizada con éxito.", success: true, appointmentId: id };
   } catch (e) {
     return { message: `Error: ${(e as Error).message}`, success: false };
@@ -474,18 +497,20 @@ export async function updatePatientField(
       });
 
       if (fieldName === "Estado_Cita") {
-        const appointment = await prisma.appointment.findUnique({
+        const appt = await prisma.appointment.findUnique({
           where: { id: recordId },
         });
-        if (appointment) {
+        if (appt) {
           syncUpdateEvent({
-            ID_Cita: recordId,
-            ID_Paciente: appointment.patientId,
-            Fecha_Cita: appointment.fechaCita.toISOString().split("T")[0],
-            Hora_Inicio: appointment.horaInicio || "",
-            Hora_Fin: appointment.horaFin || "",
-            Motivo_Cita: appointment.motivoCita || "",
-            Estado_Cita: newValue,
+            id: recordId,
+            patientId: appt.patientId,
+            fechaCita: appt.fechaCita.toISOString().split("T")[0],
+            horaInicio: appt.horaInicio || "",
+            horaFin: appt.horaFin || "",
+            motivoCita: appt.motivoCita || "",
+            notasCita: appt.notasCita || "",
+            idDoctor: appt.idDoctor || "",
+            estadoCita: newValue,
           } as any).catch(() => {});
         }
       }
@@ -513,29 +538,29 @@ export async function updateHistorial(id: string, prevState: FormState, formData
     await prisma.clinicalHistory.update({
       where: { id },
       data: {
-        fechaHistorial: new Date(validatedFields.data.Fecha_Historial),
-        diagnostico: validatedFields.data.Diagnostico || null,
-        tratamiento: validatedFields.data.Tratamiento_Realizado || null,
-        prescripciones: validatedFields.data.Prescripciones || null,
-        notas: validatedFields.data.Notas_Adicionales || null,
-        costoTratamiento: validatedFields.data.Costo_Tratamiento
-          ? Number(validatedFields.data.Costo_Tratamiento)
+        fechaHistorial: new Date(validatedFields.data.fechaHistorial),
+        diagnostico: validatedFields.data.diagnostico || null,
+        tratamiento: validatedFields.data.tratamiento || null,
+        prescripciones: validatedFields.data.prescripciones || null,
+        notas: validatedFields.data.notas || null,
+        costoTratamiento: validatedFields.data.costoTratamiento
+          ? Number(validatedFields.data.costoTratamiento)
           : null,
-        estadoPago: validatedFields.data.Estado_Pago,
-        sexo: validatedFields.data.Sexo || null,
-        estadoCivil: validatedFields.data.Estado_Civil || null,
-        ocupacion: validatedFields.data.Ocupacion || null,
-        escolaridad: validatedFields.data.Escolaridad || null,
-        nombrePadre: validatedFields.data.Nombre_Padre || null,
-        nombreMadre: validatedFields.data.Nombre_Madre || null,
-        telefonoContacto: validatedFields.data.Telefono_Contacto || null,
-        motivoConsulta: validatedFields.data.Motivo_Consulta || null,
-        antecedentesPersonales: validatedFields.data.Antecedentes_Personales || null,
+        estadoPago: validatedFields.data.estadoPago,
+        sexo: validatedFields.data.sexo || null,
+        estadoCivil: validatedFields.data.estadoCivil || null,
+        ocupacion: validatedFields.data.ocupacion || null,
+        escolaridad: validatedFields.data.escolaridad || null,
+        nombrePadre: validatedFields.data.nombrePadre || null,
+        nombreMadre: validatedFields.data.nombreMadre || null,
+        telefonoContacto: validatedFields.data.telefonoContacto || null,
+        motivoConsulta: validatedFields.data.motivoConsulta || null,
+        antecedentesPersonales: validatedFields.data.antecedentesPersonales || null,
       },
     });
 
     revalidatePath("/");
-    revalidatePath(`/pacientes/${validatedFields.data.ID_Paciente}`);
+    revalidatePath(`/pacientes/${validatedFields.data.patientId}`);
     return { message: "Historial clínico actualizado con éxito.", success: true, historyId: id };
   } catch (e) {
     return { message: `Error: ${(e as Error).message}`, success: false };

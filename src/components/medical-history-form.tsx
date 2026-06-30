@@ -28,26 +28,26 @@ import type { FormState } from "@/lib/actions";
 import { useToast } from "@/hooks/use-toast";
 
 const medicalHistorySchema = z.object({
-  ID_Paciente: z.string().min(1, "El ID del paciente es requerido"),
-  ID_Cita: z.string().optional().or(z.literal("")),
-  Fecha_Historial: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Formato de fecha inválido (YYYY-MM-DD)"),
-  Diagnostico: z.string().min(1, "El diagnóstico es requerido"),
-  Tratamiento_Realizado: z.string().min(1, "El tratamiento realizado es requerido"),
-  Prescripciones: z.string().optional(),
-  Notas_Adicionales: z.string().optional(),
-  Costo_Tratamiento: z.string().min(1, "El costo del tratamiento es requerido"),
-  Estado_Pago: z.enum(["Pendiente", "Pagado", "Parcial"], {
+  patientId: z.string().min(1, "El ID del paciente es requerido"),
+  appointmentId: z.string().optional().or(z.literal("")),
+  fechaHistorial: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Formato de fecha inválido (YYYY-MM-DD)"),
+  diagnostico: z.string().min(1, "El diagnóstico es requerido"),
+  tratamiento: z.string().min(1, "El tratamiento realizado es requerido"),
+  prescripciones: z.string().optional(),
+  notas: z.string().optional(),
+  costoTratamiento: z.string().min(1, "El costo del tratamiento es requerido"),
+  estadoPago: z.enum(["Pendiente", "Pagado", "Parcial"], {
     required_error: "El estado de pago es requerido",
   }),
-  Sexo: z.enum(["Masculino", "Femenino"]).optional().or(z.literal("")),
-  Estado_Civil: z.string().optional().or(z.literal("")),
-  Ocupacion: z.string().optional().or(z.literal("")),
-  Escolaridad: z.string().optional().or(z.literal("")),
-  Nombre_Padre: z.string().optional().or(z.literal("")),
-  Nombre_Madre: z.string().optional().or(z.literal("")),
-  Telefono_Contacto: z.string().optional().or(z.literal("")),
-  Motivo_Consulta: z.string().optional().or(z.literal("")),
-  Antecedentes_Personales: z.string().optional().or(z.literal("")),
+  sexo: z.enum(["Masculino", "Femenino"]).optional().or(z.literal("")),
+  estadoCivil: z.string().optional().or(z.literal("")),
+  ocupacion: z.string().optional().or(z.literal("")),
+  escolaridad: z.string().optional().or(z.literal("")),
+  nombrePadre: z.string().optional().or(z.literal("")),
+  nombreMadre: z.string().optional().or(z.literal("")),
+  telefonoContacto: z.string().optional().or(z.literal("")),
+  motivoConsulta: z.string().optional().or(z.literal("")),
+  antecedentesPersonales: z.string().optional().or(z.literal("")),
 });
 
 type MedicalHistoryFormData = z.infer<typeof medicalHistorySchema>;
@@ -95,48 +95,48 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
     const form = useForm<MedicalHistoryFormData>({
         resolver: zodResolver(medicalHistorySchema),
         defaultValues: {
-            ID_Paciente: patientId,
-            ID_Cita: appointmentId || "",
-            Fecha_Historial: initialData?.Fecha_Historial || new Date().toISOString().split('T')[0],
-            Diagnostico: initialData?.Diagnostico || "",
-            Tratamiento_Realizado: initialData?.Tratamiento_Realizado || "",
-            Prescripciones: initialData?.Prescripciones || "",
-            Notas_Adicionales: initialData?.Notas_Adicionales || "",
-            Costo_Tratamiento: initialData?.Costo_Tratamiento || "",
-            Estado_Pago: initialData?.Estado_Pago || "Pendiente",
-            Sexo: initialData?.Sexo || "",
-            Estado_Civil: initialData?.Estado_Civil || "",
-            Ocupacion: initialData?.Ocupacion || "",
-            Escolaridad: initialData?.Escolaridad || "",
-            Nombre_Padre: initialData?.Nombre_Padre || "",
-            Nombre_Madre: initialData?.Nombre_Madre || "",
-            Telefono_Contacto: initialData?.Telefono_Contacto || "",
-            Motivo_Consulta: initialData?.Motivo_Consulta || "",
-            Antecedentes_Personales: initialData?.Antecedentes_Personales || "",
+            patientId: patientId,
+            appointmentId: appointmentId || "",
+            fechaHistorial: initialData?.fechaHistorial || new Date().toISOString().split('T')[0],
+            diagnostico: initialData?.diagnostico || "",
+            tratamiento: initialData?.tratamiento || "",
+            prescripciones: initialData?.prescripciones || "",
+            notas: initialData?.notas || "",
+            costoTratamiento: initialData?.costoTratamiento || "",
+            estadoPago: initialData?.estadoPago || "Pendiente",
+            sexo: initialData?.sexo || "",
+            estadoCivil: initialData?.estadoCivil || "",
+            ocupacion: initialData?.ocupacion || "",
+            escolaridad: initialData?.escolaridad || "",
+            nombrePadre: initialData?.nombrePadre || "",
+            nombreMadre: initialData?.nombreMadre || "",
+            telefonoContacto: initialData?.telefonoContacto || "",
+            motivoConsulta: initialData?.motivoConsulta || "",
+            antecedentesPersonales: initialData?.antecedentesPersonales || "",
         },
     });
 
     useEffect(() => {
         if (initialData) {
             form.reset({
-                ID_Paciente: patientId,
-                ID_Cita: appointmentId || "",
-                Fecha_Historial: initialData.Fecha_Historial || new Date().toISOString().split('T')[0],
-                Diagnostico: initialData.Diagnostico || "",
-                Tratamiento_Realizado: initialData.Tratamiento_Realizado || "",
-                Prescripciones: initialData.Prescripciones || "",
-                Notas_Adicionales: initialData.Notas_Adicionales || "",
-                Costo_Tratamiento: initialData.Costo_Tratamiento || "",
-                Estado_Pago: initialData.Estado_Pago || "Pendiente",
-                Sexo: initialData.Sexo || "",
-                Estado_Civil: initialData.Estado_Civil || "",
-                Ocupacion: initialData.Ocupacion || "",
-                Escolaridad: initialData.Escolaridad || "",
-                Nombre_Padre: initialData.Nombre_Padre || "",
-                Nombre_Madre: initialData.Nombre_Madre || "",
-                Telefono_Contacto: initialData.Telefono_Contacto || "",
-                Motivo_Consulta: initialData.Motivo_Consulta || "",
-                Antecedentes_Personales: initialData.Antecedentes_Personales || "",
+                patientId: patientId,
+                appointmentId: appointmentId || "",
+                fechaHistorial: initialData.fechaHistorial || new Date().toISOString().split('T')[0],
+                diagnostico: initialData.diagnostico || "",
+                tratamiento: initialData.tratamiento || "",
+                prescripciones: initialData.prescripciones || "",
+                notas: initialData.notas || "",
+                costoTratamiento: initialData.costoTratamiento || "",
+                estadoPago: initialData.estadoPago || "Pendiente",
+                sexo: initialData.sexo || "",
+                estadoCivil: initialData.estadoCivil || "",
+                ocupacion: initialData.ocupacion || "",
+                escolaridad: initialData.escolaridad || "",
+                nombrePadre: initialData.nombrePadre || "",
+                nombreMadre: initialData.nombreMadre || "",
+                telefonoContacto: initialData.telefonoContacto || "",
+                motivoConsulta: initialData.motivoConsulta || "",
+                antecedentesPersonales: initialData.antecedentesPersonales || "",
             });
             clearErrorState();
         }
@@ -199,12 +199,12 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
                     </div>
                 )}
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                    <input type="hidden" {...form.register("ID_Paciente")} />
-                    {appointmentId && <input type="hidden" {...form.register("ID_Cita")} />}
+                    <input type="hidden" {...form.register("patientId")} />
+                    {appointmentId && <input type="hidden" {...form.register("appointmentId")} />}
                     
                     <FormField
                         control={form.control}
-                        name="Fecha_Historial"
+                        name="fechaHistorial"
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Fecha del Historial</FormLabel>
@@ -218,7 +218,7 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
                     
                     <FormField
                         control={form.control}
-                        name="Diagnostico"
+                        name="diagnostico"
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Diagnóstico</FormLabel>
@@ -236,7 +236,7 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
 
                     <FormField
                         control={form.control}
-                        name="Tratamiento_Realizado"
+                        name="tratamiento"
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Tratamiento Realizado</FormLabel>
@@ -254,7 +254,7 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
 
                     <FormField
                         control={form.control}
-                        name="Prescripciones"
+                        name="prescripciones"
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Prescripciones (Opcional)</FormLabel>
@@ -272,7 +272,7 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
 
                     <FormField
                         control={form.control}
-                        name="Sexo"
+                        name="sexo"
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Sexo</FormLabel>
@@ -294,7 +294,7 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
 
                     <FormField
                         control={form.control}
-                        name="Estado_Civil"
+                        name="estadoCivil"
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Estado Civil</FormLabel>
@@ -320,7 +320,7 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <FormField
                             control={form.control}
-                            name="Ocupacion"
+                            name="ocupacion"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Ocupación</FormLabel>
@@ -333,7 +333,7 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
                         />
                         <FormField
                             control={form.control}
-                            name="Escolaridad"
+                            name="escolaridad"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Escolaridad</FormLabel>
@@ -349,7 +349,7 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <FormField
                             control={form.control}
-                            name="Nombre_Padre"
+                            name="nombrePadre"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Nombre del Padre</FormLabel>
@@ -362,7 +362,7 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
                         />
                         <FormField
                             control={form.control}
-                            name="Nombre_Madre"
+                            name="nombreMadre"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Nombre de la Madre</FormLabel>
@@ -377,7 +377,7 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
 
                     <FormField
                         control={form.control}
-                        name="Telefono_Contacto"
+                        name="telefonoContacto"
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Teléfono de Contacto</FormLabel>
@@ -391,7 +391,7 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
 
                     <FormField
                         control={form.control}
-                        name="Motivo_Consulta"
+                        name="motivoConsulta"
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Motivo de Consulta</FormLabel>
@@ -409,7 +409,7 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
 
                     <FormField
                         control={form.control}
-                        name="Antecedentes_Personales"
+                        name="antecedentesPersonales"
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Antecedentes Personales</FormLabel>
@@ -428,7 +428,7 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <FormField
                             control={form.control}
-                            name="Costo_Tratamiento"
+                            name="costoTratamiento"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Costo del Tratamiento</FormLabel>
@@ -445,7 +445,7 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
                         />
                         <FormField
                             control={form.control}
-                            name="Estado_Pago"
+                            name="estadoPago"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Estado del Pago</FormLabel>
@@ -469,7 +469,7 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
 
                     <FormField
                         control={form.control}
-                        name="Notas_Adicionales"
+                        name="notas"
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Notas Adicionales (Opcional)</FormLabel>
