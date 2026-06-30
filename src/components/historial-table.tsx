@@ -49,19 +49,6 @@ const estadosPago = [
   { value: 'Cancelado', label: 'Cancelado', color: 'error' as const }
 ];
 
-const sexoOptions = [
-  { value: 'Masculino', label: 'Masculino', color: 'info' as const },
-  { value: 'Femenino', label: 'Femenino', color: 'secondary' as const },
-];
-
-const estadoCivilOptions = [
-  { value: 'Soltero/a', label: 'Soltero/a', color: 'default' as const },
-  { value: 'Casado/a', label: 'Casado/a', color: 'primary' as const },
-  { value: 'Divorciado/a', label: 'Divorciado/a', color: 'warning' as const },
-  { value: 'Viudo/a', label: 'Viudo/a', color: 'secondary' as const },
-  { value: 'Unión Libre', label: 'Unión Libre', color: 'info' as const },
-];
-
 interface EditableCellProps {
   value: string | undefined;
   onSave: (newValue: string) => Promise<void>;
@@ -235,10 +222,6 @@ export function HistorialTable({ data, onUpdateField, onDeleteHistorial, onAddHi
     notas: '',
     costoTratamiento: '',
     estadoPago: 'Pendiente',
-    sexo: '',
-    estadoCivil: '',
-    ocupacion: '',
-    escolaridad: '',
     nombrePadre: '',
     nombreMadre: '',
     telefonoContacto: '',
@@ -278,10 +261,6 @@ export function HistorialTable({ data, onUpdateField, onDeleteHistorial, onAddHi
         notas: '',
         costoTratamiento: '',
         estadoPago: 'Pendiente',
-        sexo: '',
-        estadoCivil: '',
-        ocupacion: '',
-        escolaridad: '',
         nombrePadre: '',
         nombreMadre: '',
         telefonoContacto: '',
@@ -411,50 +390,6 @@ export function HistorialTable({ data, onUpdateField, onDeleteHistorial, onAddHi
                 sx={{ gridColumn: 'span 2' }}
               />
               <TextField
-                select
-                label="Sexo"
-                value={newHistorial.sexo}
-                onChange={(e) => setNewHistorial({ ...newHistorial, sexo: e.target.value })}
-                fullWidth
-              >
-                <MenuItem value="">
-                  <em>No especificado</em>
-                </MenuItem>
-                {sexoOptions.map((opt) => (
-                  <MenuItem key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </MenuItem>
-                ))}
-              </TextField>
-              <TextField
-                select
-                label="Estado Civil"
-                value={newHistorial.estadoCivil}
-                onChange={(e) => setNewHistorial({ ...newHistorial, estadoCivil: e.target.value })}
-                fullWidth
-              >
-                <MenuItem value="">
-                  <em>No especificado</em>
-                </MenuItem>
-                {estadoCivilOptions.map((opt) => (
-                  <MenuItem key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </MenuItem>
-                ))}
-              </TextField>
-              <TextField
-                label="Ocupación"
-                value={newHistorial.ocupacion}
-                onChange={(e) => setNewHistorial({ ...newHistorial, ocupacion: e.target.value })}
-                fullWidth
-              />
-              <TextField
-                label="Escolaridad"
-                value={newHistorial.escolaridad}
-                onChange={(e) => setNewHistorial({ ...newHistorial, escolaridad: e.target.value })}
-                fullWidth
-              />
-              <TextField
                 label="Nombre del Padre"
                 value={newHistorial.nombrePadre}
                 onChange={(e) => setNewHistorial({ ...newHistorial, nombrePadre: e.target.value })}
@@ -541,10 +476,6 @@ export function HistorialTable({ data, onUpdateField, onDeleteHistorial, onAddHi
               <TableCell><strong>Prescripciones</strong></TableCell>
               <TableCell><strong>Observaciones</strong></TableCell>
               <TableCell><strong>Costo</strong></TableCell>
-              <TableCell><strong>Sexo</strong></TableCell>
-              <TableCell><strong>Estado Civil</strong></TableCell>
-              <TableCell><strong>Ocupación</strong></TableCell>
-              <TableCell><strong>Escolaridad</strong></TableCell>
               <TableCell><strong>Padre</strong></TableCell>
               <TableCell><strong>Madre</strong></TableCell>
               <TableCell><strong>Tel. Contacto</strong></TableCell>
@@ -597,34 +528,6 @@ export function HistorialTable({ data, onUpdateField, onDeleteHistorial, onAddHi
                     value={historial.costoTratamiento}
                     onSave={(newValue) => onUpdateField(historial.id, 'costoTratamiento', newValue, 'history')}
                     type="number"
-                  />
-                </TableCell>
-                <TableCell>
-                  <EditableCell
-                    value={historial.sexo || ''}
-                    onSave={(newValue) => onUpdateField(historial.id, 'sexo', newValue, 'history')}
-                    type="select"
-                    options={sexoOptions}
-                  />
-                </TableCell>
-                <TableCell>
-                  <EditableCell
-                    value={historial.estadoCivil || ''}
-                    onSave={(newValue) => onUpdateField(historial.id, 'estadoCivil', newValue, 'history')}
-                    type="select"
-                    options={estadoCivilOptions}
-                  />
-                </TableCell>
-                <TableCell>
-                  <EditableCell
-                    value={historial.ocupacion || ''}
-                    onSave={(newValue) => onUpdateField(historial.id, 'ocupacion', newValue, 'history')}
-                  />
-                </TableCell>
-                <TableCell>
-                  <EditableCell
-                    value={historial.escolaridad || ''}
-                    onSave={(newValue) => onUpdateField(historial.id, 'escolaridad', newValue, 'history')}
                   />
                 </TableCell>
                 <TableCell>
@@ -742,50 +645,6 @@ export function HistorialTable({ data, onUpdateField, onDeleteHistorial, onAddHi
               rows={2}
               fullWidth
               sx={{ gridColumn: 'span 2' }}
-            />
-            <TextField
-              select
-              label="Sexo"
-              value={newHistorial.sexo}
-              onChange={(e) => setNewHistorial({ ...newHistorial, sexo: e.target.value })}
-              fullWidth
-            >
-              <MenuItem value="">
-                <em>No especificado</em>
-              </MenuItem>
-              {sexoOptions.map((opt) => (
-                <MenuItem key={opt.value} value={opt.value}>
-                  {opt.label}
-                </MenuItem>
-              ))}
-            </TextField>
-            <TextField
-              select
-              label="Estado Civil"
-              value={newHistorial.estadoCivil}
-              onChange={(e) => setNewHistorial({ ...newHistorial, estadoCivil: e.target.value })}
-              fullWidth
-            >
-              <MenuItem value="">
-                <em>No especificado</em>
-              </MenuItem>
-              {estadoCivilOptions.map((opt) => (
-                <MenuItem key={opt.value} value={opt.value}>
-                  {opt.label}
-                </MenuItem>
-              ))}
-            </TextField>
-            <TextField
-              label="Ocupación"
-              value={newHistorial.ocupacion}
-              onChange={(e) => setNewHistorial({ ...newHistorial, ocupacion: e.target.value })}
-              fullWidth
-            />
-            <TextField
-              label="Escolaridad"
-              value={newHistorial.escolaridad}
-              onChange={(e) => setNewHistorial({ ...newHistorial, escolaridad: e.target.value })}
-              fullWidth
             />
             <TextField
               label="Nombre del Padre"

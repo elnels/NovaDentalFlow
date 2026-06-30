@@ -57,7 +57,11 @@ Replaces the `Pacientes` sheet.
 | telefono_alternativo | TEXT? | |
 | email | TEXT? | |
 | direccion | TEXT? | |
-| genero | TEXT? | |
+| genero | TEXT? | Renamed to `sexo` in HC1 branch |
+| sexo | TEXT? | Moved from `clinical_history`; options: Masculino/Femenino/Otro |
+| estado_civil | TEXT? | Moved from `clinical_history` |
+| ocupacion | TEXT? | Moved from `clinical_history` |
+| escolaridad | TEXT? | Moved from `clinical_history` |
 | estado | TEXT | Default `'Activo'` |
 | fecha_registro | TIMESTAMPTZ | Default `now()` |
 
@@ -93,10 +97,6 @@ Per-visit clinical records. Replaces `Historial_Clinico` sheet + new fields (HC5
 | notas | TEXT? | |
 | costo_tratamiento | DECIMAL? | |
 | estado_pago | TEXT? | |
-| sexo | TEXT? | |
-| estado_civil | TEXT? | |
-| ocupacion | TEXT? | |
-| escolaridad | TEXT? | |
 | nombre_padre | TEXT? | |
 | nombre_madre | TEXT? | |
 | telefono_contacto | TEXT? | |
@@ -116,7 +116,7 @@ One row per patient (1:1). HC1–HC4 data.
 | id | UUID | PK |
 | serial_num | INT | Auto-increment |
 | patient_id | UUID | FK → patients.id, UNIQUE, CASCADE |
-| nombre_odontologo | TEXT? | HC1 |
+| nombre_odontologo | TEXT? | HC1 (default "Dr Elsa Hernández") |
 | motivo_consulta | TEXT? | HC2 |
 | antecedentes_personales | TEXT? | HC2 |
 | bajo_tratamiento_medico | BOOLEAN | Default false, HC4 |
@@ -184,11 +184,11 @@ When the user skips Historial Clínico during registration, the system creates a
 ### Phase 2 — Build Clinical Details (Multi-step HC Wizard)
 1. Extend Prisma schema with `clinical_details` + `family_conditions`
 2. `npx prisma migrate dev` — new tables
-3. Build HC1 step (patient data pre-filled read-only + odontólogo)
-4. Build HC2 step (motivo consulta + antecedentes personales)
-5. Build HC3 step (condition cards with checkboxes + relative checkboxes)
-6. Build HC4 step (yes/no questions with conditional text fields)
-7. Build HC5 + HC6 (placeholders with textareas + legal footer)
+3. Build **HC1** step (Fecha auto + Nombre del Odontólogo editable + all patient data read-only → saves `nombreOdontologo` to `clinical_details`)
+4. Build **HC2** step (nombre_odontologo default + motivo_consulta + antecedentes_personales → `clinical_details`)
+5. Build HC3 step (condition cards with checkboxes + relative checkboxes → `family_conditions`)
+6. Build HC4 step (yes/no questions with conditional text fields → `clinical_details`)
+7. Build HC5 + HC6 (placeholders with textareas + legal footer → `clinical_history`)
 8. Wire into workflow — replace single history step with 6-step mini-wizard
 9. Build patient detail tabs — "Ficha Clínica" / "Consultas"
 
@@ -207,11 +207,12 @@ When the user skips Historial Clínico during registration, the system creates a
 | `src/lib/actions.ts` | ✅ All server actions use Prisma directly |
 | `src/lib/api.ts` | ✅ Calls proxy GET (returns raw Prisma data) |
 | `src/lib/calendar-api.ts` | ✅ Uses Prisma for patient lookups, configurable timezone, camelCase fields |
-| `src/app/api/proxy/route.ts` | ✅ Returns raw Prisma data (GET only); POST handlers removed (dead code) |
+| `src/app/api/proxy/route.ts` | ✅ Returns Prisma data with field names mapped to frontend expectations (`appointments` → `citas`, `clinicalHistory` → `historialClinico`) via `mapPatientFields()` |
 | `src/app/api/pacientes/route.ts` | ❌ Removed (redundant) |
-| `src/types/index.ts` | ✅ Updated to camelCase — `Patient`, `ClinicalHistory`, `Appointment` interfaces |
-| `src/components/sequential-workflow.tsx` | ⏳ Add 6-step HC sub-wizard in Phase 2 |
-| `src/components/medical-history-form.tsx` | ⏳ Replace with multi-step wizard in Phase 2 |
+| `src/types/index.ts` | ✅ Updated to camelCase — `Patient`, `ClinicalHistory`, `Appointment` interfaces; sexo/estadoCivil/ocupacion/escolaridad moved from ClinicalHistory to Patient |
+| `src/components/sequential-workflow.tsx` | ✅ HC1 step inserted between Paciente and Cita; old history step removed |
+| `src/components/medical-history-form.tsx` | ⏳ Still used from patient detail page; sexo/estadoCivil/ocupacion/escolaridad removed |
+| `src/components/hc1-form.tsx` | ✅ New — HC1 review step (read-only patient data + odontólogo) |
 | `src/app/pacientes/[id]/page.tsx` | ⏳ Add tab/accordion layout in Phase 2 |
 
 ---
@@ -235,3 +236,6 @@ When the user skips Historial Clínico during registration, the system creates a
 | 2026-06-30 | `patientToOld()` / `historyToOld()` / `appointmentToOld()` transforms deleted — proxy GET returns raw Prisma data |
 | 2026-06-30 | All 12 POST handlers in `/api/proxy` deleted — server actions handle all mutations directly |
 | 2026-06-30 | `PatientFormData` type removed — each form self-types from its own Zod schema via `z.infer<>` |
+| 2026-06-30 | Moved sexo, estado_civil, ocupacion, escolaridad from `ClinicalHistory` (per-visit) → `Patient` (permanent demographics). Renamed `genero` → `sexo` on Patient. |
+| 2026-06-30 | HC1 implemented as review-only step (Fecha auto + odontólogo editable + read-only patient data). Workflow changed to: Registro → HC1 → Cita → Completed. |
+| 2026-06-30 | Proxy route added `mapPatientFields()` to rename Prisma field names (`appointments` → `citas`, `clinicalHistory` → `historialClinico`) for frontend compatibility. Hidden `<input>` elements added to shadcn Select components (sexo, estadoCivil) so their values appear in FormData. |

@@ -18,7 +18,10 @@ model Patient {
   telefonoAlternativo  String?  @map("telefono_alternativo")
   email                String?
   direccion            String?
-  genero               String?
+  sexo                 String?
+  estadoCivil          String?  @map("estado_civil")
+  ocupacion            String?
+  escolaridad          String?
   estado               String   @default("Activo")
   fechaRegistro        DateTime @default(now()) @map("fecha_registro")
 
@@ -60,10 +63,6 @@ model ClinicalHistory {
   notas                 String?
   costoTratamiento      Decimal?  @map("costo_tratamiento")
   estadoPago            String?   @map("estado_pago")
-  sexo                  String?
-  estadoCivil           String?   @map("estado_civil")
-  ocupacion             String?
-  escolaridad           String?
   nombrePadre           String?   @map("nombre_padre")
   nombreMadre           String?   @map("nombre_madre")
   telefonoContacto      String?   @map("telefono_contacto")

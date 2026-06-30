@@ -15,10 +15,10 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { PatientForm } from "@/components/patient-form";
 import { AppointmentForm } from "@/components/appointment-form";
-import { MedicalHistoryForm } from "@/components/medical-history-form";
-import { addPatient, addCita, addHistorial, addEmptyHistorial } from "@/lib/actions";
+import { Hc1Form } from "@/components/hc1-form";
+import { addPatient, addCita, saveHc1Odontologo } from "@/lib/actions";
 
-type WorkflowStep = "patient" | "appointment" | "history" | "completed";
+type WorkflowStep = "patient" | "hc1" | "appointment" | "completed";
 
 interface StepData {
   patientId?: string;
@@ -39,9 +39,9 @@ const steps = [
     icon: User,
   },
   {
-    id: "history" as const,
-    title: "Historial Clínico (Opcional)",
-    description: "Complete el historial clínico o omítalo si lo desea",
+    id: "hc1" as const,
+    title: "Revisión de Datos (HC1)",
+    description: "Revise los datos del paciente",
     icon: FileText,
   },
   {
@@ -111,33 +111,13 @@ export function SequentialWorkflow({ onComplete, onClose }: SequentialWorkflowPr
     if (patientId) {
       setStepData(prev => ({ ...prev, patientId }));
       setCompletedSteps(prev => new Set([...prev, "patient"]));
-      setCurrentStep("history");
+      setCurrentStep("hc1");
     }
   };
 
-  const handleHistorySuccess = (result: FormState) => {
-    if (result.success && result.historyId) {
-      setStepData(prev => ({ ...prev, historyId: result.historyId }));
-      setCompletedSteps(prev => new Set([...prev, "history"]));
-      setCurrentStep("appointment");
-    }
-  };
-
-  const handleSkipHistory = async () => {
-    if (stepData.patientId) {
-      try {
-        const result = await addEmptyHistorial(stepData.patientId);
-        if (result.success && result.historyId) {
-          setStepData(prev => ({ ...prev, historyId: result.historyId }));
-        }
-        setCompletedSteps(prev => new Set([...prev, "history"]));
-        setCurrentStep("appointment");
-      } catch (error) {
-        console.error('Error al crear historial vacío:', error);
-        setCompletedSteps(prev => new Set([...prev, "history"]));
-        setCurrentStep("appointment");
-      }
-    }
+  const handleHc1Success = () => {
+    setCompletedSteps(prev => new Set([...prev, "hc1"]));
+    setCurrentStep("appointment");
   };
 
   const handleAppointmentSuccess = (result: FormState) => {
@@ -199,44 +179,19 @@ export function SequentialWorkflow({ onComplete, onClose }: SequentialWorkflowPr
           </motion.div>
         )}
 
-        {currentStep === "history" && stepData.patientId && (
+        {currentStep === "hc1" && stepData.patientId && (
           <motion.div
-            key="history"
+            key="hc1"
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.3 }}
           >
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <FileText className="h-5 w-5" />
-                  Historial Clínico (Opcional)
-                </CardTitle>
-                <div className="flex items-center gap-2">
-                  <Badge variant="secondary">Paciente ID: {stepData.patientId}</Badge>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="mb-4 p-4 bg-muted/50 rounded-lg text-center">
-                  <p className="text-sm text-muted-foreground mb-3">
-                    Puede completar el historial ahora o programar la cita más tarde.
-                  </p>
-                  <Button 
-                    onClick={handleSkipHistory} 
-                    variant="outline" 
-                    className="w-full"
-                  >
-                    Omitir y Continuar a Cita
-                  </Button>
-                </div>
-                <MedicalHistoryForm 
-                  action={addHistorial} 
-                  onSuccess={handleHistorySuccess}
-                  patientId={stepData.patientId}
-                />
-              </CardContent>
-            </Card>
+            <Hc1Form
+              patientId={stepData.patientId}
+              action={saveHc1Odontologo}
+              onSuccess={handleHc1Success}
+            />
           </motion.div>
         )}
 
@@ -285,26 +240,17 @@ export function SequentialWorkflow({ onComplete, onClose }: SequentialWorkflowPr
                   ¡Registro Completado Exitosamente!
                 </h2>
                 <p className="text-muted-foreground mb-8 text-lg">
-                  {stepData.historyId 
-                    ? "El paciente, historial clínico y cita han sido registrados exitosamente."
-                    : "El paciente e historial clínico han sido registrados exitosamente. La cita puede programarse más tarde."
-                  }
+                  El paciente y la cita han sido registrados exitosamente.
                 </p>
                 
                 {/* Resumen de IDs */}
                 <div className="bg-muted/30 rounded-lg p-4 mb-8">
                   <h3 className="font-semibold mb-3 text-foreground">Resumen del Registro</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div className="flex items-center justify-center gap-2">
                       <User className="h-4 w-4 text-blue-600" />
                       <Badge variant="secondary">Paciente: {stepData.patientId}</Badge>
                     </div>
-                    {stepData.historyId && (
-                      <div className="flex items-center justify-center gap-2">
-                        <FileText className="h-4 w-4 text-green-600" />
-                        <Badge variant="secondary">Historial: {stepData.historyId}</Badge>
-                      </div>
-                    )}
                     {stepData.appointmentId && (
                       <div className="flex items-center justify-center gap-2">
                         <Calendar className="h-4 w-4 text-purple-600" />
@@ -336,14 +282,14 @@ export function SequentialWorkflow({ onComplete, onClose }: SequentialWorkflowPr
                   </div>
 
                   {/* Acciones adicionales */}
-                  {!stepData.historyId && stepData.patientId && (
+                  {!stepData.appointmentId && stepData.patientId && (
                     <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
                       <p className="text-amber-800 text-sm mb-3">
-                        💡 El historial clínico está pendiente de completar
+                        💡 La cita está pendiente de programar
                       </p>
                       <Button asChild variant="outline" size="sm">
                         <Link href={`/pacientes/${stepData.patientId}`}>
-                          Completar Historial Ahora
+                          Programar Cita Ahora
                         </Link>
                       </Button>
                     </div>

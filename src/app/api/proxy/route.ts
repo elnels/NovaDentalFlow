@@ -9,8 +9,19 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "Content-Type, Accept",
 };
 
+function mapPatientFields(patient: any) {
+  if (!patient) return patient;
+  const { appointments, clinicalHistory, ...rest } = patient;
+  return {
+    ...rest,
+    citas: appointments ?? [],
+    historialClinico: clinicalHistory ?? [],
+  };
+}
+
 function ok(data: unknown) {
-  return NextResponse.json({ status: "success", data }, { headers: corsHeaders });
+  const mapped = Array.isArray(data) ? data.map(mapPatientFields) : mapPatientFields(data);
+  return NextResponse.json({ status: "success", data: mapped }, { headers: corsHeaders });
 }
 
 function fail(message: string, status = 400) {

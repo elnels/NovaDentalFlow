@@ -36,10 +36,10 @@ const patientSchema = z.object({
   telefonoAlternativo: z.string().optional().or(z.literal("")),
   email: z.string().email("Email inválido"),
   direccion: z.string().optional().or(z.literal("")),
-  genero: z.enum(["Masculino", "Femenino"], {
-    required_error: "Debe seleccionar un género",
-    invalid_type_error: "Debe seleccionar un género válido"
-  }),
+  sexo: z.enum(["Masculino", "Femenino", "Otro"]).optional(),
+  estadoCivil: z.string().optional().or(z.literal("")),
+  ocupacion: z.string().optional().or(z.literal("")),
+  escolaridad: z.string().optional().or(z.literal("")),
 });
 
 
@@ -92,7 +92,10 @@ export function PatientForm({ action, initialData, onSuccess }: PatientFormProps
       telefonoAlternativo: "",
       email: "",
       direccion: "",
-      genero: undefined,
+      sexo: undefined,
+      estadoCivil: "",
+      ocupacion: "",
+      escolaridad: "",
     },
   });
 
@@ -199,22 +202,78 @@ export function PatientForm({ action, initialData, onSuccess }: PatientFormProps
                 />
                 <FormField
                 control={form.control}
-                name="genero"
+                name="sexo"
                 render={({ field }) => (
                     <FormItem>
-                    <FormLabel>Género</FormLabel>
+                    <FormLabel>Sexo</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                         <SelectTrigger>
-                            <SelectValue placeholder="Seleccione el género" />
+                            <SelectValue placeholder="Seleccione el sexo" />
                         </SelectTrigger>
                         </FormControl>
                         <SelectContent>
                         <SelectItem value="Masculino">Masculino</SelectItem>
                         <SelectItem value="Femenino">Femenino</SelectItem>
+                        <SelectItem value="Otro">Otro</SelectItem>
                         </SelectContent>
                     </Select>
-                    <input type="hidden" name="genero" value={field.value || ""} />
+                    <input type="hidden" name="sexo" value={field.value || ""} />
+                    <FormMessage />
+                    </FormItem>
+                )}
+                />
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <FormField
+                control={form.control}
+                name="estadoCivil"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>Estado Civil</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl>
+                        <SelectTrigger>
+                            <SelectValue placeholder="Seleccione estado civil" />
+                        </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                        <SelectItem value="Soltero/a">Soltero/a</SelectItem>
+                        <SelectItem value="Casado/a">Casado/a</SelectItem>
+                        <SelectItem value="Divorciado/a">Divorciado/a</SelectItem>
+                        <SelectItem value="Viudo/a">Viudo/a</SelectItem>
+                        <SelectItem value="Unión Libre">Unión Libre</SelectItem>
+                        </SelectContent>
+                    </Select>
+                    <input type="hidden" name="estadoCivil" value={field.value || ""} />
+                    <FormMessage />
+                    </FormItem>
+                )}
+                />
+                <FormField
+                control={form.control}
+                name="ocupacion"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>Ocupación</FormLabel>
+                    <FormControl>
+                        <Input placeholder="Ej: Ingeniero" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                    </FormItem>
+                )}
+                />
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <FormField
+                control={form.control}
+                name="escolaridad"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>Escolaridad</FormLabel>
+                    <FormControl>
+                        <Input placeholder="Ej: Universitaria" {...field} />
+                    </FormControl>
                     <FormMessage />
                     </FormItem>
                 )}

@@ -77,7 +77,10 @@ export function EditPatientModal({
     telefonoAlternativo: patient.telefonoAlternativo,
     email: patient.email,
     direccion: patient.direccion,
-    genero: patient.genero,
+    sexo: patient.sexo,
+    estadoCivil: patient.estadoCivil,
+    ocupacion: patient.ocupacion,
+    escolaridad: patient.escolaridad,
   };
 
   return (

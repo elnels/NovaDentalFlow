@@ -39,10 +39,6 @@ const medicalHistorySchema = z.object({
   estadoPago: z.enum(["Pendiente", "Pagado", "Parcial"], {
     required_error: "El estado de pago es requerido",
   }),
-  sexo: z.enum(["Masculino", "Femenino"]).optional().or(z.literal("")),
-  estadoCivil: z.string().optional().or(z.literal("")),
-  ocupacion: z.string().optional().or(z.literal("")),
-  escolaridad: z.string().optional().or(z.literal("")),
   nombrePadre: z.string().optional().or(z.literal("")),
   nombreMadre: z.string().optional().or(z.literal("")),
   telefonoContacto: z.string().optional().or(z.literal("")),
@@ -104,10 +100,6 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
             notas: initialData?.notas || "",
             costoTratamiento: initialData?.costoTratamiento || "",
             estadoPago: initialData?.estadoPago || "Pendiente",
-            sexo: initialData?.sexo || "",
-            estadoCivil: initialData?.estadoCivil || "",
-            ocupacion: initialData?.ocupacion || "",
-            escolaridad: initialData?.escolaridad || "",
             nombrePadre: initialData?.nombrePadre || "",
             nombreMadre: initialData?.nombreMadre || "",
             telefonoContacto: initialData?.telefonoContacto || "",
@@ -128,10 +120,6 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
                 notas: initialData.notas || "",
                 costoTratamiento: initialData.costoTratamiento || "",
                 estadoPago: initialData.estadoPago || "Pendiente",
-                sexo: initialData.sexo || "",
-                estadoCivil: initialData.estadoCivil || "",
-                ocupacion: initialData.ocupacion || "",
-                escolaridad: initialData.escolaridad || "",
                 nombrePadre: initialData.nombrePadre || "",
                 nombreMadre: initialData.nombreMadre || "",
                 telefonoContacto: initialData.telefonoContacto || "",
@@ -269,82 +257,6 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
                             </FormItem>
                         )}
                     />
-
-                    <FormField
-                        control={form.control}
-                        name="sexo"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Sexo</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                    <FormControl>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Seleccione sexo" />
-                                        </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                        <SelectItem value="Masculino">Masculino</SelectItem>
-                                        <SelectItem value="Femenino">Femenino</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-
-                    <FormField
-                        control={form.control}
-                        name="estadoCivil"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Estado Civil</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                    <FormControl>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Seleccione estado civil" />
-                                        </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                        <SelectItem value="Soltero/a">Soltero/a</SelectItem>
-                                        <SelectItem value="Casado/a">Casado/a</SelectItem>
-                                        <SelectItem value="Divorciado/a">Divorciado/a</SelectItem>
-                                        <SelectItem value="Viudo/a">Viudo/a</SelectItem>
-                                        <SelectItem value="Unión Libre">Unión Libre</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <FormField
-                            control={form.control}
-                            name="ocupacion"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Ocupación</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="Ej: Ingeniero, Docente..." {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="escolaridad"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Escolaridad</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="Ej: Universidad, Técnico..." {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <FormField

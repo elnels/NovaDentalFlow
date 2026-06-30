@@ -8,7 +8,10 @@ export interface Patient {
   telefonoAlternativo?: string;
   email: string;
   direccion?: string;
-  genero: 'Masculino' | 'Femenino' | 'Otro';
+  sexo?: 'Masculino' | 'Femenino' | 'Otro';
+  estadoCivil?: string;
+  ocupacion?: string;
+  escolaridad?: string;
   fechaRegistro: string;
   estado: 'Activo' | 'Inactivo';
   historialClinico: ClinicalHistory[];
@@ -31,10 +34,6 @@ export interface ClinicalHistory {
   notas: string;
   costoTratamiento: string;
   estadoPago: string;
-  sexo?: 'Masculino' | 'Femenino' | '';
-  estadoCivil?: string;
-  ocupacion?: string;
-  escolaridad?: string;
   nombrePadre?: string;
   nombreMadre?: string;
   telefonoContacto?: string;

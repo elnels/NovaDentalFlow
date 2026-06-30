@@ -5,6 +5,62 @@ import { z } from "zod";
 import { prisma } from "@/lib/db";
 import { syncCreateEvent, syncUpdateEvent, syncDeleteEvent } from "@/lib/calendar-api";
 
+const hc1Schema = z.object({
+  patientId: z.string().min(1),
+  nombreOdontologo: z.string().optional().or(z.literal("")),
+});
+
+export async function saveHc1Odontologo(
+  prevState: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const rawData = Object.fromEntries(formData.entries());
+  const validatedFields = hc1Schema.safeParse(rawData);
+
+  if (!validatedFields.success) {
+    return {
+      message: "Datos inválidos.",
+      errors: validatedFields.error.flatten().fieldErrors as Record<string, string>,
+      success: false,
+    };
+  }
+
+  try {
+    await prisma.clinicalDetails.upsert({
+      where: { patientId: validatedFields.data.patientId },
+      create: {
+        patientId: validatedFields.data.patientId,
+        nombreOdontologo: validatedFields.data.nombreOdontologo || null,
+      },
+      update: {
+        nombreOdontologo: validatedFields.data.nombreOdontologo || null,
+      },
+    });
+
+    revalidatePath("/");
+    revalidatePath(`/pacientes/${validatedFields.data.patientId}`);
+    return { message: "Datos guardados con éxito.", success: true };
+  } catch (e) {
+    return { message: `Error: ${(e as Error).message}`, success: false };
+  }
+}
+
+export async function getPatientById(id: string) {
+  try {
+    const patient = await prisma.patient.findUnique({
+      where: { id },
+      include: {
+        appointments: { orderBy: { fechaCita: "desc" }, take: 1 },
+        clinicalHistory: { orderBy: { fechaHistorial: "desc" } },
+      },
+    });
+    if (!patient) return null;
+    return patient;
+  } catch {
+    return null;
+  }
+}
+
 const patientSchema = z.object({
   dni: z.string().optional().or(z.literal("")),
   nombres: z.string().min(2, "El nombre es requerido"),
@@ -14,7 +70,10 @@ const patientSchema = z.object({
   telefonoAlternativo: z.string().optional(),
   email: z.string().email("Email inválido"),
   direccion: z.string().optional().or(z.literal("")),
-  genero: z.enum(["Masculino", "Femenino", "Otro"], { required_error: "El género es requerido"}),
+  sexo: z.enum(["Masculino", "Femenino", "Otro"]).optional(),
+  estadoCivil: z.string().optional().or(z.literal("")),
+  ocupacion: z.string().optional().or(z.literal("")),
+  escolaridad: z.string().optional().or(z.literal("")),
 });
 
 const appointmentSchema = z.object({
@@ -38,10 +97,6 @@ const medicalHistorySchema = z.object({
   notas: z.string().optional().or(z.literal("")),
   costoTratamiento: z.string().optional().or(z.literal("")),
   estadoPago: z.enum(["Pendiente", "Pagado", "Parcial", "Cancelado"], { required_error: "El estado de pago es requerido"}),
-  sexo: z.enum(["Masculino", "Femenino"]).optional().or(z.literal("")),
-  estadoCivil: z.string().optional().or(z.literal("")),
-  ocupacion: z.string().optional().or(z.literal("")),
-  escolaridad: z.string().optional().or(z.literal("")),
   nombrePadre: z.string().optional().or(z.literal("")),
   nombreMadre: z.string().optional().or(z.literal("")),
   telefonoContacto: z.string().optional().or(z.literal("")),
@@ -84,7 +139,10 @@ export async function addPatient(prevState: FormState, formData: FormData): Prom
         telefonoAlternativo: validatedFields.data.telefonoAlternativo || null,
         email: validatedFields.data.email,
         direccion: validatedFields.data.direccion || null,
-        genero: validatedFields.data.genero,
+        sexo: validatedFields.data.sexo || null,
+        estadoCivil: validatedFields.data.estadoCivil || null,
+        ocupacion: validatedFields.data.ocupacion || null,
+        escolaridad: validatedFields.data.escolaridad || null,
       },
     });
 
@@ -119,7 +177,10 @@ export async function updatePatient(id: string, prevState: FormState, formData: 
         telefonoAlternativo: validatedFields.data.telefonoAlternativo || null,
         email: validatedFields.data.email,
         direccion: validatedFields.data.direccion || null,
-        genero: validatedFields.data.genero,
+        sexo: validatedFields.data.sexo || null,
+        estadoCivil: validatedFields.data.estadoCivil || null,
+        ocupacion: validatedFields.data.ocupacion || null,
+        escolaridad: validatedFields.data.escolaridad || null,
       },
     });
 
@@ -278,10 +339,6 @@ export async function addHistorial(prevState: FormState, formData: FormData): Pr
           ? Number(validatedFields.data.costoTratamiento)
           : null,
         estadoPago: validatedFields.data.estadoPago,
-        sexo: validatedFields.data.sexo || null,
-        estadoCivil: validatedFields.data.estadoCivil || null,
-        ocupacion: validatedFields.data.ocupacion || null,
-        escolaridad: validatedFields.data.escolaridad || null,
         nombrePadre: validatedFields.data.nombrePadre || null,
         nombreMadre: validatedFields.data.nombreMadre || null,
         telefonoContacto: validatedFields.data.telefonoContacto || null,
@@ -323,10 +380,6 @@ export async function addHistorialFromObject(historialData: any): Promise<FormSt
           ? Number(validatedFields.data.costoTratamiento)
           : null,
         estadoPago: validatedFields.data.estadoPago,
-        sexo: validatedFields.data.sexo || null,
-        estadoCivil: validatedFields.data.estadoCivil || null,
-        ocupacion: validatedFields.data.ocupacion || null,
-        escolaridad: validatedFields.data.escolaridad || null,
         nombrePadre: validatedFields.data.nombrePadre || null,
         nombreMadre: validatedFields.data.nombreMadre || null,
         telefonoContacto: validatedFields.data.telefonoContacto || null,
@@ -435,10 +488,6 @@ const historyFieldMap: Record<string, string> = {
   Notas_Adicionales: "notas",
   Costo_Tratamiento: "costoTratamiento",
   Estado_Pago: "estadoPago",
-  Sexo: "sexo",
-  Estado_Civil: "estadoCivil",
-  Ocupacion: "ocupacion",
-  Escolaridad: "escolaridad",
   Nombre_Padre: "nombrePadre",
   Nombre_Madre: "nombreMadre",
   Telefono_Contacto: "telefonoContacto",
@@ -547,10 +596,6 @@ export async function updateHistorial(id: string, prevState: FormState, formData
           ? Number(validatedFields.data.costoTratamiento)
           : null,
         estadoPago: validatedFields.data.estadoPago,
-        sexo: validatedFields.data.sexo || null,
-        estadoCivil: validatedFields.data.estadoCivil || null,
-        ocupacion: validatedFields.data.ocupacion || null,
-        escolaridad: validatedFields.data.escolaridad || null,
         nombrePadre: validatedFields.data.nombrePadre || null,
         nombreMadre: validatedFields.data.nombreMadre || null,
         telefonoContacto: validatedFields.data.telefonoContacto || null,

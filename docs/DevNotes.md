@@ -122,6 +122,7 @@ Added Sexo field (Masculino/Femenino) to Historial Clínico:
 | `DBMigration` | ✅ | Phase 0+1 merged (full Prisma/PostgreSQL backend) |
 | `refactor/camelcase-write-path` | ✅ | Write-path fields → camelCase |
 | `refactor/camelcase-read-path` | ✅ | Read-path fields → camelCase; legacy transforms deleted |
+| `HC1` | ❌ | Not merged; added HC1 review step + restructured Patient/ClinicalHistory fields |
 
 ### 11. `historial-clinico-new-fields` (reverted)
 Experimented with adding 9 new fields to Historial Clínico (Sexo, Estado Civil, Ocupación, Escolaridad, datos de padres, Motivo Consulta, Antecedentes Personales grid). Required Apps Script changes failed to deploy — reverted completely.
@@ -242,6 +243,38 @@ Renamed read-path fields and eliminated legacy transform layer:
 - **`src/components/patients-table.tsx`**: `patient.field` refs → camelCase
 - **`src/app/pacientes/[id]/page.tsx`**: Removed type import; all `patient.field` refs → camelCase; simplified `handleAddCita`/`handleAddHistorial` (table components now send camelCase)
 - **`src/components/edit-patient-modal.tsx`**: `patient.field` refs → camelCase
+
+### 17. `HC1` branch (not yet merged)
+Restructured Historial Clínico: moved 4 demographic fields from per-visit (`ClinicalHistory`) to per-patient (`Patient`), renamed `genero` → `sexo`, and built HC1 review step.
+
+**Schema + Migration:**
+- `Patient`: renamed `genero` → `sexo`; added `estadoCivil`, `ocupacion`, `escolaridad`
+- `ClinicalHistory`: removed `sexo`, `estadoCivil`, `ocupacion`, `escolaridad`
+- Migration: `20260630191356_restructure_patient_fields`
+
+**Registration form (`patient-form.tsx`):**
+- Added sexo (dropdown: Mas/Fem/Otro), estadoCivil (dropdown), ocupacion (text), escolaridad (text) — all optional
+
+**Server actions (`actions.ts`):**
+- `patientSchema`: renamed `genero` → `sexo`, added 3 fields
+- `medicalHistorySchema`: removed 4 fields; removed from Prisma `data` mappings and `historyFieldMap`
+- Added `saveHc1Odontologo` — upserts `nombreOdontologo` to `clinical_details`
+- Added `getPatientById` — server function for patient lookup
+
+**Medical history form + table:**
+- `medical-history-form.tsx`: removed 4 form field blocks + Zod entries
+- `historial-table.tsx`: removed sexo/estadoCivil/ocupacion/escolaridad columns, add dialog fields, and EditableCells
+
+**HC1 component (`hc1-form.tsx`):**
+- New component: displays Fecha (today auto), Nombre del Odontólogo (editable, default "Dra Elsa Hernández"), all patient data read-only
+
+**Workflow change:**
+- Before: Paciente → Historial (old form) → Cita
+- After: Paciente → **HC1** (review + odontólogo) → Cita
+- Old `MedicalHistoryForm` removed from workflow; still available from patient detail page
+
+**Proxy field-name mapping fix:**
+- The proxy route (`/api/proxy/route.ts`) returned raw Prisma data with field names `appointments` and `clinicalHistory`, but the frontend expects `citas` and `historialClinico`. Added `mapPatientFields()` in the `ok()` helper to rename these fields before returning. This fixed appointments showing in Google Calendar but not on the patient detail page.
 
 ## Other Tasks
 - Fixed `JSX.IntrinsicElements` error by running `npm install`
