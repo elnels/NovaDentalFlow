@@ -328,6 +328,33 @@ Persisted "Si es menor de Edad" checkbox state so it pre-checks correctly when e
 - Added `max-h-[85vh] overflow-y-auto` for scrolling support
 - Widened from `sm:max-w-[425px]` to `max-w-4xl` to match registro-completo form
 
+### 9. `hc2` (merged to main)
+Added Antecedentes Personales step (HC2) between HC1 and Cita in the registration workflow.
+
+**Schema + Migration:**
+- `ClinicalDetails.antecedentesPersonales`: `String?` → `Json?` (stores array of conditions)
+- Migration: `20260701002934_add_antecedentes_personales_json`
+
+**New component (`hc2-form.tsx`):**
+- Odontólogo field (editable, pre-filled from `clinical_details.nombreOdontologo` or default "Dra Elsa Hernández")
+- Motivo de Consulta textarea → saved to `clinical_details.motivo_consulta`
+- 31-row conditions table with checkbox (Sí/No) + conditional Edad input
+- Cáncer row shows extra detail field when checked ("Especifique el tipo...")
+- "Otra condición" free-text input for custom conditions
+- All conditions serialized as JSON hidden input for FormData submission
+
+**Server actions (`actions.ts`):**
+- `hc2Schema`: `patientId`, `nombreOdontologo`, `motivoConsulta`, `antecedentesPersonales`
+- `saveHc2`: upserts `clinical_details` with parsed JSON conditions
+- `getPatientById`: extended to include `clinicalDetails` relation
+
+**Workflow (`sequential-workflow.tsx`):**
+- New step order: Patient → HC1 → **HC2** → Cita → Completed
+
+**Reference documents added to docs/:**
+- `Antecedentes_Personales.csv` — 31 conditions list
+- `Antecedentes_Personales.png` — form layout reference
+
 ## Other Tasks
 - Fixed `JSX.IntrinsicElements` error by running `npm install`
 - Confirmed no unit test framework exists in the project
