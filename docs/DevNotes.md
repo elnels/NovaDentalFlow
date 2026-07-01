@@ -106,6 +106,36 @@ Added Sexo field (Masculino/Femenino) to Historial Clínico:
 - **`src/components/historial-table.tsx`**: Sexo column in table (EditableCell with select), add dialog field
 - **Test**: Apps Script test function run directly in editor before any UI work
 
+### 10. `back-button` (merged to main)
+Added back navigation across all workflow steps:
+
+- **`hc1-form.tsx`**: Added `onBack` prop + "Regresar" button (outline, submit row)
+- **`hc2-form.tsx`**: Added `onBack` prop + "Regresar" button
+- **`appointment-form.tsx`**: Added `onBack` prop + "Regresar" button
+- **`sequential-workflow.tsx`**: Added `patientEditData` state, `handleBackFromHc1` (fetches patient data via `getPatientById`, maps to `Partial<PatientFormData>`), `handleBackFromHc2` (sets step to hc1), `handleBackFromAppointment` (sets step to hc2). Patient step renders in edit mode when `patientEditData` is set.
+- **`patient-form.tsx`**: Exported `PatientFormData` type
+- **Null coercion**: Mapped Prisma `null` → `undefined` via `v => v ?? undefined` to fix React "value should not be null" error
+
+### 11. `fix-empty-historial-workflow` (merged to main)
+Created `ClinicalHistory` record on workflow completion so profile page shows historial:
+
+- **Root cause**: HC1/HC2 restructure removed the old "Historial" step that called `addEmptyHistorial`. Profile page reads `clinicalHistory` relation — always empty.
+- **`sequential-workflow.tsx`**: Imported `addEmptyHistorial`, called it in `handleAppointmentSuccess` after appointment is saved. Creates placeholder record with "Pendiente de completar" status, exactly like the old skip behavior.
+
+### 12. `fix-delete-patient-error` (merged to main)
+Fixed race condition error after deleting a patient:
+
+- **Root cause**: `delete-patient-dialog.tsx` called `onDataUpdate()` (which tried to reload the deleted patient via `getPacienteById`) before `router.push("/")`. API returned "Paciente no encontrado".
+- **Fix**: Removed `onDataUpdate()` call — navigation to `/` naturally fetches fresh patient list.
+
+### 13. `dedup-patient-on-create` (pending merge)
+Prevent duplicate patient creation:
+
+- **Trigger**: User reported that the same patient could be registered multiple times.
+- **Approach**: Option A — exact match on `nombres + apellidos + fechaNacimiento + telefonoPrincipal` (all four must match). DNI not used (Mexico).
+- **`actions.ts`**: `addPatient` now does `prisma.patient.findFirst()` with the 4 fields before `create`. If found, returns existing `patientId` with message "El paciente ya existe. Cargando datos...". Workflow advances to HC1 with the existing patient.
+- **UX**: No new UI needed — `onSuccess(patientId)` handles it the same as a new registration.
+
 ## Current Branch Status
 | Branch | Merged to main | Status |
 |---|---|---|---|
@@ -123,6 +153,10 @@ Added Sexo field (Masculino/Femenino) to Historial Clínico:
 | `refactor/camelcase-write-path` | ✅ | Write-path fields → camelCase |
 | `refactor/camelcase-read-path` | ✅ | Read-path fields → camelCase; legacy transforms deleted |
 | `HC1` | ❌ | Not merged; added HC1 review step + restructured Patient/ClinicalHistory fields |
+| `back-button` | ✅ | Complete |
+| `fix-empty-historial-workflow` | ✅ | Complete |
+| `fix-delete-patient-error` | ✅ | Complete |
+| `dedup-patient-on-create` | ❌ | Not merged; prevents duplicate patient registration |
 
 ### 11. `historial-clinico-new-fields` (reverted)
 Experimented with adding 9 new fields to Historial Clínico (Sexo, Estado Civil, Ocupación, Escolaridad, datos de padres, Motivo Consulta, Antecedentes Personales grid). Required Apps Script changes failed to deploy — reverted completely.
