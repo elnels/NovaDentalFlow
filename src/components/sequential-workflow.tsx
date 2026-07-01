@@ -16,9 +16,10 @@ import { Badge } from "@/components/ui/badge";
 import { PatientForm } from "@/components/patient-form";
 import { AppointmentForm } from "@/components/appointment-form";
 import { Hc1Form } from "@/components/hc1-form";
-import { addPatient, addCita, saveHc1Odontologo } from "@/lib/actions";
+import { Hc2Form } from "@/components/hc2-form";
+import { addPatient, addCita, saveHc1Odontologo, saveHc2 } from "@/lib/actions";
 
-type WorkflowStep = "patient" | "hc1" | "appointment" | "completed";
+type WorkflowStep = "patient" | "hc1" | "hc2" | "appointment" | "completed";
 
 interface StepData {
   patientId?: string;
@@ -42,6 +43,12 @@ const steps = [
     id: "hc1" as const,
     title: "Revisión de Datos (HC1)",
     description: "Revise los datos del paciente",
+    icon: FileText,
+  },
+  {
+    id: "hc2" as const,
+    title: "Antecedentes Personales (HC2)",
+    description: "Registre los antecedentes del paciente",
     icon: FileText,
   },
   {
@@ -117,6 +124,11 @@ export function SequentialWorkflow({ onComplete, onClose }: SequentialWorkflowPr
 
   const handleHc1Success = () => {
     setCompletedSteps(prev => new Set([...prev, "hc1"]));
+    setCurrentStep("hc2");
+  };
+
+  const handleHc2Success = () => {
+    setCompletedSteps(prev => new Set([...prev, "hc2"]));
     setCurrentStep("appointment");
   };
 
@@ -191,6 +203,22 @@ export function SequentialWorkflow({ onComplete, onClose }: SequentialWorkflowPr
               patientId={stepData.patientId}
               action={saveHc1Odontologo}
               onSuccess={handleHc1Success}
+            />
+          </motion.div>
+        )}
+
+        {currentStep === "hc2" && stepData.patientId && (
+          <motion.div
+            key="hc2"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Hc2Form
+              patientId={stepData.patientId}
+              action={saveHc2}
+              onSuccess={handleHc2Success}
             />
           </motion.div>
         )}

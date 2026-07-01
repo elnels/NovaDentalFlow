@@ -10,6 +10,13 @@ const hc1Schema = z.object({
   nombreOdontologo: z.string().optional().or(z.literal("")),
 });
 
+const hc2Schema = z.object({
+  patientId: z.string().min(1),
+  nombreOdontologo: z.string().optional().or(z.literal("")),
+  motivoConsulta: z.string().optional().or(z.literal("")),
+  antecedentesPersonales: z.string().optional().or(z.literal("")),
+});
+
 export async function saveHc1Odontologo(
   prevState: FormState,
   formData: FormData
@@ -45,6 +52,55 @@ export async function saveHc1Odontologo(
   }
 }
 
+export async function saveHc2(
+  prevState: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const rawData = Object.fromEntries(formData.entries());
+  const validatedFields = hc2Schema.safeParse(rawData);
+
+  if (!validatedFields.success) {
+    return {
+      message: "Datos inválidos.",
+      errors: validatedFields.error.flatten().fieldErrors as Record<string, string>,
+      success: false,
+    };
+  }
+
+  let parsedConditions: any[] = [];
+  const rawJson = validatedFields.data.antecedentesPersonales;
+  if (rawJson) {
+    try {
+      parsedConditions = JSON.parse(rawJson);
+    } catch {
+      return { message: "Error al procesar los antecedentes personales.", success: false };
+    }
+  }
+
+  try {
+    await prisma.clinicalDetails.upsert({
+      where: { patientId: validatedFields.data.patientId },
+      create: {
+        patientId: validatedFields.data.patientId,
+        nombreOdontologo: validatedFields.data.nombreOdontologo || null,
+        motivoConsulta: validatedFields.data.motivoConsulta || null,
+        antecedentesPersonales: parsedConditions,
+      },
+      update: {
+        nombreOdontologo: validatedFields.data.nombreOdontologo || null,
+        motivoConsulta: validatedFields.data.motivoConsulta || null,
+        antecedentesPersonales: parsedConditions,
+      },
+    });
+
+    revalidatePath("/");
+    revalidatePath(`/pacientes/${validatedFields.data.patientId}`);
+    return { message: "Antecedentes guardados con éxito.", success: true };
+  } catch (e) {
+    return { message: `Error: ${(e as Error).message}`, success: false };
+  }
+}
+
 export async function getPatientById(id: string) {
   try {
     const patient = await prisma.patient.findUnique({
@@ -52,6 +108,7 @@ export async function getPatientById(id: string) {
       include: {
         appointments: { orderBy: { fechaCita: "desc" }, take: 1 },
         clinicalHistory: { orderBy: { fechaHistorial: "desc" } },
+        clinicalDetails: true,
       },
     });
     if (!patient) return null;

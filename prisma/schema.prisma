@@ -70,8 +70,8 @@ model ClinicalHistory {
   estadoPago            String?   @map("estado_pago")
   telefonoContacto      String?   @map("telefono_contacto")
   motivoConsulta        String?   @map("motivo_consulta")
-  antecedentesPersonales String?  @map("antecedentes_personales")
-  exploracionBucal      String?   @map("exploracion_bucal")
+  antecedentesPersonales Json?     @map("antecedentes_personales")
+  exploracionBucal       String?   @map("exploracion_bucal")
   observaciones         String?
   diagnosticoPresuncion String?   @map("diagnostico_presuncion")
   estudiosAuxiliares    String?   @map("estudios_auxiliares")
