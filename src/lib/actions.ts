@@ -189,6 +189,19 @@ export async function addPatient(prevState: FormState, formData: FormData): Prom
   }
 
   try {
+    // Check for duplicate: same full name + birth date + phone
+    const existing = await prisma.patient.findFirst({
+      where: {
+        nombres: validatedFields.data.nombres,
+        apellidos: validatedFields.data.apellidos,
+        fechaNacimiento: new Date(validatedFields.data.fechaNacimiento),
+        telefonoPrincipal: validatedFields.data.telefonoPrincipal,
+      },
+    });
+    if (existing) {
+      return { message: "El paciente ya existe. Cargando datos...", success: true, patientId: existing.id };
+    }
+
     const patient = await prisma.patient.create({
       data: {
         dni: validatedFields.data.dni || null,
