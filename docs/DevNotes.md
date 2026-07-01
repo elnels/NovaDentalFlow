@@ -128,13 +128,30 @@ Fixed race condition error after deleting a patient:
 - **Root cause**: `delete-patient-dialog.tsx` called `onDataUpdate()` (which tried to reload the deleted patient via `getPacienteById`) before `router.push("/")`. API returned "Paciente no encontrado".
 - **Fix**: Removed `onDataUpdate()` call — navigation to `/` naturally fetches fresh patient list.
 
-### 13. `dedup-patient-on-create` (pending merge)
+### 13. `dedup-patient-on-create` (merged to main)
 Prevent duplicate patient creation:
 
 - **Trigger**: User reported that the same patient could be registered multiple times.
 - **Approach**: Option A — exact match on `nombres + apellidos + fechaNacimiento + telefonoPrincipal` (all four must match). DNI not used (Mexico).
 - **`actions.ts`**: `addPatient` now does `prisma.patient.findFirst()` with the 4 fields before `create`. If found, returns existing `patientId` with message "El paciente ya existe. Cargando datos...". Workflow advances to HC1 with the existing patient.
 - **UX**: No new UI needed — `onSuccess(patientId)` handles it the same as a new registration.
+
+### 14. `LabelFixes` (merged to main)
+Removed "(HC1)" / "(HC2)" suffixes from UI labels:
+- **`hc1-form.tsx`**: CardTitle from "Revisión de Datos (HC1)" → "Revisión de Datos"
+- **`hc2-form.tsx`**: CardTitle from "Antecedentes Personales (HC2)" → "Antecedentes Personales"; button from "Guardar y Continuar (HC2)" → "Guardar y Continuar"
+
+### 15. `workflow-clinical-history` (current branch)
+Replaced flat HC2 step with nested "Historia Clínica" parent step containing sub-steps:
+
+- **`sequential-workflow.tsx`**:
+  - New `SubStep` type: `"antecedentesPersonales" | "paso2Placeholder"`
+  - `totalSubSteps = 6` hardcoded; `subStepIndex()` maps each sub-step to 1-based index
+  - **StepIndicator**: H. Clínica node shows sub-step number in circle (instead of FileText icon) when active, "X de 6" text below. Counter always visible even when on earlier workflow steps (Paciente, Revisión).
+  - New sub-step renders:
+    - **Paso 1** (`antecedentesPersonales`): existing HC2 form (title "Antecedentes Personales", "Guardar y Continuar" → advances to paso 2)
+    - **Paso 2** (`paso2Placeholder`): empty card with title "Antecedentes Personales", "Continuar" button only → completes clinicalHistory, advances to Cita
+  - Handlers: `handleAntecedentesPersonalesSuccess` now goes to `paso2Placeholder`; new `handlePaso2Continue` marks step done; `handleBackFromAppointment` → paso 2
 
 ## Current Branch Status
 | Branch | Merged to main | Status |
@@ -156,7 +173,9 @@ Prevent duplicate patient creation:
 | `back-button` | ✅ | Complete |
 | `fix-empty-historial-workflow` | ✅ | Complete |
 | `fix-delete-patient-error` | ✅ | Complete |
-| `dedup-patient-on-create` | ❌ | Not merged; prevents duplicate patient registration |
+| `dedup-patient-on-create` | ✅ | Complete |
+| `LabelFixes` | ✅ | Complete |
+| `workflow-clinical-history` | ❌ | Not merged; restructured HC step with sub-steps + counter
 
 ### 11. `historial-clinico-new-fields` (reverted)
 Experimented with adding 9 new fields to Historial Clínico (Sexo, Estado Civil, Ocupación, Escolaridad, datos de padres, Motivo Consulta, Antecedentes Personales grid). Required Apps Script changes failed to deploy — reverted completely.
