@@ -47,6 +47,7 @@ interface AppointmentFormProps {
   initialData?: Partial<AppointmentFormData>;
   onSuccess: (result: FormState) => void; // <-- Cambio aquí
   patientId: string;
+  onBack?: () => void;
 }
 
 function SubmitButton({ isLoading }: { isLoading: boolean }) {
@@ -71,7 +72,7 @@ function SubmitButton({ isLoading }: { isLoading: boolean }) {
   );
 }
 
-export function AppointmentForm({ action, initialData, onSuccess, patientId }: AppointmentFormProps) {
+export function AppointmentForm({ action, initialData, onSuccess, patientId, onBack }: AppointmentFormProps) {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [state, setState] = useState<FormState>({ message: "", success: false });
@@ -296,7 +297,16 @@ export function AppointmentForm({ action, initialData, onSuccess, patientId }: A
             )}
           />
 
-          <SubmitButton isLoading={isLoading} />
+          <div className="flex gap-4">
+            {onBack && (
+              <Button type="button" variant="outline" onClick={onBack} disabled={isLoading} className="flex-1">
+                Regresar
+              </Button>
+            )}
+            <div className="flex-1">
+              <SubmitButton isLoading={isLoading} />
+            </div>
+          </div>
         </form>
       </div>
     </Form>

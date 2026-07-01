@@ -27,7 +27,7 @@ import {
 import type { FormState } from "@/lib/actions";
 import { useToast } from "@/hooks/use-toast";
 
-type PatientFormData = z.infer<typeof patientSchema>;
+export type PatientFormData = z.infer<typeof patientSchema>;
 
 const patientSchema = z.object({
   nombres: z.string().min(1, "El nombre es requerido").regex(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/, "El nombre solo puede contener letras"),

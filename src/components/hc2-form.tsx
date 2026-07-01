@@ -69,9 +69,10 @@ interface Hc2FormProps {
   patientId: string;
   action: (state: FormState, data: FormData) => Promise<FormState>;
   onSuccess: () => void;
+  onBack?: () => void;
 }
 
-export function Hc2Form({ patientId, action, onSuccess }: Hc2FormProps) {
+export function Hc2Form({ patientId, action, onSuccess, onBack }: Hc2FormProps) {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [loadingData, setLoadingData] = useState(true);
@@ -291,9 +292,16 @@ export function Hc2Form({ patientId, action, onSuccess }: Hc2FormProps) {
             />
           </div>
 
-          <Button type="submit" disabled={isLoading} className="w-full">
-            {isLoading ? "Guardando..." : "Continuar a Cita"}
-          </Button>
+          <div className="flex gap-4">
+            {onBack && (
+              <Button type="button" variant="outline" onClick={onBack} disabled={isLoading} className="flex-1">
+                Regresar
+              </Button>
+            )}
+            <Button type="submit" disabled={isLoading} className="flex-1">
+              {isLoading ? "Guardando..." : "Continuar a Cita"}
+            </Button>
+          </div>
         </form>
       </CardContent>
     </Card>
