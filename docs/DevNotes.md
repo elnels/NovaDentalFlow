@@ -153,7 +153,7 @@ Replaced flat HC2 step with nested "Historia Clínica" parent step containing su
     - **Paso 2** (`paso2Placeholder`): empty card with title "Antecedentes Personales", "Continuar" button only → completes clinicalHistory, advances to Cita
   - Handlers: `handleAntecedentesPersonalesSuccess` now goes to `paso2Placeholder`; new `handlePaso2Continue` marks step done; `handleBackFromAppointment` → paso 2
 
-### 16. `hc3-heredo-familiares` (current branch)
+### 16. `hc3-heredo-familiares` (merged to main)
 Replaced empty paso 2 placeholder with Antecedentes Heredo-Familiares form (HC3):
 
 - **`src/components/hc3-form.tsx`** (new):
@@ -176,6 +176,26 @@ Replaced empty paso 2 placeholder with Antecedentes Heredo-Familiares form (HC3)
   - `handleAntecedentesHeredoFamiliaresSuccess` → completes + goes to Cita
   - `handleBackFromAntecedentesHeredoFamiliares` → back to antecedentesPersonales
   - `handleBackFromAppointment` → antecentesHeredoFamiliares
+
+### 17. `hc4-no-patologicos` (current branch)
+Antecedentes Personales No Patológicos form (HC4) — 10 yes/no questions with conditional fields:
+
+- **`src/components/hc4-form.tsx`** (new):
+  - 10 questions with Sí/No radio toggle; conditional inputs revealed on "Sí"
+  - Questions: bajo tratamiento médico, toma medicamentos, embarazada (solo mujeres), transfusiones, sangrado excesivo, cirugías, vacunas, alergias, consume sustancias (con ¿Cuáles? + Frecuencia), higiene bucal
+  - Loads/saves via `clinicalDetails` (all columns already existed in DB schema)
+  - Uses JSON serialization for all fields (same pattern as HC2/HC3)
+
+- **`src/lib/actions.ts`**:
+  - `hc4Schema`: `patientId + hc4Data (JSON string)`
+  - `saveHc4`: upserts `clinical_details` with all 10 question fields (booleans + conditional text/date)
+
+- **`src/components/sequential-workflow.tsx`**:
+  - `SubStep type`: added `"antecedentesNoPatologicos"` (index 3)
+  - `handleAntecedentesHeredoFamiliaresSuccess` → `antecedentesNoPatologicos` (not Cita)
+  - `handleAntecedentesNoPatologicosSuccess` → completes + Cita
+  - `handleBackFromAntecedentesNoPatologicos` → back to `antecedentesHeredoFamiliares`
+  - `handleBackFromAppointment` → `antecedentesNoPatologicos`
 
 ## Current Branch Status
 | Branch | Merged to main | Status |
@@ -200,7 +220,8 @@ Replaced empty paso 2 placeholder with Antecedentes Heredo-Familiares form (HC3)
 | `dedup-patient-on-create` | ✅ | Complete |
 | `LabelFixes` | ✅ | Complete |
 | `workflow-clinical-history` | ✅ | Complete; restructured HC step with sub-steps + counter |
-| `hc3-heredo-familiares` | ❌ | Not merged; Antecedentes Heredo-Familiares replaces empty paso 2 |
+| `hc3-heredo-familiares` | ✅ | Complete; Antecedentes Heredo-Familiares replaces empty paso 2 |
+| `hc4-no-patologicos` | ❌ | Not merged; Antecedentes Personales No Patológicos |
 
 ### 11. `historial-clinico-new-fields` (reverted)
 Experimented with adding 9 new fields to Historial Clínico (Sexo, Estado Civil, Ocupación, Escolaridad, datos de padres, Motivo Consulta, Antecedentes Personales grid). Required Apps Script changes failed to deploy — reverted completely.

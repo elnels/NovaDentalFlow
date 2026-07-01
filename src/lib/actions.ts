@@ -121,6 +121,92 @@ export async function saveHc3(
   }
 }
 
+const hc4Schema = z.object({
+  patientId: z.string().min(1),
+  hc4Data: z.string().optional().or(z.literal("")),
+});
+
+export async function saveHc4(
+  prevState: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const rawData = Object.fromEntries(formData.entries());
+  const validatedFields = hc4Schema.safeParse(rawData);
+
+  if (!validatedFields.success) {
+    return {
+      message: "Datos inválidos.",
+      errors: validatedFields.error.flatten().fieldErrors as Record<string, string>,
+      success: false,
+    };
+  }
+
+  let parsed: any = {};
+  const rawJson = validatedFields.data.hc4Data;
+  if (rawJson) {
+    try {
+      parsed = JSON.parse(rawJson);
+    } catch {
+      return { message: "Error al procesar los datos.", success: false };
+    }
+  }
+
+  try {
+    await prisma.clinicalDetails.upsert({
+      where: { patientId: validatedFields.data.patientId },
+      create: {
+        patientId: validatedFields.data.patientId,
+        bajoTratamientoMedico: parsed.bajoTratamientoMedico ?? false,
+        motivo: parsed.motivo || null,
+        tomaMedicamentos: parsed.tomaMedicamentos ?? false,
+        cualesMedicamentos: parsed.cualesMedicamentos || null,
+        embarazada: parsed.embarazada ?? false,
+        fechaUltimaMenstruacion: parsed.fechaUltimaMenstruacion ? new Date(parsed.fechaUltimaMenstruacion) : null,
+        transfusiones: parsed.transfusiones ?? false,
+        sangradoExcesivo: parsed.sangradoExcesivo ?? false,
+        sangradoTiempo: parsed.sangradoTiempo || null,
+        cirugias: parsed.cirugias ?? false,
+        cirugiasDetalle: parsed.cirugiasDetalle || null,
+        vacunasCompletas: parsed.vacunasCompletas ?? false,
+        alergicoMedicamentos: parsed.alergicoMedicamentos ?? false,
+        alergicoCual: parsed.alergicoCual || null,
+        consumeSustancias: parsed.consumeSustancias ?? false,
+        cualesSustancias: parsed.cualesSustancias || null,
+        frecuenciaSustancias: parsed.frecuenciaSustancias || null,
+        higieneBucal: parsed.higieneBucal ?? false,
+        frecuenciaHigiene: parsed.frecuenciaHigiene || null,
+      },
+      update: {
+        bajoTratamientoMedico: parsed.bajoTratamientoMedico ?? false,
+        motivo: parsed.motivo || null,
+        tomaMedicamentos: parsed.tomaMedicamentos ?? false,
+        cualesMedicamentos: parsed.cualesMedicamentos || null,
+        embarazada: parsed.embarazada ?? false,
+        fechaUltimaMenstruacion: parsed.fechaUltimaMenstruacion ? new Date(parsed.fechaUltimaMenstruacion) : null,
+        transfusiones: parsed.transfusiones ?? false,
+        sangradoExcesivo: parsed.sangradoExcesivo ?? false,
+        sangradoTiempo: parsed.sangradoTiempo || null,
+        cirugias: parsed.cirugias ?? false,
+        cirugiasDetalle: parsed.cirugiasDetalle || null,
+        vacunasCompletas: parsed.vacunasCompletas ?? false,
+        alergicoMedicamentos: parsed.alergicoMedicamentos ?? false,
+        alergicoCual: parsed.alergicoCual || null,
+        consumeSustancias: parsed.consumeSustancias ?? false,
+        cualesSustancias: parsed.cualesSustancias || null,
+        frecuenciaSustancias: parsed.frecuenciaSustancias || null,
+        higieneBucal: parsed.higieneBucal ?? false,
+        frecuenciaHigiene: parsed.frecuenciaHigiene || null,
+      },
+    });
+
+    revalidatePath("/");
+    revalidatePath(`/pacientes/${validatedFields.data.patientId}`);
+    return { message: "Antecedentes no patológicos guardados con éxito.", success: true };
+  } catch (e) {
+    return { message: `Error: ${(e as Error).message}`, success: false };
+  }
+}
+
 export async function saveHc2(
   prevState: FormState,
   formData: FormData
