@@ -67,6 +67,36 @@ interface Hc5FormProps {
   onBack?: () => void;
 }
 
+function SiNoRadio({ value, onChange }: { value: boolean; onChange: (v: boolean) => void }) {
+  return (
+    <RadioGroup value={value ? "si" : "no"} onValueChange={(v) => onChange(v === "si")} className="flex gap-6">
+      <div className="flex items-center gap-2">
+        <RadioGroupItem value="si" />
+        <Label className="text-sm font-normal">Sí</Label>
+      </div>
+      <div className="flex items-center gap-2">
+        <RadioGroupItem value="no" />
+        <Label className="text-sm font-normal">No</Label>
+      </div>
+    </RadioGroup>
+  );
+}
+
+function OclusionFieldRow({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="grid grid-cols-[180px_1fr] gap-4 items-start py-3 border-b last:border-b-0">
+      <Label className="text-sm font-medium pt-2">{label}</Label>
+      <div>{children}</div>
+    </div>
+  );
+}
+
 export function Hc5Form({ patientId, action, onSuccess, onBack }: Hc5FormProps) {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
@@ -152,32 +182,6 @@ export function Hc5Form({ patientId, action, onSuccess, onBack }: Hc5FormProps) 
     month: "long",
     day: "numeric",
   });
-
-  const SiNoRadio = ({ value, onChange }: { value: boolean; onChange: (v: boolean) => void }) => (
-    <RadioGroup value={value ? "si" : "no"} onValueChange={(v) => onChange(v === "si")} className="flex gap-6">
-      <div className="flex items-center gap-2">
-        <RadioGroupItem value="si" />
-        <Label className="text-sm font-normal">Sí</Label>
-      </div>
-      <div className="flex items-center gap-2">
-        <RadioGroupItem value="no" />
-        <Label className="text-sm font-normal">No</Label>
-      </div>
-    </RadioGroup>
-  );
-
-  const OclusionFieldRow = ({
-    label,
-    children,
-  }: {
-    label: string;
-    children: React.ReactNode;
-  }) => (
-    <div className="grid grid-cols-[180px_1fr] gap-4 items-start py-3 border-b last:border-b-0">
-      <Label className="text-sm font-medium pt-2">{label}</Label>
-      <div>{children}</div>
-    </div>
-  );
 
   return (
     <Card>
