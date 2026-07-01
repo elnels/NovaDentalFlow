@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
-import { Loader2, Stethoscope, Plus, X } from "lucide-react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import { Loader2, Stethoscope } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/card";
 import type { FormState } from "@/lib/actions";
 import { getPatientById } from "@/lib/actions";
+import { useToast } from "@/hooks/use-toast";
 
 const DEFAULT_CONDITIONS = [
   "Anemia",
@@ -55,6 +56,15 @@ interface ConditionState {
   detalle: string;
 }
 
+function defaultConditions(): ConditionState[] {
+  return DEFAULT_CONDITIONS.map((name) => ({
+    name,
+    presents: false,
+    edad: "",
+    detalle: "",
+  }));
+}
+
 interface Hc2FormProps {
   patientId: string;
   action: (state: FormState, data: FormData) => Promise<FormState>;
@@ -62,19 +72,14 @@ interface Hc2FormProps {
 }
 
 export function Hc2Form({ patientId, action, onSuccess }: Hc2FormProps) {
+  const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [loadingData, setLoadingData] = useState(true);
   const [nombreOdontologo, setNombreOdontologo] = useState("Dra Elsa Hernández");
   const [motivoConsulta, setMotivoConsulta] = useState("");
   const [otherCondition, setOtherCondition] = useState("");
-  const [conditions, setConditions] = useState<ConditionState[]>(
-    DEFAULT_CONDITIONS.map((name) => ({
-      name,
-      presents: false,
-      edad: "",
-      detalle: "",
-    }))
-  );
+  const [conditions, setConditions] = useState<ConditionState[]>(defaultConditions);
+  const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -85,35 +90,23 @@ export function Hc2Form({ patientId, action, onSuccess }: Hc2FormProps) {
           if (cd.nombreOdontologo) setNombreOdontologo(cd.nombreOdontologo);
           if (cd.motivoConsulta) setMotivoConsulta(cd.motivoConsulta);
           if (Array.isArray(cd.antecedentesPersonales)) {
-            setConditions((prev) =>
-              prev.map((c) => {
-                const saved = (cd.antecedentesPersonales as any[]).find(
-                  (s: any) => s.name === c.name
-                );
-                if (saved) {
-                  return { ...c, presents: saved.presents || false, edad: saved.edad || "", detalle: saved.detalle || "" };
-                }
-                if (c.name === "Otro: Covid 19" && (cd.antecedentesPersonales as any[]).some((s: any) => s.name !== "Otro: Covid 19" && !DEFAULT_CONDITIONS.includes(s.name))) {
-                  return c;
-                }
-                return c;
-              })
-            );
-            const savedOthers = (cd.antecedentesPersonales as any[]).filter(
-              (s: any) => !DEFAULT_CONDITIONS.includes(s.name)
-            );
-            if (savedOthers.length > 0) {
-              setOtherCondition(savedOthers[0].name.replace("Otro: ", ""));
-              setConditions((prev) => {
-                const filtered = prev.filter((c) => c.name !== "Otro: Covid 19");
-                filtered.push({
-                  name: `Otro: ${savedOthers[0].name.replace("Otro: ", "")}`,
-                  presents: savedOthers[0].presents || false,
-                  edad: savedOthers[0].edad || "",
-                  detalle: savedOthers[0].detalle || "",
-                });
-                return filtered;
+            const saved = cd.antecedentesPersonales as ConditionState[];
+            setConditions((prev) => {
+              const merged = prev.map((c) => {
+                const found = saved.find((s) => s.name === c.name);
+                return found ? { ...c, presents: found.presents || false, edad: found.edad || "", detalle: found.detalle || "" } : c;
               });
+              const custom = saved.filter((s) => !DEFAULT_CONDITIONS.includes(s.name));
+              custom.forEach((c) => {
+                if (!merged.find((m) => m.name === c.name)) {
+                  merged.push(c);
+                }
+              });
+              return merged;
+            });
+            const custom = saved.filter((s) => !DEFAULT_CONDITIONS.includes(s.name));
+            if (custom.length > 0) {
+              setOtherCondition(custom[0].name.replace("Otro: ", ""));
             }
           }
         }
@@ -155,12 +148,7 @@ export function Hc2Form({ patientId, action, onSuccess }: Hc2FormProps) {
     setConditions((prev) => {
       const filtered = prev.filter((c) => !c.name.startsWith("Otro:"));
       if (value.trim()) {
-        filtered.push({
-          name: `Otro: ${value.trim()}`,
-          presents: false,
-          edad: "",
-          detalle: "",
-        });
+        filtered.push({ name: `Otro: ${value.trim()}`, presents: false, edad: "", detalle: "" });
       }
       return filtered;
     });
@@ -175,13 +163,16 @@ export function Hc2Form({ patientId, action, onSuccess }: Hc2FormProps) {
   const handleSubmit = async (formData: FormData) => {
     setIsLoading(true);
     try {
-      formData.set("patientId", patientId);
-      formData.set("nombreOdontologo", nombreOdontologo);
-      formData.set("motivoConsulta", motivoConsulta);
-      formData.set("antecedentesPersonales", JSON.stringify(conditions));
       const result = await action({ message: "", success: false }, formData);
       if (result.success) {
+        toast({ title: "Éxito", description: result.message });
         onSuccess();
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: result.message || "Error al guardar.",
+        });
       }
     } finally {
       setIsLoading(false);
@@ -213,12 +204,14 @@ export function Hc2Form({ patientId, action, onSuccess }: Hc2FormProps) {
           </p>
         </div>
 
-        <form action={handleSubmit} className="space-y-6">
+        <form ref={formRef} action={handleSubmit} className="space-y-6">
           <input type="hidden" name="patientId" value={patientId} />
+          <input type="hidden" name="antecedentesPersonales" value={JSON.stringify(conditions)} />
 
           <div>
             <label className="text-sm font-medium">Nombre del Odontólogo</label>
             <Input
+              name="nombreOdontologo"
               value={nombreOdontologo}
               onChange={(e) => setNombreOdontologo(e.target.value)}
               placeholder="Dra Elsa Hernández"
@@ -229,6 +222,7 @@ export function Hc2Form({ patientId, action, onSuccess }: Hc2FormProps) {
           <div>
             <label className="text-sm font-medium">Motivo de Consulta</label>
             <Textarea
+              name="motivoConsulta"
               value={motivoConsulta}
               onChange={(e) => setMotivoConsulta(e.target.value)}
               placeholder="Describa el motivo de la consulta..."
@@ -289,13 +283,12 @@ export function Hc2Form({ patientId, action, onSuccess }: Hc2FormProps) {
 
           <div>
             <label className="text-sm font-medium">Otra condición</label>
-            <div className="flex items-center gap-2 mt-1">
-              <Input
-                value={otherCondition}
-                onChange={(e) => handleOtherConditionChange(e.target.value)}
-                placeholder="Ej: Covid 19"
-              />
-            </div>
+            <Input
+              value={otherCondition}
+              onChange={(e) => handleOtherConditionChange(e.target.value)}
+              placeholder="Ej: Covid 19"
+              className="mt-1"
+            />
           </div>
 
           <Button type="submit" disabled={isLoading} className="w-full">

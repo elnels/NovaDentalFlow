@@ -70,12 +70,12 @@ model ClinicalHistory {
   estadoPago            String?   @map("estado_pago")
   telefonoContacto      String?   @map("telefono_contacto")
   motivoConsulta        String?   @map("motivo_consulta")
-  antecedentesPersonales Json?     @map("antecedentes_personales")
+  antecedentesPersonales String?   @map("antecedentes_personales")
   exploracionBucal       String?   @map("exploracion_bucal")
-  observaciones         String?
-  diagnosticoPresuncion String?   @map("diagnostico_presuncion")
-  estudiosAuxiliares    String?   @map("estudios_auxiliares")
-  odontograma           Json?
+  observaciones          String?
+  diagnosticoPresuncion  String?   @map("diagnostico_presuncion")
+  estudiosAuxiliares     String?   @map("estudios_auxiliares")
+  odontograma            Json?
 
   patient    Patient      @relation(fields: [patientId], references: [id], onDelete: Cascade)
   appointment Appointment? @relation(fields: [appointmentId], references: [id], onDelete: SetNull)
@@ -89,7 +89,7 @@ model ClinicalDetails {
   patientId              String    @unique @map("patient_id")
   nombreOdontologo       String?   @map("nombre_odontologo")
   motivoConsulta         String?   @map("motivo_consulta")
-  antecedentesPersonales String?   @map("antecedentes_personales")
+  antecedentesPersonales Json?     @map("antecedentes_personales")
   bajoTratamientoMedico  Boolean   @default(false) @map("bajo_tratamiento_medico")
   motivo                 String?
   tomaMedicamentos       Boolean   @default(false) @map("toma_medicamentos")
