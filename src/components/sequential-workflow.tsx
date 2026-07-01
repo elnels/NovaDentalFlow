@@ -17,7 +17,7 @@ import { PatientForm } from "@/components/patient-form";
 import { AppointmentForm } from "@/components/appointment-form";
 import { Hc1Form } from "@/components/hc1-form";
 import { Hc2Form } from "@/components/hc2-form";
-import { addPatient, addCita, saveHc1Odontologo, saveHc2, getPatientById, updatePatient, type FormState } from "@/lib/actions";
+import { addPatient, addCita, saveHc1Odontologo, saveHc2, getPatientById, updatePatient, addEmptyHistorial, type FormState } from "@/lib/actions";
 import type { PatientFormData } from "@/components/patient-form";
 
 type WorkflowStep = "patient" | "hc1" | "hc2" | "appointment" | "completed";
@@ -183,11 +183,14 @@ export function SequentialWorkflow({ onComplete, onClose }: SequentialWorkflowPr
     setCurrentStep("hc2");
   };
 
-  const handleAppointmentSuccess = (result: FormState) => {
+  const handleAppointmentSuccess = async (result: FormState) => {
     if (result.success && result.appointmentId) {
       setStepData(prev => ({ ...prev, appointmentId: result.appointmentId }));
       setCompletedSteps(prev => new Set([...prev, "appointment"]));
       setCurrentStep("completed");
+      if (stepData.patientId) {
+        await addEmptyHistorial(stepData.patientId, result.appointmentId);
+      }
     }
   };
 
