@@ -21,7 +21,7 @@ import { addPatient, addCita, saveHc1Odontologo, saveHc2, getPatientById, update
 import type { PatientFormData } from "@/components/patient-form";
 
 type WorkflowStep = "patient" | "hc1" | "clinicalHistory" | "appointment" | "completed";
-type SubStep = "antecedentesPersonales";
+type SubStep = "antecedentesPersonales" | "paso2Placeholder";
 
 interface StepData {
   patientId?: string;
@@ -64,7 +64,10 @@ const steps = [
 const totalSubSteps = 6;
 
 function subStepIndex(currentSubStep: SubStep): number {
-  return 1; // antecedentesPersonales is always index 1 for now
+  switch (currentSubStep) {
+    case "antecedentesPersonales": return 1;
+    case "paso2Placeholder": return 2;
+  }
 }
 
 function StepIndicator({ currentStep, completedSteps, currentSubStep }
@@ -75,7 +78,7 @@ function StepIndicator({ currentStep, completedSteps, currentSubStep }
         const isCompleted = completedSteps.has(step.id);
         const isCurrent = currentStep === step.id;
         const isClinicalHistory = step.id === "clinicalHistory";
-        const activeIdx = isClinicalHistory && isCurrent && currentSubStep ? subStepIndex(currentSubStep) : null;
+        const activeIdx = isClinicalHistory && currentSubStep && !isCompleted ? subStepIndex(currentSubStep) : null;
         const Icon = step.icon;
         
         return (
@@ -107,7 +110,7 @@ function StepIndicator({ currentStep, completedSteps, currentSubStep }
                 }`}>
                   {step.title}
                 </p>
-                {isClinicalHistory && isCurrent && activeIdx ? (
+                {isClinicalHistory && activeIdx ? (
                   <p className="text-xs text-muted-foreground max-w-24">
                     {activeIdx} de {totalSubSteps}
                   </p>
@@ -193,6 +196,11 @@ export function SequentialWorkflow({ onComplete, onClose }: SequentialWorkflowPr
 
   const handleAntecedentesPersonalesSuccess = () => {
     setCompletedSubSteps(prev => new Set([...prev, "antecedentesPersonales"]));
+    setCurrentSubStep("paso2Placeholder");
+  };
+
+  const handlePaso2Continue = () => {
+    setCompletedSubSteps(prev => new Set([...prev, "paso2Placeholder"]));
     setCompletedSteps(prev => new Set([...prev, "clinicalHistory"]));
     setCurrentStep("appointment");
   };
@@ -202,7 +210,7 @@ export function SequentialWorkflow({ onComplete, onClose }: SequentialWorkflowPr
   };
 
   const handleBackFromAppointment = () => {
-    setCurrentSubStep("antecedentesPersonales");
+    setCurrentSubStep("paso2Placeholder");
     setCurrentStep("clinicalHistory");
   };
 
@@ -306,6 +314,30 @@ export function SequentialWorkflow({ onComplete, onClose }: SequentialWorkflowPr
               onSuccess={handleAntecedentesPersonalesSuccess}
               onBack={handleBackFromAntecedentesPersonales}
             />
+          </motion.div>
+        )}
+
+        {currentStep === "clinicalHistory" && stepData.patientId && currentSubStep === "paso2Placeholder" && (
+          <motion.div
+            key="paso2"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="h-5 w-5" />
+                  Antecedentes Personales
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Button onClick={handlePaso2Continue}>
+                  Continuar
+                </Button>
+              </CardContent>
+            </Card>
           </motion.div>
         )}
 
