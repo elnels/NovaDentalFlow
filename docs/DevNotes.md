@@ -152,7 +152,7 @@ Prevent duplicate patient creation:
 | `DBMigration` | ✅ | Phase 0+1 merged (full Prisma/PostgreSQL backend) |
 | `refactor/camelcase-write-path` | ✅ | Write-path fields → camelCase |
 | `refactor/camelcase-read-path` | ✅ | Read-path fields → camelCase; legacy transforms deleted |
-| `HC1` | ❌ | Not merged; added HC1 review step + restructured Patient/ClinicalHistory fields |
+| `HC1` | ✅ | Complete; added HC1 review step + restructured Patient/ClinicalHistory fields |
 | `back-button` | ✅ | Complete |
 | `fix-empty-historial-workflow` | ✅ | Complete |
 | `fix-delete-patient-error` | ✅ | Complete |
@@ -278,7 +278,7 @@ Renamed read-path fields and eliminated legacy transform layer:
 - **`src/app/pacientes/[id]/page.tsx`**: Removed type import; all `patient.field` refs → camelCase; simplified `handleAddCita`/`handleAddHistorial` (table components now send camelCase)
 - **`src/components/edit-patient-modal.tsx`**: `patient.field` refs → camelCase
 
-### 17. `HC1` branch (not yet merged)
+### 17. `HC1` branch (merged to main)
 Restructured Historial Clínico: moved 4 demographic fields from per-visit (`ClinicalHistory`) to per-patient (`Patient`), renamed `genero` → `sexo`, and built HC1 review step.
 
 **Schema + Migration:**
