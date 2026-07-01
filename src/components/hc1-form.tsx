@@ -176,7 +176,7 @@ export function Hc1Form({ patientId, action, onSuccess, onBack }: Hc1FormProps) 
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Stethoscope className="h-5 w-5" />
-          Historial Clínico — Revisión de Datos (HC1)
+          Historial Clínico — Revisión de Datos
         </CardTitle>
       </CardHeader>
       <CardContent>

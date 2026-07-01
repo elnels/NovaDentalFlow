@@ -42,13 +42,13 @@ const steps = [
   },
   {
     id: "hc1" as const,
-    title: "Revisión de Datos (HC1)",
+    title: "Revisión de Datos",
     description: "Revise los datos del paciente",
     icon: FileText,
   },
   {
     id: "hc2" as const,
-    title: "Antecedentes Personales (HC2)",
+    title: "Antecedentes Personales",
     description: "Registre los antecedentes del paciente",
     icon: FileText,
   },
