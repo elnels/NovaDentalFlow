@@ -141,7 +141,7 @@ Removed "(HC1)" / "(HC2)" suffixes from UI labels:
 - **`hc1-form.tsx`**: CardTitle from "Revisión de Datos (HC1)" → "Revisión de Datos"
 - **`hc2-form.tsx`**: CardTitle from "Antecedentes Personales (HC2)" → "Antecedentes Personales"; button from "Guardar y Continuar (HC2)" → "Guardar y Continuar"
 
-### 15. `workflow-clinical-history` (current branch)
+### 15. `workflow-clinical-history` (merged to main)
 Replaced flat HC2 step with nested "Historia Clínica" parent step containing sub-steps:
 
 - **`sequential-workflow.tsx`**:
@@ -152,6 +152,30 @@ Replaced flat HC2 step with nested "Historia Clínica" parent step containing su
     - **Paso 1** (`antecedentesPersonales`): existing HC2 form (title "Antecedentes Personales", "Guardar y Continuar" → advances to paso 2)
     - **Paso 2** (`paso2Placeholder`): empty card with title "Antecedentes Personales", "Continuar" button only → completes clinicalHistory, advances to Cita
   - Handlers: `handleAntecedentesPersonalesSuccess` now goes to `paso2Placeholder`; new `handlePaso2Continue` marks step done; `handleBackFromAppointment` → paso 2
+
+### 16. `hc3-heredo-familiares` (current branch)
+Replaced empty paso 2 placeholder with Antecedentes Heredo-Familiares form (HC3):
+
+- **`src/components/hc3-form.tsx`** (new):
+  - Table with 7 family conditions: Diabetes, Hipertensión Arterial, Cáncer, Cardiópatas, Nefrópatas, Malformaciones, Otros
+  - Each row: checkbox (Sí/No) → shows "¿Quién?" dropdown (Padre, Madre, Abuelo paterno, Abuelo materno, Ambos padres, Ambos abuelos)
+  - Cáncer and Malformaciones show extra "Tipo" free-text input when checked
+  - Otros shows a text input instead of dropdown (free-text "¿Quién?")
+  - Malformaciones has no dropdown — "¿Quién?" shows "—"
+  - Loads existing `familyCondition` records via `getFamilyConditions()`
+
+- **`src/lib/actions.ts`**:
+  - `hc3Schema`: `patientId + conditions (JSON string)`
+  - `saveHc3`: deletes all existing `FamilyCondition` records for patient in a transaction, creates new ones for checked conditions
+  - `getFamilyConditions`: fetches all `FamilyCondition` records for a patient
+
+- **`src/components/sequential-workflow.tsx`**:
+  - `SubStep type`: `"paso2Placeholder"` → `"antecedentesHeredoFamiliares"`
+  - `subStepIndex()`: index 2 for new sub-step
+  - `handleAntecedentesPersonalesSuccess` → `antecedentesHeredoFamiliares`
+  - `handleAntecedentesHeredoFamiliaresSuccess` → completes + goes to Cita
+  - `handleBackFromAntecedentesHeredoFamiliares` → back to antecedentesPersonales
+  - `handleBackFromAppointment` → antecentesHeredoFamiliares
 
 ## Current Branch Status
 | Branch | Merged to main | Status |
@@ -175,7 +199,8 @@ Replaced flat HC2 step with nested "Historia Clínica" parent step containing su
 | `fix-delete-patient-error` | ✅ | Complete |
 | `dedup-patient-on-create` | ✅ | Complete |
 | `LabelFixes` | ✅ | Complete |
-| `workflow-clinical-history` | ❌ | Not merged; restructured HC step with sub-steps + counter
+| `workflow-clinical-history` | ✅ | Complete; restructured HC step with sub-steps + counter |
+| `hc3-heredo-familiares` | ❌ | Not merged; Antecedentes Heredo-Familiares replaces empty paso 2 |
 
 ### 11. `historial-clinico-new-fields` (reverted)
 Experimented with adding 9 new fields to Historial Clínico (Sexo, Estado Civil, Ocupación, Escolaridad, datos de padres, Motivo Consulta, Antecedentes Personales grid). Required Apps Script changes failed to deploy — reverted completely.

@@ -52,6 +52,75 @@ export async function saveHc1Odontologo(
   }
 }
 
+export async function getFamilyConditions(patientId: string) {
+  try {
+    return await prisma.familyCondition.findMany({
+      where: { patientId },
+    });
+  } catch {
+    return [];
+  }
+}
+
+const hc3Schema = z.object({
+  patientId: z.string().min(1),
+  conditions: z.string().optional().or(z.literal("")),
+});
+
+export async function saveHc3(
+  prevState: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const rawData = Object.fromEntries(formData.entries());
+  const validatedFields = hc3Schema.safeParse(rawData);
+
+  if (!validatedFields.success) {
+    return {
+      message: "Datos inválidos.",
+      errors: validatedFields.error.flatten().fieldErrors as Record<string, string>,
+      success: false,
+    };
+  }
+
+  let parsedConditions: any[] = [];
+  const rawJson = validatedFields.data.conditions;
+  if (rawJson) {
+    try {
+      parsedConditions = JSON.parse(rawJson);
+    } catch {
+      return { message: "Error al procesar las condiciones familiares.", success: false };
+    }
+  }
+
+  try {
+    const patientId = validatedFields.data.patientId;
+
+    await prisma.$transaction(async (tx) => {
+      await tx.familyCondition.deleteMany({ where: { patientId } });
+
+      for (const c of parsedConditions) {
+        if (c.hasCondition) {
+          await tx.familyCondition.create({
+            data: {
+              patientId,
+              conditionName: c.conditionName,
+              hasCondition: true,
+              tipo: c.tipo || null,
+              relatives: c.relatives || null,
+            },
+          });
+        }
+      }
+    });
+
+    revalidatePath("/");
+    revalidatePath(`/pacientes/${patientId}`);
+    return { message: "Antecedentes heredo-familiares guardados con éxito.", success: true };
+  } catch (e) {
+    return { message: `Error: ${(e as Error).message}`, success: false };
+  }
+}
+
 export async function saveHc2(
   prevState: FormState,
   formData: FormData

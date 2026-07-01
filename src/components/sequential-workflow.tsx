@@ -17,11 +17,12 @@ import { PatientForm } from "@/components/patient-form";
 import { AppointmentForm } from "@/components/appointment-form";
 import { Hc1Form } from "@/components/hc1-form";
 import { Hc2Form } from "@/components/hc2-form";
-import { addPatient, addCita, saveHc1Odontologo, saveHc2, getPatientById, updatePatient, addEmptyHistorial, type FormState } from "@/lib/actions";
+import { Hc3Form } from "@/components/hc3-form";
+import { addPatient, addCita, saveHc1Odontologo, saveHc2, saveHc3, getPatientById, updatePatient, addEmptyHistorial, type FormState } from "@/lib/actions";
 import type { PatientFormData } from "@/components/patient-form";
 
 type WorkflowStep = "patient" | "hc1" | "clinicalHistory" | "appointment" | "completed";
-type SubStep = "antecedentesPersonales" | "paso2Placeholder";
+type SubStep = "antecedentesPersonales" | "antecedentesHeredoFamiliares";
 
 interface StepData {
   patientId?: string;
@@ -66,7 +67,7 @@ const totalSubSteps = 6;
 function subStepIndex(currentSubStep: SubStep): number {
   switch (currentSubStep) {
     case "antecedentesPersonales": return 1;
-    case "paso2Placeholder": return 2;
+    case "antecedentesHeredoFamiliares": return 2;
   }
 }
 
@@ -196,13 +197,17 @@ export function SequentialWorkflow({ onComplete, onClose }: SequentialWorkflowPr
 
   const handleAntecedentesPersonalesSuccess = () => {
     setCompletedSubSteps(prev => new Set([...prev, "antecedentesPersonales"]));
-    setCurrentSubStep("paso2Placeholder");
+    setCurrentSubStep("antecedentesHeredoFamiliares");
   };
 
-  const handlePaso2Continue = () => {
-    setCompletedSubSteps(prev => new Set([...prev, "paso2Placeholder"]));
+  const handleAntecedentesHeredoFamiliaresSuccess = () => {
+    setCompletedSubSteps(prev => new Set([...prev, "antecedentesHeredoFamiliares"]));
     setCompletedSteps(prev => new Set([...prev, "clinicalHistory"]));
     setCurrentStep("appointment");
+  };
+
+  const handleBackFromAntecedentesHeredoFamiliares = () => {
+    setCurrentSubStep("antecedentesPersonales");
   };
 
   const handleBackFromAntecedentesPersonales = () => {
@@ -210,7 +215,7 @@ export function SequentialWorkflow({ onComplete, onClose }: SequentialWorkflowPr
   };
 
   const handleBackFromAppointment = () => {
-    setCurrentSubStep("paso2Placeholder");
+    setCurrentSubStep("antecedentesHeredoFamiliares");
     setCurrentStep("clinicalHistory");
   };
 
@@ -317,27 +322,20 @@ export function SequentialWorkflow({ onComplete, onClose }: SequentialWorkflowPr
           </motion.div>
         )}
 
-        {currentStep === "clinicalHistory" && stepData.patientId && currentSubStep === "paso2Placeholder" && (
+        {currentStep === "clinicalHistory" && stepData.patientId && currentSubStep === "antecedentesHeredoFamiliares" && (
           <motion.div
-            key="paso2"
+            key="hc3"
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.3 }}
           >
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <FileText className="h-5 w-5" />
-                  Antecedentes Personales
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Button onClick={handlePaso2Continue}>
-                  Continuar
-                </Button>
-              </CardContent>
-            </Card>
+            <Hc3Form
+              patientId={stepData.patientId}
+              action={saveHc3}
+              onSuccess={handleAntecedentesHeredoFamiliaresSuccess}
+              onBack={handleBackFromAntecedentesHeredoFamiliares}
+            />
           </motion.div>
         )}
 
