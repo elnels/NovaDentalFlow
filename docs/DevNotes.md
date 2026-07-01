@@ -197,7 +197,7 @@ Antecedentes Personales No Patológicos form (HC4) — 10 yes/no questions with 
   - `handleBackFromAntecedentesNoPatologicos` → back to `antecedentesHeredoFamiliares`
   - `handleBackFromAppointment` → `antecedentesNoPatologicos`
 
-### 18. `hc5-exploracion-bucal` (current branch)
+### 18. `hc5-exploracion-bucal` (merged to main)
 Exploración Bucal form (HC5) — sub-step 4 of 6:
 
 - **`src/components/hc5-form.tsx`** (new):
@@ -239,7 +239,7 @@ Exploración Bucal form (HC5) — sub-step 4 of 6:
 | `workflow-clinical-history` | ✅ | Complete; restructured HC step with sub-steps + counter |
 | `hc3-heredo-familiares` | ✅ | Complete; Antecedentes Heredo-Familiares replaces empty paso 2 |
 | `hc4-no-patologicos` | ✅ | Complete; Antecedentes Personales No Patológicos |
-| `hc5-exploracion-bucal` | ❌ | Not merged; Exploración Bucal (sub-step 4) |
+| `hc5-exploracion-bucal` | ✅ | Complete; Exploración Bucal (sub-step 4) |
 
 ### 11. `historial-clinico-new-fields` (reverted)
 Experimented with adding 9 new fields to Historial Clínico (Sexo, Estado Civil, Ocupación, Escolaridad, datos de padres, Motivo Consulta, Antecedentes Personales grid). Required Apps Script changes failed to deploy — reverted completely.
