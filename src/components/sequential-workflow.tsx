@@ -228,6 +228,10 @@ export function SequentialWorkflow({ onComplete, onClose }: SequentialWorkflowPr
     setCurrentSubStep("antecedentesNoPatologicos");
   };
 
+  const handleBackFromAntecedentesHeredoFamiliares = () => {
+    setCurrentSubStep("antecedentesPersonales");
+  };
+
   const handleBackFromAntecedentesPersonales = () => {
     setCurrentStep("hc1");
   };
