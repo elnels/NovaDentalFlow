@@ -20,7 +20,8 @@ import { Hc2Form } from "@/components/hc2-form";
 import { addPatient, addCita, saveHc1Odontologo, saveHc2, getPatientById, updatePatient, addEmptyHistorial, type FormState } from "@/lib/actions";
 import type { PatientFormData } from "@/components/patient-form";
 
-type WorkflowStep = "patient" | "hc1" | "hc2" | "appointment" | "completed";
+type WorkflowStep = "patient" | "hc1" | "clinicalHistory" | "appointment" | "completed";
+type SubStep = "antecedentesPersonales";
 
 interface StepData {
   patientId?: string;
@@ -47,9 +48,9 @@ const steps = [
     icon: FileText,
   },
   {
-    id: "hc2" as const,
-    title: "Antecedentes Personales",
-    description: "Registre los antecedentes del paciente",
+    id: "clinicalHistory" as const,
+    title: "Historia Clínica",
+    description: "",
     icon: FileText,
   },
   {
@@ -60,52 +61,110 @@ const steps = [
   },
 ];
 
-function StepIndicator({ currentStep, completedSteps }: { currentStep: WorkflowStep; completedSteps: Set<WorkflowStep> }) {
+const subStepLabels: { id: SubStep; label: string }[] = [
+  { id: "antecedentesPersonales", label: "Antecedentes Personales" },
+];
+
+const futureSubSteps = [
+  "Heredo Familiares",
+  "No Patológicos",
+  "Exploración Bucal",
+  "Odontograma",
+  "Observaciones",
+];
+
+function SubStepPanel({ currentSubStep, completedSubSteps }: { currentSubStep: SubStep; completedSubSteps: Set<SubStep> }) {
   return (
-    <div className="flex items-center justify-center mb-8">
-      {steps.map((step, index) => {
-        const isCompleted = completedSteps.has(step.id);
-        const isCurrent = currentStep === step.id;
-        const Icon = step.icon;
-        
-        return (
-          <React.Fragment key={step.id}>
-            <div className="flex flex-col items-center">
+    <div className="mx-auto mb-8 border rounded-lg p-4 bg-muted/20 max-w-xl">
+      <div className="space-y-2">
+        {subStepLabels.map((ss) => {
+          const isActive = currentSubStep === ss.id;
+          const isComplete = completedSubSteps.has(ss.id);
+          return (
+            <div key={ss.id} className="flex items-center gap-3">
               <div
                 className={`
-                  w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all duration-300
-                  ${
-                    isCompleted
-                      ? "bg-primary border-primary text-primary-foreground"
-                      : isCurrent
-                      ? "border-primary text-primary bg-primary/10"
-                      : "border-muted-foreground/30 text-muted-foreground"
-                  }
+                  w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold border-2 shrink-0 transition-all
+                  ${isComplete ? "bg-primary border-primary text-primary-foreground" : ""}
+                  ${isActive && !isComplete ? "border-primary text-primary bg-primary/10" : ""}
+                  ${!isActive && !isComplete ? "border-muted-foreground/30 text-muted-foreground" : ""}
                 `}
               >
-                {isCompleted ? (
-                  <Check className="h-6 w-6" />
-                ) : (
-                  <Icon className="h-6 w-6" />
-                )}
+                {isComplete ? <Check className="h-4 w-4" /> : subStepLabels.indexOf(ss) + 1}
               </div>
-              <div className="mt-2 text-center">
-                <p className={`text-sm font-medium ${
-                  isCompleted || isCurrent ? "text-foreground" : "text-muted-foreground"
-                }`}>
-                  {step.title}
-                </p>
-                <p className="text-xs text-muted-foreground max-w-24">
-                  {step.description}
-                </p>
-              </div>
+              <span className={`text-sm ${isActive ? "font-medium text-foreground" : "text-muted-foreground"}`}>
+                {ss.label}
+              </span>
             </div>
-            {index < steps.length - 1 && (
-              <ChevronRight className="h-5 w-5 text-muted-foreground mx-4 mt-[-2rem]" />
-            )}
-          </React.Fragment>
-        );
-      })}
+          );
+        })}
+        {futureSubSteps.map((label, i) => (
+          <div key={label} className="flex items-center gap-3 opacity-40">
+            <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold border-2 border-muted-foreground/30 text-muted-foreground shrink-0">
+              {subStepLabels.length + i + 1}
+            </div>
+            <span className="text-sm text-muted-foreground">{label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function StepIndicator({ currentStep, completedSteps, currentSubStep, completedSubSteps, showSubSteps }
+: { currentStep: WorkflowStep; completedSteps: Set<WorkflowStep>; currentSubStep?: SubStep; completedSubSteps?: Set<SubStep>; showSubSteps?: boolean }) {
+  return (
+    <div>
+      <div className="flex items-center justify-center mb-4">
+        {steps.map((step, index) => {
+          const isCompleted = completedSteps.has(step.id);
+          const isCurrent = currentStep === step.id;
+          const Icon = step.icon;
+          
+          return (
+            <React.Fragment key={step.id}>
+              <div className="flex flex-col items-center">
+                <div
+                  className={`
+                    w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all duration-300
+                    ${
+                      isCompleted
+                        ? "bg-primary border-primary text-primary-foreground"
+                        : isCurrent
+                        ? "border-primary text-primary bg-primary/10"
+                        : "border-muted-foreground/30 text-muted-foreground"
+                    }
+                  `}
+                >
+                  {isCompleted ? (
+                    <Check className="h-6 w-6" />
+                  ) : (
+                    <Icon className="h-6 w-6" />
+                  )}
+                </div>
+                <div className="mt-2 text-center">
+                  <p className={`text-sm font-medium ${
+                    isCompleted || isCurrent ? "text-foreground" : "text-muted-foreground"
+                  }`}>
+                    {step.title}
+                  </p>
+                  {step.description && (
+                    <p className="text-xs text-muted-foreground max-w-24">
+                      {step.description}
+                    </p>
+                  )}
+                </div>
+              </div>
+              {index < steps.length - 1 && (
+                <ChevronRight className="h-5 w-5 text-muted-foreground mx-4 mt-[-2rem]" />
+              )}
+            </React.Fragment>
+          );
+        })}
+      </div>
+      {showSubSteps && currentSubStep && completedSubSteps && (
+        <SubStepPanel currentSubStep={currentSubStep} completedSubSteps={completedSubSteps} />
+      )}
     </div>
   );
 }
@@ -113,6 +172,8 @@ function StepIndicator({ currentStep, completedSteps }: { currentStep: WorkflowS
 export function SequentialWorkflow({ onComplete, onClose }: SequentialWorkflowProps) {
   const [currentStep, setCurrentStep] = useState<WorkflowStep>("patient");
   const [completedSteps, setCompletedSteps] = useState<Set<WorkflowStep>>(new Set());
+  const [currentSubStep, setCurrentSubStep] = useState<SubStep>("antecedentesPersonales");
+  const [completedSubSteps, setCompletedSubSteps] = useState<Set<SubStep>>(new Set());
   const [stepData, setStepData] = useState<StepData>({});
   const [patientEditData, setPatientEditData] = useState<Partial<PatientFormData> | undefined>(undefined);
 
@@ -167,20 +228,23 @@ export function SequentialWorkflow({ onComplete, onClose }: SequentialWorkflowPr
 
   const handleHc1Success = () => {
     setCompletedSteps(prev => new Set([...prev, "hc1"]));
-    setCurrentStep("hc2");
+    setCurrentSubStep("antecedentesPersonales");
+    setCurrentStep("clinicalHistory");
   };
 
-  const handleBackFromHc2 = () => {
-    setCurrentStep("hc1");
-  };
-
-  const handleHc2Success = () => {
-    setCompletedSteps(prev => new Set([...prev, "hc2"]));
+  const handleAntecedentesPersonalesSuccess = () => {
+    setCompletedSubSteps(prev => new Set([...prev, "antecedentesPersonales"]));
+    setCompletedSteps(prev => new Set([...prev, "clinicalHistory"]));
     setCurrentStep("appointment");
   };
 
+  const handleBackFromAntecedentesPersonales = () => {
+    setCurrentStep("hc1");
+  };
+
   const handleBackFromAppointment = () => {
-    setCurrentStep("hc2");
+    setCurrentSubStep("antecedentesPersonales");
+    setCurrentStep("clinicalHistory");
   };
 
   const handleAppointmentSuccess = async (result: FormState) => {
@@ -197,6 +261,8 @@ export function SequentialWorkflow({ onComplete, onClose }: SequentialWorkflowPr
   const handleReset = () => {
     setCurrentStep("patient");
     setCompletedSteps(new Set());
+    setCurrentSubStep("antecedentesPersonales");
+    setCompletedSubSteps(new Set());
     setStepData({});
     setPatientEditData(undefined);
   };
@@ -221,7 +287,7 @@ export function SequentialWorkflow({ onComplete, onClose }: SequentialWorkflowPr
           </p>
         </div>
 
-      <StepIndicator currentStep={currentStep} completedSteps={completedSteps} />
+      <StepIndicator currentStep={currentStep} completedSteps={completedSteps} currentSubStep={currentSubStep} completedSubSteps={completedSubSteps} showSubSteps={currentStep === "clinicalHistory"} />
 
       <AnimatePresence mode="wait">
         {currentStep === "patient" && (
@@ -267,7 +333,7 @@ export function SequentialWorkflow({ onComplete, onClose }: SequentialWorkflowPr
           </motion.div>
         )}
 
-        {currentStep === "hc2" && stepData.patientId && (
+        {currentStep === "clinicalHistory" && stepData.patientId && currentSubStep === "antecedentesPersonales" && (
           <motion.div
             key="hc2"
             initial={{ opacity: 0, x: 20 }}
@@ -278,8 +344,8 @@ export function SequentialWorkflow({ onComplete, onClose }: SequentialWorkflowPr
             <Hc2Form
               patientId={stepData.patientId}
               action={saveHc2}
-              onSuccess={handleHc2Success}
-              onBack={handleBackFromHc2}
+              onSuccess={handleAntecedentesPersonalesSuccess}
+              onBack={handleBackFromAntecedentesPersonales}
             />
           </motion.div>
         )}

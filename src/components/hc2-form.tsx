@@ -195,7 +195,7 @@ export function Hc2Form({ patientId, action, onSuccess, onBack }: Hc2FormProps) 
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Stethoscope className="h-5 w-5" />
-          Antecedentes Personales (HC2)
+          Historia Clínica — Antecedentes Personales
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -299,7 +299,7 @@ export function Hc2Form({ patientId, action, onSuccess, onBack }: Hc2FormProps) 
               </Button>
             )}
             <Button type="submit" disabled={isLoading} className="flex-1">
-              {isLoading ? "Guardando..." : "Continuar a Cita"}
+              {isLoading ? "Guardando..." : "Continuar"}
             </Button>
           </div>
         </form>
