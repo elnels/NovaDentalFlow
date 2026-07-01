@@ -177,7 +177,7 @@ Replaced empty paso 2 placeholder with Antecedentes Heredo-Familiares form (HC3)
   - `handleBackFromAntecedentesHeredoFamiliares` → back to antecedentesPersonales
   - `handleBackFromAppointment` → antecentesHeredoFamiliares
 
-### 17. `hc4-no-patologicos` (current branch)
+### 17. `hc4-no-patologicos` (merged to main)
 Antecedentes Personales No Patológicos form (HC4) — 10 yes/no questions with conditional fields:
 
 - **`src/components/hc4-form.tsx`** (new):
@@ -221,7 +221,7 @@ Antecedentes Personales No Patológicos form (HC4) — 10 yes/no questions with 
 | `LabelFixes` | ✅ | Complete |
 | `workflow-clinical-history` | ✅ | Complete; restructured HC step with sub-steps + counter |
 | `hc3-heredo-familiares` | ✅ | Complete; Antecedentes Heredo-Familiares replaces empty paso 2 |
-| `hc4-no-patologicos` | ❌ | Not merged; Antecedentes Personales No Patológicos |
+| `hc4-no-patologicos` | ✅ | Complete; Antecedentes Personales No Patológicos |
 
 ### 11. `historial-clinico-new-fields` (reverted)
 Experimented with adding 9 new fields to Historial Clínico (Sexo, Estado Civil, Ocupación, Escolaridad, datos de padres, Motivo Consulta, Antecedentes Personales grid). Required Apps Script changes failed to deploy — reverted completely.
