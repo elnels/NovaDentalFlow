@@ -17,7 +17,8 @@ import { PatientForm } from "@/components/patient-form";
 import { AppointmentForm } from "@/components/appointment-form";
 import { Hc1Form } from "@/components/hc1-form";
 import { Hc2Form } from "@/components/hc2-form";
-import { addPatient, addCita, saveHc1Odontologo, saveHc2 } from "@/lib/actions";
+import { addPatient, addCita, saveHc1Odontologo, saveHc2, getPatientById, updatePatient, type FormState } from "@/lib/actions";
+import type { PatientFormData } from "@/components/patient-form";
 
 type WorkflowStep = "patient" | "hc1" | "hc2" | "appointment" | "completed";
 
@@ -113,12 +114,54 @@ export function SequentialWorkflow({ onComplete, onClose }: SequentialWorkflowPr
   const [currentStep, setCurrentStep] = useState<WorkflowStep>("patient");
   const [completedSteps, setCompletedSteps] = useState<Set<WorkflowStep>>(new Set());
   const [stepData, setStepData] = useState<StepData>({});
+  const [patientEditData, setPatientEditData] = useState<Partial<PatientFormData> | undefined>(undefined);
 
   const handlePatientSuccess = (patientId?: string) => {
     if (patientId) {
       setStepData(prev => ({ ...prev, patientId }));
       setCompletedSteps(prev => new Set([...prev, "patient"]));
+      setPatientEditData(undefined);
       setCurrentStep("hc1");
+    }
+  };
+
+  const handlePatientEditSuccess = (patientId?: string) => {
+    if (patientId) {
+      setPatientEditData(undefined);
+      setCurrentStep("hc1");
+    }
+  };
+
+  const handleBackFromHc1 = async () => {
+    if (!stepData.patientId) return;
+    try {
+      const res = await getPatientById(stepData.patientId);
+      if (!res) return;
+      const dateStr = res.fechaNacimiento instanceof Date
+        ? res.fechaNacimiento.toISOString().split("T")[0]
+        : String(res.fechaNacimiento).split("T")[0];
+      const n = (v: string | null | undefined) => v ?? undefined;
+      setPatientEditData({
+        nombres: n(res.nombres),
+        apellidos: n(res.apellidos),
+        fechaNacimiento: dateStr,
+        telefonoPrincipal: n(res.telefonoPrincipal),
+        telefonoAlternativo: n(res.telefonoAlternativo),
+        email: n(res.email),
+        direccion: n(res.direccion),
+        sexo: n(res.sexo),
+        estadoCivil: n(res.estadoCivil),
+        ocupacion: n(res.ocupacion),
+        escolaridad: n(res.escolaridad),
+        nombrePadre: n(res.nombrePadre),
+        nombreMadre: n(res.nombreMadre),
+        telefonoPadre: n(res.telefonoPadre),
+        telefonoMadre: n(res.telefonoMadre),
+        esMenor: res.esMenor ?? false,
+      });
+      setCurrentStep("patient");
+    } catch (e) {
+      console.error("Error fetching patient for edit:", e);
     }
   };
 
@@ -127,9 +170,17 @@ export function SequentialWorkflow({ onComplete, onClose }: SequentialWorkflowPr
     setCurrentStep("hc2");
   };
 
+  const handleBackFromHc2 = () => {
+    setCurrentStep("hc1");
+  };
+
   const handleHc2Success = () => {
     setCompletedSteps(prev => new Set([...prev, "hc2"]));
     setCurrentStep("appointment");
+  };
+
+  const handleBackFromAppointment = () => {
+    setCurrentStep("hc2");
   };
 
   const handleAppointmentSuccess = (result: FormState) => {
@@ -144,6 +195,7 @@ export function SequentialWorkflow({ onComplete, onClose }: SequentialWorkflowPr
     setCurrentStep("patient");
     setCompletedSteps(new Set());
     setStepData({});
+    setPatientEditData(undefined);
   };
 
   return (
@@ -181,11 +233,15 @@ export function SequentialWorkflow({ onComplete, onClose }: SequentialWorkflowPr
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <User className="h-5 w-5" />
-                  Registro de Paciente
+                  {patientEditData ? "Editar Datos del Paciente" : "Registro de Paciente"}
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <PatientForm action={addPatient} onSuccess={handlePatientSuccess} />
+                {patientEditData ? (
+                  <PatientForm action={updatePatient.bind(null, stepData.patientId!)} initialData={patientEditData} onSuccess={handlePatientEditSuccess} />
+                ) : (
+                  <PatientForm action={addPatient} onSuccess={handlePatientSuccess} />
+                )}
               </CardContent>
             </Card>
           </motion.div>
@@ -203,6 +259,7 @@ export function SequentialWorkflow({ onComplete, onClose }: SequentialWorkflowPr
               patientId={stepData.patientId}
               action={saveHc1Odontologo}
               onSuccess={handleHc1Success}
+              onBack={handleBackFromHc1}
             />
           </motion.div>
         )}
@@ -219,6 +276,7 @@ export function SequentialWorkflow({ onComplete, onClose }: SequentialWorkflowPr
               patientId={stepData.patientId}
               action={saveHc2}
               onSuccess={handleHc2Success}
+              onBack={handleBackFromHc2}
             />
           </motion.div>
         )}
@@ -246,6 +304,7 @@ export function SequentialWorkflow({ onComplete, onClose }: SequentialWorkflowPr
                   action={addCita} 
                   onSuccess={handleAppointmentSuccess}
                   patientId={stepData.patientId}
+                  onBack={handleBackFromAppointment}
                 />
               </CardContent>
             </Card>

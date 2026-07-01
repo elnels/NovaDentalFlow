@@ -36,9 +36,10 @@ interface Hc1FormProps {
   patientId: string;
   action: (state: FormState, data: FormData) => Promise<FormState>;
   onSuccess: () => void;
+  onBack?: () => void;
 }
 
-export function Hc1Form({ patientId, action, onSuccess }: Hc1FormProps) {
+export function Hc1Form({ patientId, action, onSuccess, onBack }: Hc1FormProps) {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [patient, setPatient] = useState<Patient | null>(null);
@@ -248,9 +249,16 @@ export function Hc1Form({ patientId, action, onSuccess }: Hc1FormProps) {
               </div>
             </div>
 
-            <Button type="submit" disabled={isLoading} className="w-full">
-              {isLoading ? "Guardando..." : "Continuar a Cita"}
-            </Button>
+            <div className="flex gap-4">
+              {onBack && (
+                <Button type="button" variant="outline" onClick={onBack} disabled={isLoading} className="flex-1">
+                  Regresar
+                </Button>
+              )}
+              <Button type="submit" disabled={isLoading} className="flex-1">
+                {isLoading ? "Guardando..." : "Continuar a Cita"}
+              </Button>
+            </div>
           </form>
         </Form>
       </CardContent>
