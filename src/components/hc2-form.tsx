@@ -195,7 +195,7 @@ export function Hc2Form({ patientId, action, onSuccess, onBack }: Hc2FormProps) 
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Stethoscope className="h-5 w-5" />
-          Historia Clínica — Antecedentes Personales
+          Antecedentes Personales
         </CardTitle>
       </CardHeader>
       <CardContent>

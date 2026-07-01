@@ -61,110 +61,69 @@ const steps = [
   },
 ];
 
-const subStepLabels: { id: SubStep; label: string }[] = [
-  { id: "antecedentesPersonales", label: "Antecedentes Personales" },
-];
+const totalSubSteps = 6;
 
-const futureSubSteps = [
-  "Heredo Familiares",
-  "No Patológicos",
-  "Exploración Bucal",
-  "Odontograma",
-  "Observaciones",
-];
-
-function SubStepPanel({ currentSubStep, completedSubSteps }: { currentSubStep: SubStep; completedSubSteps: Set<SubStep> }) {
-  return (
-    <div className="mx-auto mb-8 border rounded-lg p-4 bg-muted/20 max-w-xl">
-      <div className="space-y-2">
-        {subStepLabels.map((ss) => {
-          const isActive = currentSubStep === ss.id;
-          const isComplete = completedSubSteps.has(ss.id);
-          return (
-            <div key={ss.id} className="flex items-center gap-3">
-              <div
-                className={`
-                  w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold border-2 shrink-0 transition-all
-                  ${isComplete ? "bg-primary border-primary text-primary-foreground" : ""}
-                  ${isActive && !isComplete ? "border-primary text-primary bg-primary/10" : ""}
-                  ${!isActive && !isComplete ? "border-muted-foreground/30 text-muted-foreground" : ""}
-                `}
-              >
-                {isComplete ? <Check className="h-4 w-4" /> : subStepLabels.indexOf(ss) + 1}
-              </div>
-              <span className={`text-sm ${isActive ? "font-medium text-foreground" : "text-muted-foreground"}`}>
-                {ss.label}
-              </span>
-            </div>
-          );
-        })}
-        {futureSubSteps.map((label, i) => (
-          <div key={label} className="flex items-center gap-3 opacity-40">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold border-2 border-muted-foreground/30 text-muted-foreground shrink-0">
-              {subStepLabels.length + i + 1}
-            </div>
-            <span className="text-sm text-muted-foreground">{label}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+function subStepIndex(currentSubStep: SubStep): number {
+  return 1; // antecedentesPersonales is always index 1 for now
 }
 
-function StepIndicator({ currentStep, completedSteps, currentSubStep, completedSubSteps, showSubSteps }
-: { currentStep: WorkflowStep; completedSteps: Set<WorkflowStep>; currentSubStep?: SubStep; completedSubSteps?: Set<SubStep>; showSubSteps?: boolean }) {
+function StepIndicator({ currentStep, completedSteps, currentSubStep }
+: { currentStep: WorkflowStep; completedSteps: Set<WorkflowStep>; currentSubStep?: SubStep }) {
   return (
-    <div>
-      <div className="flex items-center justify-center mb-4">
-        {steps.map((step, index) => {
-          const isCompleted = completedSteps.has(step.id);
-          const isCurrent = currentStep === step.id;
-          const Icon = step.icon;
-          
-          return (
-            <React.Fragment key={step.id}>
-              <div className="flex flex-col items-center">
-                <div
-                  className={`
-                    w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all duration-300
-                    ${
-                      isCompleted
-                        ? "bg-primary border-primary text-primary-foreground"
-                        : isCurrent
-                        ? "border-primary text-primary bg-primary/10"
-                        : "border-muted-foreground/30 text-muted-foreground"
-                    }
-                  `}
-                >
-                  {isCompleted ? (
-                    <Check className="h-6 w-6" />
-                  ) : (
-                    <Icon className="h-6 w-6" />
-                  )}
-                </div>
-                <div className="mt-2 text-center">
-                  <p className={`text-sm font-medium ${
-                    isCompleted || isCurrent ? "text-foreground" : "text-muted-foreground"
-                  }`}>
-                    {step.title}
-                  </p>
-                  {step.description && (
-                    <p className="text-xs text-muted-foreground max-w-24">
-                      {step.description}
-                    </p>
-                  )}
-                </div>
+    <div className="flex items-center justify-center mb-8">
+      {steps.map((step, index) => {
+        const isCompleted = completedSteps.has(step.id);
+        const isCurrent = currentStep === step.id;
+        const isClinicalHistory = step.id === "clinicalHistory";
+        const activeIdx = isClinicalHistory && isCurrent && currentSubStep ? subStepIndex(currentSubStep) : null;
+        const Icon = step.icon;
+        
+        return (
+          <React.Fragment key={step.id}>
+            <div className="flex flex-col items-center">
+              <div
+                className={`
+                  w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all duration-300
+                  ${
+                    isCompleted
+                      ? "bg-primary border-primary text-primary-foreground"
+                      : isCurrent
+                      ? "border-primary text-primary bg-primary/10"
+                      : "border-muted-foreground/30 text-muted-foreground"
+                  }
+                `}
+              >
+                {isCompleted ? (
+                  <Check className="h-6 w-6" />
+                ) : activeIdx ? (
+                  <span className="text-lg font-bold">{activeIdx}</span>
+                ) : (
+                  <Icon className="h-6 w-6" />
+                )}
               </div>
-              {index < steps.length - 1 && (
-                <ChevronRight className="h-5 w-5 text-muted-foreground mx-4 mt-[-2rem]" />
-              )}
-            </React.Fragment>
-          );
-        })}
-      </div>
-      {showSubSteps && currentSubStep && completedSubSteps && (
-        <SubStepPanel currentSubStep={currentSubStep} completedSubSteps={completedSubSteps} />
-      )}
+              <div className="mt-2 text-center">
+                <p className={`text-sm font-medium ${
+                  isCompleted || isCurrent ? "text-foreground" : "text-muted-foreground"
+                }`}>
+                  {step.title}
+                </p>
+                {isClinicalHistory && isCurrent && activeIdx ? (
+                  <p className="text-xs text-muted-foreground max-w-24">
+                    {activeIdx} de {totalSubSteps}
+                  </p>
+                ) : step.description ? (
+                  <p className="text-xs text-muted-foreground max-w-24">
+                    {step.description}
+                  </p>
+                ) : null}
+              </div>
+            </div>
+            {index < steps.length - 1 && (
+              <ChevronRight className="h-5 w-5 text-muted-foreground mx-4 mt-[-2rem]" />
+            )}
+          </React.Fragment>
+        );
+      })}
     </div>
   );
 }
@@ -287,7 +246,7 @@ export function SequentialWorkflow({ onComplete, onClose }: SequentialWorkflowPr
           </p>
         </div>
 
-      <StepIndicator currentStep={currentStep} completedSteps={completedSteps} currentSubStep={currentSubStep} completedSubSteps={completedSubSteps} showSubSteps={currentStep === "clinicalHistory"} />
+      <StepIndicator currentStep={currentStep} completedSteps={completedSteps} currentSubStep={currentSubStep} />
 
       <AnimatePresence mode="wait">
         {currentStep === "patient" && (
