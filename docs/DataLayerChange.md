@@ -252,3 +252,4 @@ When the user skips Historial Clínico during registration, the system creates a
 | 2026-07-01 | Replaced flat HC2 step with nested "Historia Clínica" parent step (6 sub-steps). Sub-step counter on main step indicator shows "X de 6". Paso 2 is empty placeholder with "Antecedentes Personales" title + "Continuar" button. |
 | 2026-07-01 | Replaced empty paso 2 placeholder with HC3 (Antecedentes Heredo-Familiares) form. 7 condition rows with checkbox, ¿Quién? dropdown, and Tipo free-text for Cáncer/Malformaciones. Saves to `family_conditions` table via `saveHc3`. |
 | 2026-07-01 | Added HC4 (Antecedentes Personales No Patológicos) — 10 yes/no questions with conditional inputs. All columns already existed in `clinical_details` schema. Flow: HC3 → HC4 → Cita. |
+| 2026-07-01 | Added HC5 (Exploración Bucal) — Tejidos Blandos textarea + Oclusión section with 12 fields. Stored as JSON string in `clinical_details.observacionesHc5`. Flow: HC4 → HC5 → Cita. |

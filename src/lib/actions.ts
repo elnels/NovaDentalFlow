@@ -207,6 +207,48 @@ export async function saveHc4(
   }
 }
 
+const hc5Schema = z.object({
+  patientId: z.string().min(1),
+  hc5Data: z.string().optional().or(z.literal("")),
+});
+
+export async function saveHc5(
+  prevState: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const rawData = Object.fromEntries(formData.entries());
+  const validatedFields = hc5Schema.safeParse(rawData);
+
+  if (!validatedFields.success) {
+    return {
+      message: "Datos inválidos.",
+      errors: validatedFields.error.flatten().fieldErrors as Record<string, string>,
+      success: false,
+    };
+  }
+
+  const rawJson = validatedFields.data.hc5Data;
+
+  try {
+    await prisma.clinicalDetails.upsert({
+      where: { patientId: validatedFields.data.patientId },
+      create: {
+        patientId: validatedFields.data.patientId,
+        observacionesHc5: rawJson || null,
+      },
+      update: {
+        observacionesHc5: rawJson || null,
+      },
+    });
+
+    revalidatePath("/");
+    revalidatePath(`/pacientes/${validatedFields.data.patientId}`);
+    return { message: "Exploración bucal guardada con éxito.", success: true };
+  } catch (e) {
+    return { message: `Error: ${(e as Error).message}`, success: false };
+  }
+}
+
 export async function saveHc2(
   prevState: FormState,
   formData: FormData

@@ -197,6 +197,23 @@ Antecedentes Personales No Patológicos form (HC4) — 10 yes/no questions with 
   - `handleBackFromAntecedentesNoPatologicos` → back to `antecedentesHeredoFamiliares`
   - `handleBackFromAppointment` → `antecedentesNoPatologicos`
 
+### 18. `hc5-exploracion-bucal` (current branch)
+Exploración Bucal form (HC5) — sub-step 4 of 6:
+
+- **`src/components/hc5-form.tsx`** (new):
+  - **Tejidos Blandos**: full-width Textarea
+  - **Oclusión** subsection (shaded bg border): Línea Media (Normal/Desviada + Notas), Planos Terminales D/I (Notas), Espacios Terminales (Sí/No + Superior/Inferior), Clase de Angle D/I (Notas), Mordida Cruzada (Sí/No + Superior/Inferior), Traslape Horizontal/Vertical (Sí/No + mm), Borde a Borde (Sí/No), Mordida Abierta (Sí/No), Hábitos Nocivos (Sí/No + ¿Cuál?)
+  - Sí/No fields show conditional inputs only when "Sí" selected
+  - Loads/saves from `clinical_details.observacionesHc5` as JSON string
+
+- **`src/lib/actions.ts`**:
+  - `hc5Schema`: `patientId + hc5Data (JSON string)`
+  - `saveHc5`: upserts `clinical_details.observacionesHc5` with JSON string
+
+- **`src/components/sequential-workflow.tsx`**:
+  - `SubStep type`: added `"exploracionBucal"` (index 4 of 6)
+  - Flow: HC4 → HC5 → Cita (HC5 is last sub-step until HC6 is built)
+
 ## Current Branch Status
 | Branch | Merged to main | Status |
 |---|---|---|---|
@@ -222,6 +239,7 @@ Antecedentes Personales No Patológicos form (HC4) — 10 yes/no questions with 
 | `workflow-clinical-history` | ✅ | Complete; restructured HC step with sub-steps + counter |
 | `hc3-heredo-familiares` | ✅ | Complete; Antecedentes Heredo-Familiares replaces empty paso 2 |
 | `hc4-no-patologicos` | ✅ | Complete; Antecedentes Personales No Patológicos |
+| `hc5-exploracion-bucal` | ❌ | Not merged; Exploración Bucal (sub-step 4) |
 
 ### 11. `historial-clinico-new-fields` (reverted)
 Experimented with adding 9 new fields to Historial Clínico (Sexo, Estado Civil, Ocupación, Escolaridad, datos de padres, Motivo Consulta, Antecedentes Personales grid). Required Apps Script changes failed to deploy — reverted completely.
