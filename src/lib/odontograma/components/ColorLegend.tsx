@@ -26,6 +26,7 @@ export const ColorLegend: React.FC = () => {
   return (
     <div className="bg-background border border-border rounded-lg">
       <button
+        type="button"
         className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-foreground hover:bg-muted/50 transition-colors rounded-lg"
         onClick={() => setIsOpen(!isOpen)}
       >

@@ -73,6 +73,7 @@ export const Odontogram: React.FC<OdontogramProps> = ({
           <div className="flex items-center gap-2">
             <span className="text-xs text-text-secondary">Dientes temporales</span>
             <button
+              type="button"
               onClick={() => onToggleTemporaryTeeth(!showTemporaryTeeth)}
               className={`w-10 h-5 rounded-full transition-colors relative ${
                 showTemporaryTeeth ? 'bg-orange-500' : 'bg-gray-300'

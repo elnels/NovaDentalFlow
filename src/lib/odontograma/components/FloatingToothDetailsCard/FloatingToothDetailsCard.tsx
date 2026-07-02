@@ -160,7 +160,7 @@ export const FloatingToothDetailsCard: React.FC<FloatingToothDetailsCardProps> =
           <div className="space-y-4">
             <div>
               <h4 className="text-sm font-medium text-muted-foreground mb-3">Selecciona un estado:</h4>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-4 gap-2">
                 {statusOptions.map((status) => {
                   const Icon = status.icon;
                   const isSelected = selectedTool === status.id;
@@ -168,21 +168,18 @@ export const FloatingToothDetailsCard: React.FC<FloatingToothDetailsCardProps> =
                     <button
                       key={status.id}
                       onClick={() => handleStatusChange(status.id)}
-                      className={`flex items-center gap-2 p-3 rounded-lg border-2 transition-all duration-200 ${
+                      className={`flex flex-col items-center py-2 rounded-lg border transition-all duration-200 ${
                         isSelected 
-                          ? 'shadow-sm' 
-                          : 'border-border hover:border-accent/50 hover:bg-muted'
+                          ? 'text-white shadow-sm' 
+                          : 'border-border hover:bg-muted'
                       }`}
                       style={isSelected ? {
                         backgroundColor: status.color,
-                        borderColor: status.color,
-                        color: 'white'
+                        borderColor: status.color
                       } : {}}
                     >
-                      <Icon className="w-5 h-5" style={{ color: isSelected ? 'white' : status.color }} />
-                      <span className={`text-sm font-medium ${isSelected ? 'text-white' : 'text-foreground'}`}>
-                        {status.name}
-                      </span>
+                      <Icon className="w-4 h-4 mb-1" style={{ color: isSelected ? 'white' : status.color }} />
+                      <span className="text-xs">{status.name}</span>
                     </button>
                   );
                 })}

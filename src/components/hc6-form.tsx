@@ -92,8 +92,8 @@ export function Hc6Form({ patientId, action, onSuccess, onBack }: Hc6FormProps) 
         <form action={handleSubmit} className="space-y-6">
           <input type="hidden" name="patientId" value={patientId} />
 
-          <div className="flex gap-4">
-            <div className={`${selectedTooth ? 'flex-1 min-w-0' : 'w-full'} border rounded-lg p-4 bg-muted/10`}>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div className="lg:col-span-2 border rounded-lg p-4 bg-muted/10">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold text-foreground">Odontograma</h3>
                 <Button type="button" variant="outline" size="sm" onClick={resetTeeth}>
@@ -113,15 +113,24 @@ export function Hc6Form({ patientId, action, onSuccess, onBack }: Hc6FormProps) 
                 <ColorLegend />
               </div>
             </div>
-            {selectedTooth && (
-              <div className="w-[380px] flex-shrink-0 border rounded-lg overflow-hidden bg-muted/10">
-                <FloatingToothDetailsCard
-                  tooth={selectedTooth}
-                  onUpdateTooth={updateTooth}
-                  onClose={() => setSelectedTooth(null)}
-                />
-              </div>
-            )}
+            <div className="lg:col-span-1">
+              {selectedTooth ? (
+                <div className="border rounded-lg overflow-hidden bg-muted/10 h-full">
+                  <FloatingToothDetailsCard
+                    tooth={selectedTooth}
+                    onUpdateTooth={updateTooth}
+                    onClose={() => setSelectedTooth(null)}
+                  />
+                </div>
+              ) : (
+                <div className="border rounded-lg p-6 h-full flex items-center justify-center bg-muted/10 min-h-[300px]">
+                  <div className="text-center text-muted-foreground">
+                    <p className="text-lg font-medium mb-2">Selecciona un diente</p>
+                    <p className="text-sm max-w-xs mx-auto">Haz clic en cualquier diente del odontograma para ver sus detalles y herramientas</p>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
 
           <div>
