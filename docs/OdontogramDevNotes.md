@@ -1,5 +1,46 @@
 # OdontogramDevNotes — Project Analysis
 
+## Integration Status — HC6 Odontogram (2026-07-02)
+
+The odontogram library has been fully integrated into the NovaDentalFlow HC6 form:
+
+### Files Integrated into `src/lib/odontograma/`
+| File | Source | Notes |
+|------|--------|-------|
+| `components/Odontogram.tsx` | Library core | Simplified to 6 clinical props (removed 7 demo props) |
+| `components/DetailedToothComponent.tsx` | Library core | — |
+| `components/AlignedToothContainer.tsx` | Library core | — |
+| `components/columns/` | Library core | 3-column arch layout |
+| `components/ColorLegend.tsx` | Adapted from demo | DaisyUI → shadcn classes, no theme prop |
+| `components/FloatingToothDetailsCard/` | Adapted from demo | 3-tab panel (Estado/Notas/Historial) with SVG surface selector |
+| `components/FloatingToothDetailsCard/sections/SurfacesSection.tsx` | Adapted from demo | 5 clickable SVG tooth surface zones |
+| `data/dentalData.ts` | Library core | — |
+| `types/index.ts` | Library core | — |
+| `config/layoutConfig.ts` | Library core | — |
+| `constants/layout.ts` | Library core | — |
+| `styles/odontogram.css` | Library core | — |
+
+### Layout (hc6-form.tsx)
+Matches demo: `grid grid-cols-1 lg:grid-cols-3` with:
+- Left (col-span-2): Odontogram + ColorLegend (always visible)
+- Right (col-span-1): FloatingToothDetailsCard (when tooth selected) or "Selecciona un diente" placeholder (always visible)
+
+### Key Fixes Applied
+1. **Tailwind content paths** — Added `'./src/lib/**/*.{js,ts,jsx,tsx,mdx}'` to `tailwind.config.ts` so utility classes in `src/lib/` are generated
+2. **Button type="submit" bug** — Added `type="button"` to all toggle buttons inside `<form>` to prevent unintended form submission (caused redirect to cita page)
+3. **Modal width** — Changed `max-w-4xl` to `max-w-[95vw]` in sequential-workflow.tsx for adequate odontogram space
+4. **Status grid** — Changed to `grid-cols-4` compact layout matching demo
+
+### What Was NOT Integrated (Demo-only features)
+- Case selector (CompactCaseSelector) — not needed for HC6
+- Bite animation — not needed
+- Theme toggle — not needed
+- Patient header — handled by HC6 workflow
+- Services panel — unused in main flow
+- Clinical case systems — not needed
+
+---
+
 ## Overview
 
 **op-odontorgram** is a dual-mode React project: an interactive dental odontogram library (`op-odontogram` npm package) and a demo application. Built with TypeScript, Vite, Tailwind CSS, and DaisyUI.
