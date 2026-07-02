@@ -90,13 +90,13 @@ export const DetailedToothComponent: React.FC<DetailedToothComponentProps> = ({
         case 'filled': return 'bg-info/20 border-info text-info-content';
         case 'crown': return 'bg-warning/20 border-warning text-warning-content';
         case 'extracted': return 'bg-gray-500/20 border-gray-500 text-gray-700';
-        case 'implant': return 'bg-primary/20 border-primary text-primary-content';
-        case 'root_canal': return 'bg-secondary/20 border-secondary text-secondary-content';
-        case 'fracture': return 'bg-accent/20 border-accent text-accent-content';
+        case 'implant': return 'bg-purple-100 border-purple-500 text-purple-800';
+        case 'root_canal': return 'bg-pink-100 border-pink-500 text-pink-800';
+        case 'fracture': return 'bg-orange-100 border-orange-500 text-orange-800';
         case 'bridge': return 'bg-purple-500/20 border-purple-500 text-purple-600';
         case 'extraction_indicated': return 'bg-red-600/20 border-red-600 text-red-700';
         case 'not_erupted': return 'bg-gray-100 border-gray-300 text-gray-400 opacity-50';
-        default: return 'bg-surface-secondary border-border-color text-text-primary';
+        default: return 'bg-gray-100 border-gray-300 text-gray-600';
       }
     }
   };
@@ -156,13 +156,13 @@ export const DetailedToothComponent: React.FC<DetailedToothComponentProps> = ({
         case 'filled': return 'bg-info/40 border-info';
         case 'crown': return 'bg-warning/40 border-warning';
         case 'extracted': return 'bg-gray-500/40 border-gray-500';
-        case 'implant': return 'bg-primary/40 border-primary';
-        case 'root_canal': return 'bg-secondary/40 border-secondary';
+        case 'implant': return 'bg-purple-200/60 border-purple-500';
+        case 'root_canal': return 'bg-pink-200/60 border-pink-500';
         case 'fracture': return 'bg-orange-600/40 border-orange-600';
         case 'bridge': return 'bg-purple-500/40 border-purple-500';
         case 'extraction_indicated': return 'bg-red-600/40 border-red-600';
         case 'not_erupted': return 'bg-gray-200/40 border-gray-300';
-        default: return 'bg-surface-secondary/40 border-border-color';
+        default: return 'bg-gray-200/40 border-gray-300';
       }
     }
   };
