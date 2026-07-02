@@ -1,59 +1,120 @@
 import React, { useState } from 'react';
-import { ChevronDown, ChevronUp, Palette } from 'lucide-react';
+import { Info, ChevronUp, ChevronDown } from 'lucide-react';
+import { DetailedToothComponent } from './DetailedToothComponent';
+import type { Tooth } from '../types';
 
-interface ColorLegendItem {
-  status: string;
-  label: string;
-  color: string;
+interface ColorLegendProps {
+  className?: string;
+  theme?: 'light' | 'dark';
 }
 
-const legendItems: ColorLegendItem[] = [
-  { status: 'healthy', label: 'Sano', color: '#10b981' },
-  { status: 'caries', label: 'Caries', color: '#ef4444' },
-  { status: 'filled', label: 'Obturado', color: '#3b82f6' },
-  { status: 'crown', label: 'Corona', color: '#f59e0b' },
-  { status: 'root_canal', label: 'Endodoncia', color: '#ec4899' },
-  { status: 'implant', label: 'Implante', color: '#8b5cf6' },
-  { status: 'extracted', label: 'Extraído', color: '#6b7280' },
-  { status: 'fracture', label: 'Fractura', color: '#f97316' },
-  { status: 'bridge', label: 'Puente', color: '#6366f1' },
-  { status: 'extraction_indicated', label: 'Extracción indicada', color: '#dc2626' },
-];
+export const ColorLegend: React.FC<ColorLegendProps> = ({ className = '', theme = 'light' }) => {
+  const [isExpanded, setIsExpanded] = useState<boolean>(true);
 
-export const ColorLegend: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const isDarkMode = theme === 'dark';
+
+  const sampleTeeth: { tooth: Tooth; label: string; chipColorClass: string }[] = [
+    {
+      tooth: { id: 1, clinicalId: '1.1', quadrant: 1, position: 1, status: 'healthy', surfaces: { mesial: 'healthy', distal: 'healthy', buccal: 'healthy', lingual: 'healthy', occlusal: 'healthy' } },
+      label: 'Sano',
+      chipColorClass: 'bg-green-600'
+    },
+    {
+      tooth: { id: 2, clinicalId: '1.2', quadrant: 1, position: 2, status: 'caries', surfaces: { mesial: 'healthy', distal: 'caries', buccal: 'healthy', lingual: 'healthy', occlusal: 'caries' } },
+      label: 'Caries',
+      chipColorClass: 'bg-red-600'
+    },
+    {
+      tooth: { id: 3, clinicalId: '1.3', quadrant: 1, position: 3, status: 'filled', surfaces: { mesial: 'filled', distal: 'healthy', buccal: 'healthy', lingual: 'healthy', occlusal: 'filled' } },
+      label: 'Obturado',
+      chipColorClass: 'bg-yellow-600'
+    },
+    {
+      tooth: { id: 4, clinicalId: '1.4', quadrant: 1, position: 4, status: 'crown', surfaces: { mesial: 'crown', distal: 'crown', buccal: 'crown', lingual: 'crown', occlusal: 'crown' } },
+      label: 'Corona',
+      chipColorClass: 'bg-purple-600'
+    },
+    {
+      tooth: { id: 5, clinicalId: '1.5', quadrant: 1, position: 5, status: 'extracted', surfaces: { mesial: 'extracted', distal: 'extracted', buccal: 'extracted', lingual: 'extracted', occlusal: 'extracted' } },
+      label: 'Extraído',
+      chipColorClass: 'bg-gray-700'
+    },
+    {
+      tooth: { id: 6, clinicalId: '1.6', quadrant: 1, position: 6, status: 'root_canal', surfaces: { mesial: 'root_canal', distal: 'root_canal', buccal: 'root_canal', lingual: 'root_canal', occlusal: 'root_canal' } },
+      label: 'Endodoncia',
+      chipColorClass: 'bg-indigo-600'
+    },
+    {
+      tooth: { id: 7, clinicalId: '1.7', quadrant: 1, position: 7, status: 'implant', surfaces: { mesial: 'implant', distal: 'implant', buccal: 'implant', lingual: 'implant', occlusal: 'implant' } },
+      label: 'Implante',
+      chipColorClass: 'bg-blue-600'
+    },
+    {
+      tooth: { id: 8, clinicalId: '1.8', quadrant: 1, position: 8, status: 'fracture', surfaces: { mesial: 'fracture', distal: 'fracture', buccal: 'fracture', lingual: 'fracture', occlusal: 'fracture' } },
+      label: 'Fractura',
+      chipColorClass: 'bg-orange-600'
+    },
+    {
+      tooth: { id: 9, clinicalId: '2.1', quadrant: 2, position: 1, status: 'not_erupted', surfaces: { mesial: 'not_erupted', distal: 'not_erupted', buccal: 'not_erupted', lingual: 'not_erupted', occlusal: 'not_erupted' } },
+      label: 'No erupcionado',
+      chipColorClass: 'bg-teal-600'
+    }
+  ];
 
   return (
-    <div className="bg-background border border-border rounded-lg">
+    <div className={`${className} bg-background shadow-sm border-border rounded-lg border`}>
+      {/* Botón Toggle del Panel */}
       <button
         type="button"
-        className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-foreground hover:bg-muted/50 transition-colors rounded-lg"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="w-full flex items-center justify-between gap-2 px-4 py-3 text-sm font-semibold text-foreground hover:bg-muted/50 transition-colors rounded-t-lg"
+        aria-label={isExpanded ? 'Ocultar leyenda' : 'Mostrar leyenda'}
       >
-        <span className="flex items-center gap-2">
-          <Palette className="w-4 h-4 text-muted-foreground" />
-          Leyenda de estados dentales
-        </span>
-        {isOpen ? (
-          <ChevronUp className="w-4 h-4 text-muted-foreground" />
-        ) : (
-          <ChevronDown className="w-4 h-4 text-muted-foreground" />
-        )}
+        <div className="flex items-center gap-2">
+          <Info className="w-4 h-4 text-blue-500" />
+          <span>Leyenda de estados dentales</span>
+        </div>
+        {isExpanded ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
       </button>
 
-      {isOpen && (
-        <div className="px-4 pb-3 grid grid-cols-2 gap-3">
-          {legendItems.map((item) => (
-            <div key={item.status} className="flex items-center gap-2">
+      {/* Contenido Expandible */}
+      <div className={`transition-all duration-300 overflow-hidden ${
+        isExpanded ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
+      }`}>
+        <div className="p-4 pt-0">
+          <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-4">
+            {sampleTeeth.map(({ tooth, label, chipColorClass }) => (
               <div
-                className="w-4 h-4 rounded-sm flex-shrink-0"
-                style={{ backgroundColor: item.color }}
-              />
-              <span className="text-xs text-muted-foreground">{item.label}</span>
-            </div>
-          ))}
+                key={tooth.id}
+                className="flex flex-col items-center justify-between bg-background border-border shadow-sm rounded-lg border p-2"
+              >
+                <div className="flex-grow flex items-center justify-center py-1">
+                  <div className="scale-[0.75] origin-center mb-3" style={{ width: '50px', height: '60px' }}>
+                    <DetailedToothComponent
+                      tooth={tooth}
+                      isSelected={false}
+                      onToothClick={() => {}}
+                      isUpper={true}
+                      isTemporary={false}
+                      isDarkMode={isDarkMode}
+                    />
+                  </div>
+                </div>
+                <div className={`w-full px-1 py-0.5 mt-2 rounded-md text-white text-center text-[10px] font-medium leading-none ${chipColorClass}`}>
+                  {label}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Nota informativa */}
+          <div className="mt-5 pt-4 border-t border-border">
+            <p className="text-xs text-center text-muted-foreground">
+              Sistema FDI • Pasa el cursor sobre cualquier diente para ver información detallada
+            </p>
+          </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };
