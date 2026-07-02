@@ -249,6 +249,31 @@ export async function saveHc5(
   }
 }
 
+const hc6Schema = z.object({
+  patientId: z.string().min(1),
+  hc6Data: z.string().optional().or(z.literal("")),
+});
+
+export async function saveHc6(
+  prevState: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const rawData = Object.fromEntries(formData.entries());
+  const validatedFields = hc6Schema.safeParse(rawData);
+
+  if (!validatedFields.success) {
+    return {
+      message: "Datos inválidos.",
+      errors: validatedFields.error.flatten().fieldErrors as Record<string, string>,
+      success: false,
+    };
+  }
+
+  revalidatePath("/");
+  revalidatePath(`/pacientes/${validatedFields.data.patientId}`);
+  return { message: "Odontograma guardado con éxito.", success: true };
+}
+
 export async function saveHc2(
   prevState: FormState,
   formData: FormData

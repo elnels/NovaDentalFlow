@@ -6,6 +6,7 @@ export default {
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/lib/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     container: {
@@ -71,6 +72,28 @@ export default {
           'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
           border: 'hsl(var(--sidebar-border))',
           ring: 'hsl(var(--sidebar-ring))',
+        },
+        success: {
+          DEFAULT: '#10b981',
+          content: '#065f46',
+        },
+        error: {
+          DEFAULT: '#ef4444',
+          content: '#991b1b',
+        },
+        warning: {
+          DEFAULT: '#f59e0b',
+          content: '#92400e',
+        },
+        info: {
+          DEFAULT: '#3b82f6',
+          content: '#1e3a8a',
+        },
+        base: {
+          100: '#ffffff',
+          200: '#f3f4f6',
+          300: '#e5e7eb',
+          content: '#1f2937',
         },
       },
       borderRadius: {

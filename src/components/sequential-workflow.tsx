@@ -20,11 +20,12 @@ import { Hc2Form } from "@/components/hc2-form";
 import { Hc3Form } from "@/components/hc3-form";
 import { Hc4Form } from "@/components/hc4-form";
 import { Hc5Form } from "@/components/hc5-form";
-import { addPatient, addCita, saveHc1Odontologo, saveHc2, saveHc3, saveHc4, saveHc5, getPatientById, updatePatient, addEmptyHistorial, type FormState } from "@/lib/actions";
+import { Hc6Form } from "@/components/hc6-form";
+import { addPatient, addCita, saveHc1Odontologo, saveHc2, saveHc3, saveHc4, saveHc5, saveHc6, getPatientById, updatePatient, addEmptyHistorial, type FormState } from "@/lib/actions";
 import type { PatientFormData } from "@/components/patient-form";
 
 type WorkflowStep = "patient" | "hc1" | "clinicalHistory" | "appointment" | "completed";
-type SubStep = "antecedentesPersonales" | "antecedentesHeredoFamiliares" | "antecedentesNoPatologicos" | "exploracionBucal";
+type SubStep = "antecedentesPersonales" | "antecedentesHeredoFamiliares" | "antecedentesNoPatologicos" | "exploracionBucal" | "odontograma";
 
 interface StepData {
   patientId?: string;
@@ -72,6 +73,7 @@ function subStepIndex(currentSubStep: SubStep): number {
     case "antecedentesHeredoFamiliares": return 2;
     case "antecedentesNoPatologicos": return 3;
     case "exploracionBucal": return 4;
+    case "odontograma": return 5;
   }
 }
 
@@ -216,6 +218,11 @@ export function SequentialWorkflow({ onComplete, onClose }: SequentialWorkflowPr
 
   const handleExploracionBucalSuccess = () => {
     setCompletedSubSteps(prev => new Set([...prev, "exploracionBucal"]));
+    setCurrentSubStep("odontograma");
+  };
+
+  const handleOdontogramaSuccess = () => {
+    setCompletedSubSteps(prev => new Set([...prev, "odontograma"]));
     setCompletedSteps(prev => new Set([...prev, "clinicalHistory"]));
     setCurrentStep("appointment");
   };
@@ -236,8 +243,12 @@ export function SequentialWorkflow({ onComplete, onClose }: SequentialWorkflowPr
     setCurrentStep("hc1");
   };
 
-  const handleBackFromAppointment = () => {
+  const handleBackFromOdontograma = () => {
     setCurrentSubStep("exploracionBucal");
+  };
+
+  const handleBackFromAppointment = () => {
+    setCurrentSubStep("odontograma");
     setCurrentStep("clinicalHistory");
   };
   const handleAppointmentSuccess = async (result: FormState) => {
@@ -262,7 +273,7 @@ export function SequentialWorkflow({ onComplete, onClose }: SequentialWorkflowPr
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="max-w-4xl mx-auto p-6 bg-background rounded-lg shadow-lg max-h-[90vh] overflow-y-auto relative">
+      <div className="w-screen max-w-[95vw] mx-auto p-6 bg-background rounded-lg shadow-lg max-h-[90vh] overflow-y-auto relative">
         {/* Botón de cerrar */}
         <button
           onClick={onClose}
@@ -390,6 +401,23 @@ export function SequentialWorkflow({ onComplete, onClose }: SequentialWorkflowPr
               action={saveHc5}
               onSuccess={handleExploracionBucalSuccess}
               onBack={handleBackFromExploracionBucal}
+            />
+          </motion.div>
+        )}
+
+        {currentStep === "clinicalHistory" && stepData.patientId && currentSubStep === "odontograma" && (
+          <motion.div
+            key="hc6"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Hc6Form
+              patientId={stepData.patientId}
+              action={saveHc6}
+              onSuccess={handleOdontogramaSuccess}
+              onBack={handleBackFromOdontograma}
             />
           </motion.div>
         )}
