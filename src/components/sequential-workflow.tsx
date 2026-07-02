@@ -273,10 +273,10 @@ export function SequentialWorkflow({ onComplete, onClose }: SequentialWorkflowPr
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className={`w-screen mx-auto p-6 bg-background rounded-lg shadow-lg max-h-[90vh] overflow-y-auto relative ${
+      <div className={`w-screen mx-auto p-6 bg-background rounded-lg shadow-lg overflow-y-auto relative ${
           currentStep === "clinicalHistory" && currentSubStep === "odontograma"
-            ? 'max-w-[calc(95vw-200px)]' 
-            : 'max-w-4xl'
+            ? 'max-w-[1380px] h-[950px]' 
+            : 'max-w-4xl max-h-[90vh]'
         }`}>
         {/* Botón de cerrar */}
         <button

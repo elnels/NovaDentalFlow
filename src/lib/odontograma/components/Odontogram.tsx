@@ -105,7 +105,7 @@ export const Odontogram: React.FC<OdontogramProps> = ({
         {/* Contenedor principal */}
         <div className="relative">
           {/* Estructura de 3 columnas */}
-          <div className="flex items-start gap-2 scale-75 sm:scale-90 lg:scale-100">
+          <div className="flex items-start gap-2 scale-75 sm:scale-90 lg:scale-[0.93]">
             {/* Columna 1 - Grupos 1 y 4 */}
             <OdontogramColumn1
               permanentUpperGroup={grupo1}

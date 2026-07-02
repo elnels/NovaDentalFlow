@@ -89,10 +89,10 @@ export function Hc6Form({ patientId, action, onSuccess, onBack }: Hc6FormProps) 
           </p>
         </div>
 
-        <form action={handleSubmit} className="space-y-6">
+        <form action={handleSubmit}>
           <input type="hidden" name="patientId" value={patientId} />
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div className="mb-6 grid grid-cols-1 lg:grid-cols-3 gap-4">
             <div className="lg:col-span-2 border rounded-lg p-4 bg-muted/10">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold text-foreground">Odontograma</h3>
@@ -133,48 +133,50 @@ export function Hc6Form({ patientId, action, onSuccess, onBack }: Hc6FormProps) 
             </div>
           </div>
 
-          <div>
-            <Label className="text-sm font-medium">Diagnóstico de Presunción</Label>
-            <Textarea
-              value={diagnosticoPresuncion}
-              onChange={(e) => setDiagnosticoPresuncion(e.target.value)}
-              placeholder="Diagnóstico presuntivo..."
-              className="mt-1"
-              rows={3}
-            />
-          </div>
+          <div className="mt-[300px] space-y-6">
+            <div>
+              <Label className="text-sm font-medium">Diagnóstico de Presunción</Label>
+              <Textarea
+                value={diagnosticoPresuncion}
+                onChange={(e) => setDiagnosticoPresuncion(e.target.value)}
+                placeholder="Diagnóstico presuntivo..."
+                className="mt-1"
+                rows={3}
+              />
+            </div>
 
-          <div>
-            <Label className="text-sm font-medium">Estudios Auxiliares</Label>
-            <Textarea
-              value={estudiosAuxiliares}
-              onChange={(e) => setEstudiosAuxiliares(e.target.value)}
-              placeholder="Estudios auxiliares solicitados..."
-              className="mt-1"
-              rows={3}
-            />
-          </div>
+            <div>
+              <Label className="text-sm font-medium">Estudios Auxiliares</Label>
+              <Textarea
+                value={estudiosAuxiliares}
+                onChange={(e) => setEstudiosAuxiliares(e.target.value)}
+                placeholder="Estudios auxiliares solicitados..."
+                className="mt-1"
+                rows={3}
+              />
+            </div>
 
-          <div>
-            <Label className="text-sm font-medium">Observaciones</Label>
-            <Textarea
-              value={observaciones}
-              onChange={(e) => setObservaciones(e.target.value)}
-              placeholder="Notas y observaciones..."
-              className="mt-1"
-              rows={3}
-            />
-          </div>
+            <div>
+              <Label className="text-sm font-medium">Observaciones</Label>
+              <Textarea
+                value={observaciones}
+                onChange={(e) => setObservaciones(e.target.value)}
+                placeholder="Notas y observaciones..."
+                className="mt-1"
+                rows={3}
+              />
+            </div>
 
-          <div className="flex gap-4 pt-2">
-            {onBack && (
-              <Button type="button" variant="outline" onClick={onBack} disabled={isLoading} className="flex-1">
-                Regresar
+            <div className="flex gap-4 pt-2">
+              {onBack && (
+                <Button type="button" variant="outline" onClick={onBack} disabled={isLoading} className="flex-1">
+                  Regresar
+                </Button>
+              )}
+              <Button type="submit" disabled={isLoading} className="flex-1">
+                {isLoading ? "Guardando..." : "Continuar"}
               </Button>
-            )}
-            <Button type="submit" disabled={isLoading} className="flex-1">
-              {isLoading ? "Guardando..." : "Continuar"}
-            </Button>
+            </div>
           </div>
         </form>
       </CardContent>
