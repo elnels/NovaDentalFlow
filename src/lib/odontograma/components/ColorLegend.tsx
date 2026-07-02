@@ -82,7 +82,7 @@ export const ColorLegend: React.FC<ColorLegendProps> = ({ className = '', theme 
         isExpanded ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
       }`}>
         <div className="p-4 pt-0">
-          <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-4">
+          <div className="grid grid-cols-3 md:grid-cols-5 xl:grid-cols-9 gap-3">
             {sampleTeeth.map(({ tooth, label, chipColorClass }) => (
               <div
                 key={tooth.id}
