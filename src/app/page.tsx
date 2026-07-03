@@ -104,8 +104,8 @@ export default function HomePage() {
                   className="w-32 h-32 mb-8 mx-auto object-contain"
                 />
               <h1 className="text-5xl md:text-6xl font-bold mb-4">
-                <span className="bg-gradient-to-r from-blue-900 to-blue-800 bg-clip-text text-transparent">DENTAL</span>
-                <span className="bg-gradient-to-r from-green-500 to-green-400 bg-clip-text text-transparent">FLOW</span>
+                <span className="bg-gradient-to-r from-blue-900 to-blue-800 bg-clip-text text-transparent">NOVA</span>
+                <span className="bg-gradient-to-r from-green-500 to-green-400 bg-clip-text text-transparent">DENTE</span>
               </h1>
               <p className="text-xl text-gray-600 mb-8 leading-relaxed">
                 Sistema integral de gestión dental. Administre pacientes, citas y historiales médicos de manera eficiente.
