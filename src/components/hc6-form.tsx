@@ -75,7 +75,7 @@ export function Hc6Form({ patientId, action, onSuccess, onBack }: Hc6FormProps) 
   });
 
   return (
-    <Card>
+    <Card className="!bg-[rgb(30,30,30)] border-gray-700 text-gray-100">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Search className="h-5 w-5" />
