@@ -88,10 +88,10 @@ export function Hc6Form({ patientId, action, onSuccess, onBack }: Hc6FormProps) 
             <div className="lg:col-span-2 border border-gray-700 rounded-lg p-4 bg-gray-900">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold text-gray-100">Odontograma</h3>
-                <Button type="button" variant="outline" size="sm" onClick={resetTeeth}>
-                  <RotateCcw className="h-3.5 w-3.5 mr-1" />
+                <button type="button" onClick={resetTeeth} className="inline-flex items-center rounded-md bg-cyan-500 px-3 py-1.5 text-xs font-medium text-white shadow hover:bg-cyan-500/90 transition-colors">
+                  <RotateCcw className="h-3 w-3 mr-1" />
                   Restablecer
-                </Button>
+                </button>
               </div>
               <Odontogram
                 teeth={teeth}
@@ -130,7 +130,7 @@ export function Hc6Form({ patientId, action, onSuccess, onBack }: Hc6FormProps) 
 
           <div className="flex gap-4 pt-2 mt-8">
               {onBack && (
-                <Button type="button" variant="outline" onClick={onBack} disabled={isLoading} className="flex-1">
+                <Button type="button" variant="default" onClick={onBack} disabled={isLoading} className="flex-1">
                   Regresar
                 </Button>
               )}
