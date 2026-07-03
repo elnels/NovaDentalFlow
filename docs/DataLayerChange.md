@@ -106,9 +106,6 @@ Per-visit clinical records. Replaces `Historial_Clinico` sheet + new fields (HC5
 | motivo_consulta | TEXT? | |
 | antecedentes_personales | TEXT? | |
 | exploracion_bucal | TEXT? | HC5 |
-| observaciones | TEXT? | HC6 |
-| diagnostico_presuncion | TEXT? | HC6 |
-| estudios_auxiliares | TEXT? | HC6 |
 | odontograma | JSON? | Future |
 
 ### Table: `clinical_details`

@@ -3,8 +3,6 @@
 import React, { useState } from "react";
 import { Search, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import {
   Card,
   CardContent,
@@ -31,9 +29,6 @@ export function Hc6Form({ patientId, action, onSuccess, onBack }: Hc6FormProps) 
   const [temporaryTeeth] = useState<Tooth[]>(initialTemporaryTeeth);
   const [showTemporaryTeeth, setShowTemporaryTeeth] = useState(false);
   const [selectedTooth, setSelectedTooth] = useState<Tooth | null>(null);
-  const [diagnosticoPresuncion, setDiagnosticoPresuncion] = useState("");
-  const [estudiosAuxiliares, setEstudiosAuxiliares] = useState("");
-  const [observaciones, setObservaciones] = useState("");
 
   const handleSubmit = async (formData: FormData) => {
     setIsLoading(true);
@@ -43,9 +38,6 @@ export function Hc6Form({ patientId, action, onSuccess, onBack }: Hc6FormProps) 
         JSON.stringify({
           teeth,
           temporaryTeeth,
-          diagnosticoPresuncion,
-          estudiosAuxiliares,
-          observaciones,
         })
       );
       const result = await action({ message: "", success: false }, formData);
@@ -135,41 +127,7 @@ export function Hc6Form({ patientId, action, onSuccess, onBack }: Hc6FormProps) 
             </div>
             </div>
 
-          <div className="mt-[300px] space-y-6">
-            <div>
-              <Label className="text-sm font-medium">Diagnóstico de Presunción</Label>
-              <Textarea
-                value={diagnosticoPresuncion}
-                onChange={(e) => setDiagnosticoPresuncion(e.target.value)}
-                placeholder="Diagnóstico presuntivo..."
-                className="mt-1"
-                rows={3}
-              />
-            </div>
-
-            <div>
-              <Label className="text-sm font-medium">Estudios Auxiliares</Label>
-              <Textarea
-                value={estudiosAuxiliares}
-                onChange={(e) => setEstudiosAuxiliares(e.target.value)}
-                placeholder="Estudios auxiliares solicitados..."
-                className="mt-1"
-                rows={3}
-              />
-            </div>
-
-            <div>
-              <Label className="text-sm font-medium">Observaciones</Label>
-              <Textarea
-                value={observaciones}
-                onChange={(e) => setObservaciones(e.target.value)}
-                placeholder="Notas y observaciones..."
-                className="mt-1"
-                rows={3}
-              />
-            </div>
-
-            <div className="flex gap-4 pt-2">
+          <div className="flex gap-4 pt-2 mt-8">
               {onBack && (
                 <Button type="button" variant="outline" onClick={onBack} disabled={isLoading} className="flex-1">
                   Regresar
@@ -179,7 +137,6 @@ export function Hc6Form({ patientId, action, onSuccess, onBack }: Hc6FormProps) 
                 {isLoading ? "Guardando..." : "Continuar"}
               </Button>
             </div>
-          </div>
         </form>
       </CardContent>
     </Card>

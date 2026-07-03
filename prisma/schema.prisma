@@ -71,11 +71,8 @@ model ClinicalHistory {
   telefonoContacto      String?   @map("telefono_contacto")
   motivoConsulta        String?   @map("motivo_consulta")
   antecedentesPersonales String?   @map("antecedentes_personales")
-  exploracionBucal       String?   @map("exploracion_bucal")
-  observaciones          String?
-  diagnosticoPresuncion  String?   @map("diagnostico_presuncion")
-  estudiosAuxiliares     String?   @map("estudios_auxiliares")
-  odontograma            Json?
+   exploracionBucal       String?   @map("exploracion_bucal")
+   odontograma            Json?
 
   patient    Patient      @relation(fields: [patientId], references: [id], onDelete: Cascade)
   appointment Appointment? @relation(fields: [appointmentId], references: [id], onDelete: SetNull)
