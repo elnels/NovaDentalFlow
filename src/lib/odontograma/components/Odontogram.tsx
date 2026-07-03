@@ -10,6 +10,7 @@ export interface OdontogramProps {
   selectedTooth: Tooth | null;
   onToothClick: (tooth: Tooth) => void;
   developerMode?: boolean;
+  isDarkMode?: boolean;
 }
 
 export const Odontogram: React.FC<OdontogramProps> = ({ 
@@ -20,6 +21,7 @@ export const Odontogram: React.FC<OdontogramProps> = ({
   selectedTooth, 
   onToothClick,
   developerMode = false,
+  isDarkMode = true,
 }) => {
   const getQuadrantTeeth = (quadrant: number) => {
     return teeth.filter(tooth => tooth.quadrant === quadrant).sort((a, b) => a.position - b.position);
@@ -65,18 +67,18 @@ export const Odontogram: React.FC<OdontogramProps> = ({
       <div className=" text-center space-y-3">
         {/* Título principal con toggle */}
         <div className="flex items-center justify-center gap-3">
-          <h2 className="text-xl font-semibold text-text-primary">
+          <h2 className="text-xl font-semibold text-gray-100">
             Odontograma {showTemporaryTeeth ? 'Mixto' : 'Adulto'}
           </h2>
           
           {/* Toggle compacto para dientes temporales */}
           <div className="flex items-center gap-2">
-            <span className="text-xs text-text-secondary">Dientes temporales</span>
+            <span className="text-xs text-gray-400">Dientes temporales</span>
             <button
               type="button"
               onClick={() => onToggleTemporaryTeeth(!showTemporaryTeeth)}
               className={`w-10 h-5 rounded-full transition-colors relative ${
-                showTemporaryTeeth ? 'bg-orange-500' : 'bg-gray-300'
+                showTemporaryTeeth ? 'bg-orange-500' : 'bg-gray-600'
               }`}
             >
               <div className={`w-4 h-4 bg-white rounded-full absolute top-0.5 transition-transform ${
@@ -87,13 +89,13 @@ export const Odontogram: React.FC<OdontogramProps> = ({
         </div>
         
         <div className="flex items-center justify-center gap-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-accent/10 text-accent rounded-full text-sm">
-            <span className="w-2 h-2 bg-accent rounded-full"></span>
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-900/30 text-blue-300 rounded-full text-sm">
+            <span className="w-2 h-2 bg-blue-400 rounded-full"></span>
             32 dientes permanentes
           </div>
           
           {showTemporaryTeeth && (
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-orange-500/10 text-orange-600 rounded-full text-sm">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-orange-500/20 text-orange-400 rounded-full text-sm">
               <span className="w-2 h-2 bg-orange-500 rounded-full"></span>
               20 dientes temporales
             </div>
@@ -119,6 +121,7 @@ export const Odontogram: React.FC<OdontogramProps> = ({
               onToothClick={onToothClick}
               groupNumber={1}
               groupLabel="Grupo 1"
+              isDarkMode={isDarkMode}
             />
 
             {/* Columna 2 - Grupos 2 y 5 */}
@@ -134,6 +137,7 @@ export const Odontogram: React.FC<OdontogramProps> = ({
               onToothClick={onToothClick}
               groupNumber={2}
               groupLabel="Grupo 2"
+              isDarkMode={isDarkMode}
             />
 
             {/* Columna 3 - Grupos 3 y 6 */}
@@ -149,12 +153,13 @@ export const Odontogram: React.FC<OdontogramProps> = ({
               onToothClick={onToothClick}
               groupNumber={3}
               groupLabel="Grupo 3"
+              isDarkMode={isDarkMode}
             />
           </div>
 
           {/* Separador horizontal entre arcadas (posición absoluta) */}
           <div className="absolute top-1/2 left-0 right-0 transform -translate-y-1/2 px-8">
-            <div className=" w-full h-0.5 bg-gradient-to-r from-transparent via-accent to-transparent shadow-sm">
+            <div className=" w-full h-0.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent shadow-sm">
               {showTemporaryTeeth && (
                 <div className="w-full h-0.5 bg-gradient-to-r from-transparent via-orange-500 to-transparent shadow-sm mt-0.5"></div>
               )}

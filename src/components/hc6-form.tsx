@@ -93,9 +93,9 @@ export function Hc6Form({ patientId, action, onSuccess, onBack }: Hc6FormProps) 
           <input type="hidden" name="patientId" value={patientId} />
 
           <div className="mb-6 grid grid-cols-1 lg:grid-cols-3 gap-4">
-            <div className="lg:col-span-2 border rounded-lg p-4 bg-muted/10">
+            <div className="lg:col-span-2 border border-gray-700 rounded-lg p-4 bg-gray-900">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-foreground">Odontograma</h3>
+                <h3 className="font-semibold text-gray-100">Odontograma</h3>
                 <Button type="button" variant="outline" size="sm" onClick={resetTeeth}>
                   <RotateCcw className="h-3.5 w-3.5 mr-1" />
                   Restablecer
@@ -108,30 +108,32 @@ export function Hc6Form({ patientId, action, onSuccess, onBack }: Hc6FormProps) 
                 onToggleTemporaryTeeth={setShowTemporaryTeeth}
                 selectedTooth={selectedTooth}
                 onToothClick={(t) => setSelectedTooth(t)}
+                isDarkMode={true}
               />
               <div className="mt-4">
-                <ColorLegend />
+                <ColorLegend theme="dark" />
               </div>
             </div>
             <div className="lg:col-span-1">
               {selectedTooth ? (
-                <div className="border rounded-lg overflow-hidden bg-muted/10 h-full">
+                <div className="border border-gray-700 rounded-lg overflow-hidden bg-gray-900 h-full">
                   <FloatingToothDetailsCard
                     tooth={selectedTooth}
                     onUpdateTooth={updateTooth}
                     onClose={() => setSelectedTooth(null)}
+                    isDarkMode={true}
                   />
                 </div>
               ) : (
-                <div className="border rounded-lg p-6 h-full flex items-center justify-center bg-muted/10 min-h-[300px]">
-                  <div className="text-center text-muted-foreground">
+                <div className="border border-gray-700 rounded-lg p-6 h-full flex items-center justify-center bg-gray-900 min-h-[300px]">
+                  <div className="text-center text-gray-400">
                     <p className="text-lg font-medium mb-2">Selecciona un diente</p>
                     <p className="text-sm max-w-xs mx-auto">Haz clic en cualquier diente del odontograma para ver sus detalles y herramientas</p>
                   </div>
                 </div>
               )}
             </div>
-          </div>
+            </div>
 
           <div className="mt-[300px] space-y-6">
             <div>

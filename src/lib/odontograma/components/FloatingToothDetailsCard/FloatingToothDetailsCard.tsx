@@ -9,6 +9,7 @@ interface FloatingToothDetailsCardProps {
   tooth: Tooth;
   onUpdateTooth: (toothId: number, updates: Partial<Tooth>) => void;
   onClose: () => void;
+  isDarkMode?: boolean;
 }
 
 type TabType = 'estado' | 'notas' | 'historial';
@@ -30,7 +31,8 @@ const statusOptions = [
 export const FloatingToothDetailsCard: React.FC<FloatingToothDetailsCardProps> = ({ 
   tooth, 
   onUpdateTooth, 
-  onClose 
+  onClose,
+  isDarkMode = true,
 }) => {
   const [activeTab, setActiveTab] = useState<TabType>('estado');
   const [selectedTool, setSelectedTool] = useState<ToothStatus>(tooth.status);
@@ -99,12 +101,12 @@ export const FloatingToothDetailsCard: React.FC<FloatingToothDetailsCardProps> =
   const procedureCount = tooth.procedures?.length || 0;
 
   return (
-    <div className="h-full bg-background flex flex-col border-l border-border">
+    <div className="h-full bg-gray-950 flex flex-col border-l border-gray-700">
       {/* Header */}
-      <div className="p-4 border-b border-border flex items-center justify-between bg-muted/50">
+      <div className="p-4 border-b border-gray-700 flex items-center justify-between bg-gray-800/50">
         <div className="flex items-center gap-3">
           <div className="relative">
-            <div className={`w-10 h-10 bg-accent rounded-lg flex items-center justify-center text-accent-foreground font-bold text-sm ${hasUnsavedChanges ? 'save-success' : ''}`}>
+            <div className={`w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-sm ${hasUnsavedChanges ? 'save-success' : ''}`}>
               {tooth.clinicalId || tooth.id}
             </div>
             {hasNotes && <div className="has-notes-indicator" />}
@@ -113,14 +115,14 @@ export const FloatingToothDetailsCard: React.FC<FloatingToothDetailsCardProps> =
             )}
           </div>
           <div>
-            <h3 className="font-semibold text-foreground">
+            <h3 className="font-semibold text-gray-100">
               {getToothTypeName(tooth.position)}
             </h3>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-gray-400">
               {getQuadrantName(tooth.quadrant)} • Posición {tooth.position}
             </p>
             {tooth.isTemporary && (
-              <span className="inline-flex items-center rounded-full bg-warning/20 px-2 py-0.5 text-xs font-medium text-warning mt-1">
+              <span className="inline-flex items-center rounded-full bg-amber-500/20 px-2 py-0.5 text-xs font-medium text-amber-400 mt-1">
                 Diente temporal
               </span>
             )}
@@ -132,8 +134,8 @@ export const FloatingToothDetailsCard: React.FC<FloatingToothDetailsCardProps> =
       </div>
 
       {/* Tabs */}
-      <div className="p-4 border-b border-border bg-muted/50">
-        <div className="flex bg-background rounded-lg p-1">
+      <div className="p-4 border-b border-gray-700 bg-gray-800/50">
+        <div className="flex bg-gray-900 rounded-lg p-1">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             return (
@@ -141,8 +143,8 @@ export const FloatingToothDetailsCard: React.FC<FloatingToothDetailsCardProps> =
                 key={tab.id}
                 className={`flex-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                   activeTab === tab.id 
-                    ? 'bg-accent text-accent-foreground' 
-                    : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                    ? 'bg-blue-600 text-white' 
+                    : 'text-gray-400 hover:text-gray-100 hover:bg-gray-800'
                 }`}
                 onClick={() => setActiveTab(tab.id)}
               >
@@ -159,7 +161,7 @@ export const FloatingToothDetailsCard: React.FC<FloatingToothDetailsCardProps> =
         {activeTab === 'estado' && (
           <div className="space-y-4">
             <div>
-              <h4 className="text-sm font-medium text-muted-foreground mb-3">Selecciona un estado:</h4>
+              <h4 className="text-sm font-medium text-gray-400 mb-3">Selecciona un estado:</h4>
               <div className="grid grid-cols-4 gap-2">
                 {statusOptions.map((status) => {
                   const Icon = status.icon;
@@ -168,10 +170,10 @@ export const FloatingToothDetailsCard: React.FC<FloatingToothDetailsCardProps> =
                     <button
                       key={status.id}
                       onClick={() => handleStatusChange(status.id)}
-                      className={`flex flex-col items-center py-2 rounded-lg border transition-all duration-200 ${
+                        className={`flex flex-col items-center py-2 rounded-lg border transition-all duration-200 ${
                         isSelected 
                           ? 'text-white shadow-sm' 
-                          : 'border-border hover:bg-muted'
+                          : 'border-gray-600 hover:bg-gray-800 text-gray-300'
                       }`}
                       style={isSelected ? {
                         backgroundColor: status.color,
@@ -197,9 +199,9 @@ export const FloatingToothDetailsCard: React.FC<FloatingToothDetailsCardProps> =
         
         {activeTab === 'notas' && (
           <div className="space-y-4">
-            <h4 className="text-sm font-medium text-muted-foreground">Notas del diente</h4>
+            <h4 className="text-sm font-medium text-gray-400">Notas del diente</h4>
             <textarea
-              className="w-full min-h-[120px] rounded-md border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring resize-none"
+              className="w-full min-h-[120px] rounded-md border border-gray-600 bg-gray-900 px-3 py-2 text-sm text-gray-100 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
               placeholder="Agregar notas sobre este diente..."
               value={tooth.notes || ''}
               onChange={(e) => onUpdateTooth(tooth.id, { notes: e.target.value })}
@@ -209,19 +211,19 @@ export const FloatingToothDetailsCard: React.FC<FloatingToothDetailsCardProps> =
         
         {activeTab === 'historial' && (
           <div className="space-y-4">
-            <h4 className="text-sm font-medium text-muted-foreground">Procedimientos</h4>
+            <h4 className="text-sm font-medium text-gray-400">Procedimientos</h4>
             {tooth.procedures && tooth.procedures.length > 0 ? (
               tooth.procedures.map((proc) => (
-                <div key={proc.id} className="p-3 bg-muted rounded-lg">
-                  <p className="text-sm font-medium text-foreground">{proc.type}</p>
-                  <p className="text-xs text-muted-foreground">{proc.date}</p>
+                <div key={proc.id} className="p-3 bg-gray-800 rounded-lg">
+                  <p className="text-sm font-medium text-gray-100">{proc.type}</p>
+                  <p className="text-xs text-gray-400">{proc.date}</p>
                   {proc.description && (
-                    <p className="text-xs text-muted-foreground mt-1">{proc.description}</p>
+                    <p className="text-xs text-gray-400 mt-1">{proc.description}</p>
                   )}
                 </div>
               ))
             ) : (
-              <p className="text-sm text-muted-foreground text-center py-8">No hay procedimientos registrados</p>
+              <p className="text-sm text-gray-400 text-center py-8">No hay procedimientos registrados</p>
             )}
           </div>
         )}

@@ -19,6 +19,9 @@ export interface OdontogramColumnProps {
   // Información del grupo
   groupNumber: number;
   groupLabel: string;
+  
+  // Dark mode
+  isDarkMode?: boolean;
 }
 
 export interface ToothRowProps {
@@ -29,4 +32,5 @@ export interface ToothRowProps {
   onToothClick: (tooth: Tooth) => void;
   developerMode: boolean;
   reverseOrder?: boolean;
+  isDarkMode?: boolean;
 }

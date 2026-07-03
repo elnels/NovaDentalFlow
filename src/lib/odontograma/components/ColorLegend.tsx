@@ -62,19 +62,19 @@ export const ColorLegend: React.FC<ColorLegendProps> = ({ className = '', theme 
   ];
 
   return (
-    <div className={`${className} bg-background shadow-sm border-border rounded-lg border`}>
+    <div className={`${className} bg-gray-900 shadow-sm border-gray-700 rounded-lg border`}>
       {/* Botón Toggle del Panel */}
       <button
         type="button"
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full flex items-center justify-between gap-2 px-4 py-3 text-sm font-semibold text-foreground hover:bg-muted/50 transition-colors rounded-t-lg"
+        className="w-full flex items-center justify-between gap-2 px-4 py-3 text-sm font-semibold text-gray-100 hover:bg-gray-800/50 transition-colors rounded-t-lg"
         aria-label={isExpanded ? 'Ocultar leyenda' : 'Mostrar leyenda'}
       >
         <div className="flex items-center gap-2">
           <Info className="w-4 h-4 text-blue-500" />
           <span>Leyenda de estados dentales</span>
         </div>
-        {isExpanded ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
+        {isExpanded ? <ChevronUp className="w-4 h-4 text-gray-400" /> : <ChevronDown className="w-4 h-4 text-gray-400" />}
       </button>
 
       {/* Contenido Expandible */}
@@ -86,7 +86,7 @@ export const ColorLegend: React.FC<ColorLegendProps> = ({ className = '', theme 
             {sampleTeeth.map(({ tooth, label, chipColorClass }) => (
               <div
                 key={tooth.id}
-                className="flex flex-col items-center justify-between bg-background border-border shadow-sm rounded-lg border p-2"
+                className="flex flex-col items-center justify-between bg-gray-950 border-gray-700 shadow-sm rounded-lg border p-2"
               >
                 <div className="flex-grow flex items-center justify-center py-1">
                   <div className="scale-[0.75] origin-center mb-3" style={{ width: '50px', height: '60px' }}>
@@ -108,8 +108,8 @@ export const ColorLegend: React.FC<ColorLegendProps> = ({ className = '', theme 
           </div>
 
           {/* Nota informativa */}
-          <div className="mt-5 pt-4 border-t border-border">
-            <p className="text-xs text-center text-muted-foreground">
+          <div className="mt-5 pt-4 border-t border-gray-700">
+            <p className="text-xs text-center text-gray-400">
               Sistema FDI • Pasa el cursor sobre cualquier diente para ver información detallada
             </p>
           </div>
