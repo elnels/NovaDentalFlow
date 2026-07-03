@@ -260,6 +260,7 @@ Full odontogram integration (HC6) — sub-step 5 of 6:
 | `hc5-exploracion-bucal` | ✅ | Complete; Exploración Bucal (sub-step 4) |
 | `hc6-odontogram` (main, no branch) | ✅ | Complete; Odontograma interactivo (sub-step 5) |
 | `hc6-post-integration-fixes` (main, no branch) | ✅ | Dark mode, removed extraneous fields, ColorLegend fix, Regresar style |
+| `fix/hc6-status-buttons-submit-form` | ❌ | type=button + tool-select-only + selectedTooth sync |
 
 ### 11. `historial-clinico-new-fields` (reverted)
 Experimented with adding 9 new fields to Historial Clínico (Sexo, Estado Civil, Ocupación, Escolaridad, datos de padres, Motivo Consulta, Antecedentes Personales grid). Required Apps Script changes failed to deploy — reverted completely.
@@ -504,6 +505,13 @@ Post-integration fixes and cleanup after HC6 odontogram was added:
 - **Regresar button style**: Changed `variant="outline"` → `variant="default"` to match Continuar button style.
 
 - **Columns component refactor**: `OdontogramColumn1`/`Column2`/`Column3` and `types.ts` received dark mode styling pass (101 insertions/133 deletions across column components).
+
+### 21. `fix/hc6-status-buttons-submit-form` (not yet merged)
+Fixed HC6 odontogram status buttons and surface painting:
+
+- **`type="button"` on all buttons**: Tab buttons (Estado/Notas/Historial), status grid buttons (Selecciona un estado), and "Aplicar a todo el diente" button were missing `type="button"`. Inside the HC6 `<form>`, they defaulted to `type="submit"`, causing form submission → advancing to Programar Cita step.
+- **Status buttons select tool only**: Removed `onUpdateTooth(tooth.id, { status })` from `handleStatusChange`. Status buttons now just set `selectedTool` (the brush) without modifying the tooth.
+- **`selectedTooth` synced on update**: `updateTooth` in `hc6-form.tsx` now also updates `selectedTooth` via `setSelectedTooth`. Previously only `teeth[]` was updated, leaving `selectedTooth` stale — causing surface clicks to overwrite rather than accumulate, and the SVG right panel showing stale colors.
 
 ## Other Tasks
 - Fixed `JSX.IntrinsicElements` error by running `npm install`
