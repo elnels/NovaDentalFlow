@@ -53,6 +53,9 @@ export function Hc6Form({ patientId, action, onSuccess, onBack }: Hc6FormProps) 
     setTeeth((prev) =>
       prev.map((t) => (t.id === toothId ? { ...t, ...updates } : t))
     );
+    setSelectedTooth((prev) =>
+      prev && prev.id === toothId ? { ...prev, ...updates } : prev
+    );
   };
 
   const resetTeeth = () => {
