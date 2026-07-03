@@ -141,6 +141,7 @@ export const FloatingToothDetailsCard: React.FC<FloatingToothDetailsCardProps> =
             return (
               <button
                 key={tab.id}
+                type="button"
                 className={`flex-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                   activeTab === tab.id 
                     ? 'bg-blue-600 text-white' 
@@ -169,6 +170,7 @@ export const FloatingToothDetailsCard: React.FC<FloatingToothDetailsCardProps> =
                   return (
                     <button
                       key={status.id}
+                      type="button"
                       onClick={() => handleStatusChange(status.id)}
                         className={`flex flex-col items-center py-2 rounded-lg border transition-all duration-200 ${
                         isSelected 

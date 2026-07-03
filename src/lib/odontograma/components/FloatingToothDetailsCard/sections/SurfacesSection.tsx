@@ -74,7 +74,7 @@ export const SurfacesSection: React.FC<SurfacesSectionProps> = ({
           </svg>
         </div>
 
-        <button onClick={onWholeToothUpdate} className="inline-flex items-center justify-center rounded-md bg-cyan-500 px-8 py-2 text-sm font-medium text-white shadow hover:bg-cyan-500/90 transition-colors">
+        <button type="button" onClick={onWholeToothUpdate} className="inline-flex items-center justify-center rounded-md bg-cyan-500 px-8 py-2 text-sm font-medium text-white shadow hover:bg-cyan-500/90 transition-colors">
           Aplicar a todo el diente
         </button>
       </div>
