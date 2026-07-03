@@ -102,9 +102,6 @@ export function Hc6Form({ patientId, action, onSuccess, onBack }: Hc6FormProps) 
                 onToothClick={(t) => setSelectedTooth(t)}
                 isDarkMode={true}
               />
-              <div className="mt-4">
-                <ColorLegend theme="dark" />
-              </div>
             </div>
             <div className="lg:col-span-1">
               {selectedTooth ? (
@@ -126,6 +123,10 @@ export function Hc6Form({ patientId, action, onSuccess, onBack }: Hc6FormProps) 
               )}
             </div>
             </div>
+
+          <div className="mb-4">
+            <ColorLegend theme="dark" />
+          </div>
 
           <div className="flex gap-4 pt-2 mt-8">
               {onBack && (

@@ -81,7 +81,7 @@ export const ColorLegend: React.FC<ColorLegendProps> = ({ className = '', theme 
       <div className={`transition-all duration-300 overflow-hidden ${
         isExpanded ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
       }`}>
-        <div className="p-4 pt-0">
+        <div className="p-6 pt-0 pb-[10px]">
           <div className="grid grid-cols-3 md:grid-cols-5 xl:grid-cols-9 gap-3">
             {sampleTeeth.map(({ tooth, label, chipColorClass }) => (
               <div
