@@ -71,7 +71,6 @@ export const FloatingToothDetailsCard: React.FC<FloatingToothDetailsCardProps> =
 
   const handleStatusChange = (status: ToothStatus) => {
     setSelectedTool(status);
-    onUpdateTooth(tooth.id, { status });
     setHasUnsavedChanges(true);
     setTimeout(() => setHasUnsavedChanges(false), 1000);
   };
