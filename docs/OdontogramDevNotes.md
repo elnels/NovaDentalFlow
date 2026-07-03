@@ -2,18 +2,19 @@
 
 ## Integration Status — HC6 Odontogram (2026-07-02)
 
-The odontogram library has been fully integrated into the NovaDentalFlow HC6 form:
+The odontogram library has been fully integrated into the NovaDentalFlow HC6 form.
+All work was committed directly to `main` (no separate branch).
 
 ### Files Integrated into `src/lib/odontograma/`
 | File | Source | Notes |
 |------|--------|-------|
-| `components/Odontogram.tsx` | Library core | Simplified to 6 clinical props (removed 7 demo props) |
-| `components/DetailedToothComponent.tsx` | Library core | — |
+| `components/Odontogram.tsx` | Library core | Simplified to 6 clinical props (removed 7 demo props); scale `lg:scale-[0.93]` |
+| `components/DetailedToothComponent.tsx` | Library core | Light-mode colors use hardcoded Tailwind (pink/purple/orange) not shadcn semantic classes |
 | `components/AlignedToothContainer.tsx` | Library core | — |
 | `components/columns/` | Library core | 3-column arch layout |
-| `components/ColorLegend.tsx` | Adapted from demo | DaisyUI → shadcn classes, no theme prop |
-| `components/FloatingToothDetailsCard/` | Adapted from demo | 3-tab panel (Estado/Notas/Historial) with SVG surface selector |
-| `components/FloatingToothDetailsCard/sections/SurfacesSection.tsx` | Adapted from demo | 5 clickable SVG tooth surface zones |
+| `components/ColorLegend.tsx` | Adapted from demo | Open by default, uses `DetailedToothComponent` mini previews, `xl:grid-cols-9` single-row |
+| `components/FloatingToothDetailsCard/` | Adapted from demo | 3-tab panel (Estado/Notas/Historial) with SVG surface selector, `grid-cols-4` status grid |
+| `components/FloatingToothDetailsCard/sections/SurfacesSection.tsx` | Adapted from demo | 5 clickable SVG tooth surface zones (V/M/O/D/L) |
 | `data/dentalData.ts` | Library core | — |
 | `types/index.ts` | Library core | — |
 | `config/layoutConfig.ts` | Library core | — |
@@ -28,8 +29,13 @@ Matches demo: `grid grid-cols-1 lg:grid-cols-3` with:
 ### Key Fixes Applied
 1. **Tailwind content paths** — Added `'./src/lib/**/*.{js,ts,jsx,tsx,mdx}'` to `tailwind.config.ts` so utility classes in `src/lib/` are generated
 2. **Button type="submit" bug** — Added `type="button"` to all toggle buttons inside `<form>` to prevent unintended form submission (caused redirect to cita page)
-3. **Modal width** — Changed `max-w-4xl` to `max-w-[95vw]` in sequential-workflow.tsx for adequate odontogram space
+3. **Modal width** — Odontogram step gets `max-w-[1380px] h-[950px]`; all other steps keep `max-w-4xl max-h-[90vh]`
 4. **Status grid** — Changed to `grid-cols-4` compact layout matching demo
+5. **Scale** — `lg:scale-100` → `lg:scale-[0.93]` to prevent 60px overflow on both sides at 1380px width
+6. **Light-mode tooth colors** — `DetailedToothComponent` uses hardcoded Tailwind colors (`bg-pink-100 border-pink-500` for root_canal, `bg-purple-100 border-purple-500` for implant, `bg-orange-100 border-orange-500` for fracture) instead of shadcn `secondary`/`primary`/`accent` classes that rendered as light gray
+7. **ColorLegend** — Rewritten to match demo: open by default, uses `DetailedToothComponent` for 9 mini sample teeth, `grid-cols-3 md:grid-cols-5 xl:grid-cols-9`, "Sistema FDI" footer note
+8. **TypeScript** — Fixed `sexo` cast to enum union and `esMenor` string conversion in `sequential-workflow.tsx`
+9. **Build** — Passes consistently (`npm run build`)
 
 ### What Was NOT Integrated (Demo-only features)
 - Case selector (CompactCaseSelector) — not needed for HC6

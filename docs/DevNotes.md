@@ -212,11 +212,29 @@ Exploración Bucal form (HC5) — sub-step 4 of 6:
 
 - **`src/components/sequential-workflow.tsx`**:
   - `SubStep type`: added `"exploracionBucal"` (index 4 of 6)
-  - Flow: HC4 → HC5 → Cita (HC5 is last sub-step until HC6 is built)
+  - Flow: HC4 → HC5 → Cita (HC5 is last sub-step until HC6)
+
+### 19. `hc6-odontogram` (committed directly to main)
+Full odontogram integration (HC6) — sub-step 5 of 6:
+
+- **Library files** (`src/lib/odontograma/`): 15 files copied from local `op-odontorgram` clone
+  - `Odontogram.tsx` — simplified to 6 clinical props, scale `lg:scale-[0.93]`
+  - `DetailedToothComponent.tsx` — light-mode uses hardcoded Tailwind colors (pink/purple/orange)
+  - `AlignedToothContainer.tsx`, `columns/*` — core arch layout
+  - `ColorLegend.tsx` — open by default, `DetailedToothComponent` mini previews, `xl:grid-cols-9`
+  - `FloatingToothDetailsCard/` — 3-tab panel (Estado/Notas/Historial), SVG surface selector, `grid-cols-4` status grid
+  - `SurfacesSection.tsx` — 5 clickable SVG tooth surface zones (V/M/O/D/L)
+
+- **`src/components/hc6-form.tsx`**: Interfaz panel — `lg:grid-cols-3` layout, right panel always visible with placeholder
+- **`src/components/sequential-workflow.tsx`**: Added `"odontograma"` sub-step (index 5 of 6), conditional modal sizing (`max-w-[1380px] h-[950px]`), type fixes for `sexo`/`esMenor`
+- **`tailwind.config.ts`**: Added `'./src/lib/**/*.{js,ts,jsx,tsx,mdx}'` to `content`
+
+- **Fixes applied**: Button `type="button"` to prevent form submit, light-mode colors from shadcn semantic → hardcoded Tailwind, `lg:scale-100` → `lg:scale-[0.93]`, modal sized to 1380×950
+- **Build**: Verified passes
 
 ## Current Branch Status
 | Branch | Merged to main | Status |
-|---|---|---|---|
+|---|---|---|---|---|
 | `DNInoMandatory` | ✅ | Complete |
 | `DNIremovedFromUI` | ✅ | Complete |
 | `AddressIsOptinal` | ✅ | Complete |
@@ -240,6 +258,7 @@ Exploración Bucal form (HC5) — sub-step 4 of 6:
 | `hc3-heredo-familiares` | ✅ | Complete; Antecedentes Heredo-Familiares replaces empty paso 2 |
 | `hc4-no-patologicos` | ✅ | Complete; Antecedentes Personales No Patológicos |
 | `hc5-exploracion-bucal` | ✅ | Complete; Exploración Bucal (sub-step 4) |
+| `hc6-odontogram` (main, no branch) | ✅ | Complete; Odontograma interactivo (sub-step 5) |
 
 ### 11. `historial-clinico-new-fields` (reverted)
 Experimented with adding 9 new fields to Historial Clínico (Sexo, Estado Civil, Ocupación, Escolaridad, datos de padres, Motivo Consulta, Antecedentes Personales grid). Required Apps Script changes failed to deploy — reverted completely.

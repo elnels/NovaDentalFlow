@@ -22,6 +22,8 @@ Utiliza **PostgreSQL como base de datos** corriendo en Docker para un rendimient
 *   **Dashboard del Paciente:**
     *   Consulta toda la información centralizada: datos personales, citas programadas e historial clínico.
     *   Añade nuevas citas o registros clínicos al historial del paciente en cualquier momento.
+*   **Historial Clínico en 6 Sub-pasos:** Desde la ficha de revisión (HC1) hasta el odontograma interactivo (HC6), cada sección se guarda de forma independiente.
+*   **Odontograma Interactivo:** Selecciona dientes, aplica estados (caries, obturado, corona, etc.) por superficie vía SVG interactivo, con panel de detalles de 3 pestañas (Estado/Notas/Historial).
 *   **Base de datos local con PostgreSQL:** Datos persistentes y consultas eficientes a través de Prisma ORM.
 
 ### 🛠️ Stack Tecnológico

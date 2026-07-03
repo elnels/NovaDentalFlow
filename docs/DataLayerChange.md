@@ -184,15 +184,15 @@ When the user skips Historial Clínico during registration, the system creates a
 4. Rewrite `src/lib/calendar-api.ts` — `getPatientName()` now uses Prisma instead of Google Script URL, timezone configurable via `TIMEZONE` env var
 5. All existing CRUD works against PostgreSQL
 
-### Phase 2 — Build Clinical Details (Multi-step HC Wizard)
-1. Extend Prisma schema with `clinical_details` + `family_conditions`
-2. `npx prisma migrate dev` — new tables
-3. Build **HC1** step (Fecha auto + Nombre del Odontólogo editable + all patient data read-only → saves `nombreOdontologo` to `clinical_details`)
-4. Build **HC2** step (nombre_odontologo default + motivo_consulta + antecedentes_personales → `clinical_details`)
-5. Build HC3 step (condition cards with checkboxes + relative checkboxes → `family_conditions`)
-6. Build HC4 step (yes/no questions with conditional text fields → `clinical_details`)
-7. Build HC5 + HC6 (placeholders with textareas + legal footer → `clinical_history`)
-8. Wire into workflow — replace single history step with 6-step mini-wizard
+### Phase 2 — Build Clinical Details (Multi-step HC Wizard) ✅
+1. ✅ Extend Prisma schema with `clinical_details` + `family_conditions`
+2. ✅ `npx prisma migrate dev` — new tables
+3. ✅ Build **HC1** step (Fecha auto + Nombre del Odontólogo editable + all patient data read-only → saves `nombreOdontologo` to `clinical_details`)
+4. ✅ Build **HC2** step (nombre_odontologo default + motivo_consulta + antecedentes_personales → `clinical_details`)
+5. ✅ Build **HC3** step (condition cards with checkboxes + relative checkboxes → `family_conditions`)
+6. ✅ Build **HC4** step (yes/no questions with conditional text fields → `clinical_details`)
+7. ✅ Build **HC5** (Exploración Bucal → `clinical_details.observacionesHc5`) + **HC6** (Odontograma interactivo with full `op-odontogram` library integration → `FloatingToothDetailsCard` with SVG surface selector)
+8. ✅ Wire into workflow — 6-step mini-wizard (HC1 → HC2 → HC3 → HC4 → HC5 → HC6 → Cita)
 9. Build patient detail tabs — "Ficha Clínica" / "Consultas"
 
 ---
@@ -253,3 +253,5 @@ When the user skips Historial Clínico during registration, the system creates a
 | 2026-07-01 | Replaced empty paso 2 placeholder with HC3 (Antecedentes Heredo-Familiares) form. 7 condition rows with checkbox, ¿Quién? dropdown, and Tipo free-text for Cáncer/Malformaciones. Saves to `family_conditions` table via `saveHc3`. |
 | 2026-07-01 | Added HC4 (Antecedentes Personales No Patológicos) — 10 yes/no questions with conditional inputs. All columns already existed in `clinical_details` schema. Flow: HC3 → HC4 → Cita. |
 | 2026-07-01 | Added HC5 (Exploración Bucal) — Tejidos Blandos textarea + Oclusión section with 12 fields. Stored as JSON string in `clinical_details.observacionesHc5`. Flow: HC4 → HC5 → Cita. |
+| 2026-07-02 | Integrated full `op-odontogram` library as HC6 (Odontograma, sub-step 5 of 6). 15 library files in `src/lib/odontograma/`. Components adapted: ColorLegend (open by default, xl:grid-cols-9), FloatingToothDetailsCard (3-tab panel, SVG surface selector, grid-cols-4 status grid). Modal sized to 1380×950 for adequate space. Scale reduced to `lg:scale-[0.93]` to prevent overflow. Light-mode tooth colors hardcoded to Tailwind (pink/purple/orange) because shadcn `--secondary` maps to light gray, not DaisyUI purple. Button `type="button"` fix prevents form submission. Layout: `lg:grid-cols-3` with always-visible right panel. |
+| 2026-07-02 | All HC6 commits went directly to `main` (no branch). Build verified passing. |
