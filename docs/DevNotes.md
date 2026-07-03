@@ -259,6 +259,7 @@ Full odontogram integration (HC6) — sub-step 5 of 6:
 | `hc4-no-patologicos` | ✅ | Complete; Antecedentes Personales No Patológicos |
 | `hc5-exploracion-bucal` | ✅ | Complete; Exploración Bucal (sub-step 4) |
 | `hc6-odontogram` (main, no branch) | ✅ | Complete; Odontograma interactivo (sub-step 5) |
+| `hc6-post-integration-fixes` (main, no branch) | ✅ | Dark mode, removed extraneous fields, ColorLegend fix, Regresar style |
 
 ### 11. `historial-clinico-new-fields` (reverted)
 Experimented with adding 9 new fields to Historial Clínico (Sexo, Estado Civil, Ocupación, Escolaridad, datos de padres, Motivo Consulta, Antecedentes Personales grid). Required Apps Script changes failed to deploy — reverted completely.
@@ -490,6 +491,19 @@ Added Antecedentes Personales step (HC2) between HC1 and Cita in the registratio
 **Reference documents added to docs/:**
 - `Antecedentes_Personales.csv` — 31 conditions list
 - `Antecedentes_Personales.png` — form layout reference
+
+### 20. `hc6-post-integration-fixes` (committed directly to main)
+Post-integration fixes and cleanup after HC6 odontogram was added:
+
+- **Removed extraneous HC6 text fields**: Diagnóstico de Presunción, Estudios Auxiliares, Observaciones removed from form — these were remnants from an earlier design that don't belong in the odontogram step. Prisma schema dropped `observaciones_hc6` (clinical_details), `diagnostico_presuncion`, `estudios_auxiliares`, `observaciones` (clinical_history). Migration: `20260703175214_drop_hc6_diagnostico_estudios_observaciones`.
+
+- **Dark mode fixes**: Replaced all shadcn CSS variable classes (`bg-muted/10`, `text-muted-foreground`, `bg-background`, `border-border`, etc.) with hardcoded Tailwind dark colors (`bg-gray-900`, `text-gray-400`, `border-gray-700`) across all 10 odontogram component files. Set Card background to `!bg-[rgb(30,30,30)]`. This fixed the odontogram appearing as light gray boxes instead of a proper dark theme. The `ColorLegend` and `FloatingToothDetailsCard` now accept `isDarkMode`/`theme` props.
+
+- **ColorLegend repositioned**: Moved outside the odontogram grid (`lg:col-span-2`) to below the entire grid to prevent overflow and ensure full width. Padding adjusted (`p-6`).
+
+- **Regresar button style**: Changed `variant="outline"` → `variant="default"` to match Continuar button style.
+
+- **Columns component refactor**: `OdontogramColumn1`/`Column2`/`Column3` and `types.ts` received dark mode styling pass (101 insertions/133 deletions across column components).
 
 ## Other Tasks
 - Fixed `JSX.IntrinsicElements` error by running `npm install`

@@ -1,9 +1,17 @@
 # OdontogramDevNotes — Project Analysis
 
-## Integration Status — HC6 Odontogram (2026-07-02)
+## Integration Status — HC6 Odontogram (2026-07-03)
 
 The odontogram library has been fully integrated into the NovaDentalFlow HC6 form.
 All work was committed directly to `main` (no separate branch).
+
+### Post-Integration Fixes (2026-07-03)
+- **Removed extraneous text fields**: Diagnóstico de Presunción, Estudios Auxiliares, Observaciones removed from HC6 form (remnants from earlier design).
+- **Dark mode overhaul**: All shadcn CSS variable classes (`bg-muted/10`, `text-muted-foreground`, `bg-background`, `border-border`, etc.) replaced with hardcoded Tailwind dark colors across all 10 odontogram component files. ColorLegend, FloatingToothDetailsCard, and column components now use `isDarkMode={true}` / `theme="dark"` props.
+- **Card background**: Set to `!bg-[rgb(30,30,30)]` for consistent dark modal appearance.
+- **ColorLegend repositioned**: Moved outside the odontogram grid (`lg:col-span-2`) to below the entire form, preventing overflow.
+- **Regresar button**: Changed `variant="outline"` → `variant="default"` to match Continuar button style.
+- **Restablecer button**: Replaced shadcn `Button` component with plain `<button>` using hardcoded cyan Tailwind classes.
 
 ### Files Integrated into `src/lib/odontograma/`
 | File | Source | Notes |
@@ -36,6 +44,10 @@ Matches demo: `grid grid-cols-1 lg:grid-cols-3` with:
 7. **ColorLegend** — Rewritten to match demo: open by default, uses `DetailedToothComponent` for 9 mini sample teeth, `grid-cols-3 md:grid-cols-5 xl:grid-cols-9`, "Sistema FDI" footer note
 8. **TypeScript** — Fixed `sexo` cast to enum union and `esMenor` string conversion in `sequential-workflow.tsx`
 9. **Build** — Passes consistently (`npm run build`)
+10. **Dark mode colors** — Replaced all shadcn CSS variable classes (`bg-muted/10`, `text-muted-foreground`, `bg-background`, `border-border`, etc.) with hardcoded Tailwind dark colors across 10 component files. Card background set to `!bg-[rgb(30,30,30)]`. ColorLegend/FloatingToothDetailsCard accept `isDarkMode`/`theme` props.
+11. **Removed extraneous fields** — Diagnóstico de Presunción, Estudios Auxiliares, Observaciones removed from HC6 form. Prisma schema columns dropped accordingly.
+12. **ColorLegend repositioned** — Moved outside odontogram grid to below the entire form section to prevent overflow.
+13. **Regresar button style** — Changed `variant="outline"` → `variant="default"` to match Continuar.
 
 ### What Was NOT Integrated (Demo-only features)
 - Case selector (CompactCaseSelector) — not needed for HC6
