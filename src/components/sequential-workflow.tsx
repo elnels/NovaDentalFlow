@@ -179,7 +179,7 @@ export function SequentialWorkflow({ onComplete, onClose }: SequentialWorkflowPr
         telefonoAlternativo: n(res.telefonoAlternativo),
         email: n(res.email),
         direccion: n(res.direccion),
-        sexo: n(res.sexo),
+        sexo: n(res.sexo) as "Masculino" | "Femenino" | "Otro" | undefined,
         estadoCivil: n(res.estadoCivil),
         ocupacion: n(res.ocupacion),
         escolaridad: n(res.escolaridad),
@@ -187,7 +187,7 @@ export function SequentialWorkflow({ onComplete, onClose }: SequentialWorkflowPr
         nombreMadre: n(res.nombreMadre),
         telefonoPadre: n(res.telefonoPadre),
         telefonoMadre: n(res.telefonoMadre),
-        esMenor: res.esMenor ?? false,
+        esMenor: res.esMenor ? "true" : "",
       });
       setCurrentStep("patient");
     } catch (e) {
