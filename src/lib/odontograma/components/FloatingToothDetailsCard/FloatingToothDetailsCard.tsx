@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Activity, FileText, Syringe, Check, AlertCircle, CircleDot, Crown, Plus, Zap, AlertTriangle, Link, AlertOctagon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import type { Tooth, ToothStatus } from '@/lib/odontograma/types';
+import type { Tooth, ToothStatus, ToothProcedure } from '@/lib/odontograma/types';
 import { SurfacesSection } from './sections/SurfacesSection';
 import './FloatingToothDetailsCard.css';
 
@@ -40,6 +40,7 @@ export const FloatingToothDetailsCard: React.FC<FloatingToothDetailsCardProps> =
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [localNotes, setLocalNotes] = useState(tooth.notes || '');
   const [notesSaved, setNotesSaved] = useState(false);
+  const [localTratamiento, setLocalTratamiento] = useState('');
 
   useEffect(() => {
     setSelectedTool(tooth.status);
@@ -47,6 +48,7 @@ export const FloatingToothDetailsCard: React.FC<FloatingToothDetailsCardProps> =
 
   useEffect(() => {
     setLocalNotes('');
+    setLocalTratamiento('');
     setNotesSaved(!!tooth.notes);
   }, [tooth.id]);
 
@@ -114,6 +116,26 @@ export const FloatingToothDetailsCard: React.FC<FloatingToothDetailsCardProps> =
   const handleCancelNotes = () => {
     setLocalNotes(tooth.notes || '');
     setNotesSaved(false);
+  };
+
+  const handleSaveTratamiento = () => {
+    if (!localTratamiento.trim()) return;
+    const now = new Date();
+    const day = String(now.getDate()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const year = String(now.getFullYear()).slice(-2);
+    const newProc: ToothProcedure = {
+      id: crypto.randomUUID(),
+      type: localTratamiento.trim(),
+      date: `${day}/${month}/${year}`,
+    };
+    const updatedProcedures = [...(tooth.procedures || []), newProc];
+    onUpdateTooth(tooth.id, { procedures: updatedProcedures });
+    setLocalTratamiento('');
+  };
+
+  const handleCancelTratamiento = () => {
+    setLocalTratamiento('');
   };
 
   const tabs = [
@@ -271,9 +293,32 @@ export const FloatingToothDetailsCard: React.FC<FloatingToothDetailsCardProps> =
         {activeTab === 'historial' && (
           <div className="space-y-4">
             <h4 className="text-sm font-medium text-gray-400">Tratamientos</h4>
+            <input
+              type="text"
+              value={localTratamiento}
+              onChange={(e) => setLocalTratamiento(e.target.value)}
+              placeholder="Agregar tratamiento..."
+              className="w-full rounded-md border border-gray-600 bg-gray-900 px-3 py-2 text-sm text-gray-100 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={handleSaveTratamiento}
+                className="flex-1 inline-flex items-center justify-center rounded-md bg-cyan-500 px-4 py-2 text-sm font-medium text-white shadow hover:bg-cyan-500/90 transition-colors"
+              >
+                Guardar
+              </button>
+              <button
+                type="button"
+                onClick={handleCancelTratamiento}
+                className="flex-1 inline-flex items-center justify-center rounded-md border border-gray-600 px-4 py-2 text-sm font-medium text-gray-300 shadow hover:bg-gray-800 transition-colors"
+              >
+                Cancelar
+              </button>
+            </div>
             {tooth.procedures && tooth.procedures.length > 0 ? (
               tooth.procedures.map((proc) => (
-                <div key={proc.id} className="p-3 bg-gray-800 rounded-lg">
+                <div key={proc.id} className="p-3 bg-gray-800 rounded-lg border border-gray-700">
                   <p className="text-sm font-medium text-gray-100">{proc.type}</p>
                   <p className="text-xs text-gray-400">{proc.date}</p>
                   {proc.description && (
@@ -282,7 +327,7 @@ export const FloatingToothDetailsCard: React.FC<FloatingToothDetailsCardProps> =
                 </div>
               ))
             ) : (
-              <p className="text-sm text-gray-400 text-center py-8">No hay procedimientos registrados</p>
+              <p className="text-sm text-gray-400 text-center py-8">No hay tratamientos registrados</p>
             )}
           </div>
         )}
