@@ -26,7 +26,7 @@ interface Hc6FormProps {
 export function Hc6Form({ patientId, action, onSuccess, onBack }: Hc6FormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [teeth, setTeeth] = useState<Tooth[]>(initialPermanentTeeth);
-  const [temporaryTeeth] = useState<Tooth[]>(initialTemporaryTeeth);
+  const [temporaryTeeth, setTemporaryTeeth] = useState<Tooth[]>(initialTemporaryTeeth);
   const [showTemporaryTeeth, setShowTemporaryTeeth] = useState(false);
   const [selectedTooth, setSelectedTooth] = useState<Tooth | null>(null);
 
@@ -50,9 +50,16 @@ export function Hc6Form({ patientId, action, onSuccess, onBack }: Hc6FormProps) 
   };
 
   const updateTooth = (toothId: number, updates: Partial<Tooth>) => {
-    setTeeth((prev) =>
-      prev.map((t) => (t.id === toothId ? { ...t, ...updates } : t))
-    );
+    const tooth = [...teeth, ...temporaryTeeth].find((t) => t.id === toothId);
+    if (tooth?.isTemporary) {
+      setTemporaryTeeth((prev) =>
+        prev.map((t) => (t.id === toothId ? { ...t, ...updates } : t))
+      );
+    } else {
+      setTeeth((prev) =>
+        prev.map((t) => (t.id === toothId ? { ...t, ...updates } : t))
+      );
+    }
     setSelectedTooth((prev) =>
       prev && prev.id === toothId ? { ...prev, ...updates } : prev
     );
@@ -60,6 +67,7 @@ export function Hc6Form({ patientId, action, onSuccess, onBack }: Hc6FormProps) 
 
   const resetTeeth = () => {
     setTeeth(initialPermanentTeeth);
+    setTemporaryTeeth(initialTemporaryTeeth);
     setSelectedTooth(null);
   };
 
