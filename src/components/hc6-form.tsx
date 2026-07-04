@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Search, RotateCcw } from "lucide-react";
+import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -65,12 +65,6 @@ export function Hc6Form({ patientId, action, onSuccess, onBack }: Hc6FormProps) 
     );
   };
 
-  const resetTeeth = () => {
-    setTeeth(initialPermanentTeeth);
-    setTemporaryTeeth(initialTemporaryTeeth);
-    setSelectedTooth(null);
-  };
-
   const today = new Date().toLocaleDateString("es-MX", {
     year: "numeric",
     month: "long",
@@ -99,10 +93,7 @@ export function Hc6Form({ patientId, action, onSuccess, onBack }: Hc6FormProps) 
             <div className="lg:col-span-2 border border-gray-700 rounded-lg p-4 bg-gray-900">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold text-gray-100">Odontograma</h3>
-                <button type="button" onClick={resetTeeth} className="inline-flex items-center rounded-md bg-cyan-500 px-3 py-1.5 text-xs font-medium text-white shadow hover:bg-cyan-500/90 transition-colors">
-                  <RotateCcw className="h-3 w-3 mr-1" />
-                  Restablecer
-                </button>
+
               </div>
               <Odontogram
                 teeth={teeth}
