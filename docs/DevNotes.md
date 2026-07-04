@@ -265,6 +265,7 @@ Full odontogram integration (HC6) — sub-step 5 of 6:
 | `feat/hc6-patient-info` | ❌ | Reverted — patient name/age in HC6 header broke something; rolled back to 6b7b938 |
 | `fix/temporary-teeth-interaction` | ✅ | Merged via `fix/temporary-teeth-orange-borders` — temp teeth now fully interactive (updateTooth routes to correct array, resetTeeth resets both) |
 | `fix/temporary-teeth-orange-borders` | ✅ | Temporary teeth visually match permanent (same status backgrounds, same borders); only label is `text-orange-500`. Surface base border uses same gray as permanent (`border-gray-300`/`border-gray-600`). |
+| `feat/hc6-patient-header` | ✅ | Patient name & age in HC6 header below Fecha, white text on `bg-gray-800/50`. Restablecer button removed. |
 
 ### 11. `historial-clinico-new-fields` (reverted)
 Experimented with adding 9 new fields to Historial Clínico (Sexo, Estado Civil, Ocupación, Escolaridad, datos de padres, Motivo Consulta, Antecedentes Personales grid). Required Apps Script changes failed to deploy — reverted completely.
@@ -525,8 +526,8 @@ Added Guardar/Cancelar flow to the Notas tab in FloatingToothDetailsCard (right 
 - **Multi-entry display**: "Historial de notas:" section renders each dated entry as a separate card with date in small gray text and note body below (matching the Historial tab procedure card style).
 - **Textarea clears on tooth switch**: When clicking a different tooth, textarea starts blank ready for a new note; history section still loads previous notes correctly.
 
-### 23. `feat/hc6-patient-info` (reverted)
-Added patient name/age to HC6 header, changed header style to white text on gray-800/50, and renamed "Name:" → "Nombre:". Caused a regression — rolled back via `git revert`. Revert also corrupted the CSS import in `FloatingToothDetailsCard.tsx:6` (`import  ;` → fixed to `import './FloatingToothDetailsCard.css';`).
+### 23. `feat/hc6-patient-info` (reverted — superseded by `feat/hc6-patient-header`)
+First attempt at patient name/age in HC6 header. White text on gray-800/50, "Name:" → "Nombre:". Caused a regression — rolled back. Revert corrupted `import './FloatingToothDetailsCard.css'` to `import  ;` — fixed.
 
 ### 24. `fix/temporary-teeth-interaction` + `fix/temporary-teeth-orange-borders` (merged to main)
 Two branches that fix temporary (baby) teeth in the odontogram:
@@ -540,6 +541,15 @@ Two branches that fix temporary (baby) teeth in the odontogram:
 - Removed all `isTemporary` overrides from `getToothStyle` and `getSurfaceStyle` — temp teeth use same status colors and borders as permanent
 - Surface grid template uses same gray base border (`border-gray-300`/`border-gray-600`) for all teeth (was `border-orange-400`/`border-orange-700` for temp)
 - Only visual difference: label number is `text-orange-500`
+
+### 25. `feat/hc6-patient-header` (merged to main)
+Successful second attempt at patient name/age in HC6 header:
+- Fetches patient via `getPatientById(patientId)` in `useEffect`
+- Computes age from `fechaNacimiento`
+- Displays below "Fecha:" in white text (`text-gray-100`) on `bg-gray-800/50`
+- Header div changed from `bg-muted/30` to `bg-gray-800/50`
+
+Also removed the "Restablecer" button, `resetTeeth` function, and `RotateCcw` import.
 
 ## Other Tasks
 - Fixed `JSX.IntrinsicElements` error by running `npm install`

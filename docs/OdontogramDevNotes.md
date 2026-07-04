@@ -48,8 +48,9 @@ Matches demo: `grid grid-cols-1 lg:grid-cols-3` with:
 11. **Removed extraneous fields** — Diagnóstico de Presunción, Estudios Auxiliares, Observaciones removed from HC6 form. Prisma schema columns dropped accordingly.
 12. **ColorLegend repositioned** — Moved outside odontogram grid to below the entire form section to prevent overflow.
 13. **Regresar button style** — Changed `variant="outline"` → `variant="default"` to match Continuar.
-14. ~~**Patient name & age in HC6 header** — `hc6-form.tsx` now fetches patient data via `getPatientById` (same pattern as hc2/hc5) and displays name + age below Fecha. Header background changed to `bg-gray-800/50` with `text-gray-100`. Label "Name:" → "Nombre:". Merged via `feat/hc6-patient-info` branch.~~ **REVERTED** — rolled back to 6b7b938. Revert corrupted `import './FloatingToothDetailsCard.css'` to `import  ;` — fixed.
+14. ~~**Patient name & age in HC6 header** — `hc6-form.tsx` now fetches patient data via `getPatientById` (same pattern as hc2/hc5) and displays name + age below Fecha. Header background changed to `bg-gray-800/50` with `text-gray-100`. Label "Name:" → "Nombre:". Merged via `feat/hc6-patient-info` branch.~~ **REVERTED** (superseded by #16).
 15. **Temporary teeth full parity with permanent** — `fix/temporary-teeth-orange-borders`. (a) `updateTooth` now routes to correct state array via `isTemporary` check; `resetTeeth` resets both arrays. (b) `getToothStyle` and `getSurfaceStyle` no longer have `isTemporary` branches — temp teeth use same status colors and borders as permanent. (c) Surface grid template uses same gray base border (`border-gray-300`/`border-gray-600`) for all teeth. Only visual difference: label number is `text-orange-500`.
+16. **Patient name & age in HC6 header (second attempt)** — `feat/hc6-patient-header`. Fetches name + computes age via `getPatientById` + `useEffect`. Displays below "Fecha:" in white (`text-gray-100`) on `bg-gray-800/50`. Restablecer button removed.
 
 ### What Was NOT Integrated (Demo-only features)
 - Case selector (CompactCaseSelector) — not needed for HC6
