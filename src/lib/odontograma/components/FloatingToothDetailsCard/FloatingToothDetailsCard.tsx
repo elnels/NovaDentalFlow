@@ -46,7 +46,7 @@ export const FloatingToothDetailsCard: React.FC<FloatingToothDetailsCardProps> =
   }, [tooth.status]);
 
   useEffect(() => {
-    setLocalNotes(tooth.notes || '');
+    setLocalNotes('');
     setNotesSaved(!!tooth.notes);
   }, [tooth.id]);
 
