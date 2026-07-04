@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Search, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,7 +14,7 @@ import { ColorLegend } from "@/lib/odontograma/components/ColorLegend";
 import { FloatingToothDetailsCard } from "@/lib/odontograma/components/FloatingToothDetailsCard";
 import { initialPermanentTeeth, initialTemporaryTeeth } from "@/lib/odontograma/data/dentalData";
 import type { Tooth } from "@/lib/odontograma/types";
-import { getPatientById, type FormState } from "@/lib/actions";
+import type { FormState } from "@/lib/actions";
 
 interface Hc6FormProps {
   patientId: string;
@@ -29,8 +29,6 @@ export function Hc6Form({ patientId, action, onSuccess, onBack }: Hc6FormProps) 
   const [temporaryTeeth] = useState<Tooth[]>(initialTemporaryTeeth);
   const [showTemporaryTeeth, setShowTemporaryTeeth] = useState(false);
   const [selectedTooth, setSelectedTooth] = useState<Tooth | null>(null);
-  const [patientName, setPatientName] = useState('');
-  const [patientAge, setPatientAge] = useState<number | null>(null);
 
   const handleSubmit = async (formData: FormData) => {
     setIsLoading(true);
@@ -65,26 +63,6 @@ export function Hc6Form({ patientId, action, onSuccess, onBack }: Hc6FormProps) 
     setSelectedTooth(null);
   };
 
-  useEffect(() => {
-    const fetchPatient = async () => {
-      const res = await getPatientById(patientId);
-      if (res) {
-        setPatientName(`${res.nombres} ${res.apellidos}`);
-        if (res.fechaNacimiento) {
-          const birth = new Date(res.fechaNacimiento);
-          const today = new Date();
-          let age = today.getFullYear() - birth.getFullYear();
-          const m = today.getMonth() - birth.getMonth();
-          if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
-            age--;
-          }
-          setPatientAge(age);
-        }
-      }
-    };
-    fetchPatient();
-  }, [patientId]);
-
   const today = new Date().toLocaleDateString("es-MX", {
     year: "numeric",
     month: "long",
@@ -100,20 +78,10 @@ export function Hc6Form({ patientId, action, onSuccess, onBack }: Hc6FormProps) 
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="mb-6 p-3 bg-muted/30 rounded-md space-y-1">
+        <div className="mb-6 p-3 bg-muted/30 rounded-md">
           <p className="text-sm text-muted-foreground">
             <span className="font-semibold">Fecha:</span> {today}
           </p>
-          {patientName && (
-            <p className="text-sm text-muted-foreground">
-              <span className="font-semibold">Name:</span> {patientName}
-            </p>
-          )}
-          {patientAge !== null && (
-            <p className="text-sm text-muted-foreground">
-              <span className="font-semibold">Edad:</span> {patientAge} años
-            </p>
-          )}
         </div>
 
         <form action={handleSubmit}>
