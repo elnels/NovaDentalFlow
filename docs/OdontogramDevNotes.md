@@ -1,9 +1,8 @@
 # OdontogramDevNotes — Project Analysis
 
-## Integration Status — HC6 Odontogram (2026-07-03)
+## Integration Status — HC6 Odontogram (2026-07-04)
 
 The odontogram library has been fully integrated into the NovaDentalFlow HC6 form.
-All work was committed directly to `main` (no separate branch).
 
 ### Post-Integration Fixes (2026-07-03)
 - **Removed extraneous text fields**: Diagnóstico de Presunción, Estudios Auxiliares, Observaciones removed from HC6 form (remnants from earlier design).
@@ -51,6 +50,14 @@ Matches demo: `grid grid-cols-1 lg:grid-cols-3` with:
 14. ~~**Patient name & age in HC6 header** — `hc6-form.tsx` now fetches patient data via `getPatientById` (same pattern as hc2/hc5) and displays name + age below Fecha. Header background changed to `bg-gray-800/50` with `text-gray-100`. Label "Name:" → "Nombre:". Merged via `feat/hc6-patient-info` branch.~~ **REVERTED** (superseded by #16).
 15. **Temporary teeth full parity with permanent** — `fix/temporary-teeth-orange-borders`. (a) `updateTooth` now routes to correct state array via `isTemporary` check; `resetTeeth` resets both arrays. (b) `getToothStyle` and `getSurfaceStyle` no longer have `isTemporary` branches — temp teeth use same status colors and borders as permanent. (c) Surface grid template uses same gray base border (`border-gray-300`/`border-gray-600`) for all teeth. Only visual difference: label number is `text-orange-500`.
 16. **Patient name & age in HC6 header (second attempt)** — `feat/hc6-patient-header`. Fetches name + computes age via `getPatientById` + `useEffect`. Displays below "Fecha:" in white (`text-gray-100`) on `bg-gray-800/50`. Restablecer button removed.
+
+### Database Persistence (2026-07-04) — `feat/save-odontograma`
+The odontograma now saves to and loads from the database:
+
+- **Save**: `saveHc6` in `actions.ts` writes `{ permanentTeeth, temporaryTeeth, lastUpdate }` into `ClinicalHistory.odontograma` (JSON column). Finds or creates ClinicalHistory record per patient.
+- **Load**: `hc6-form.tsx` `useEffect` checks `clinicalHistory[0]?.odontograma` from `getPatientById` response. If saved data exists, seeds tooth state; otherwise falls back to `initialPermanentTeeth`/`initialTemporaryTeeth`.
+- **No workflow changes**: `addEmptyHistorial` was made idempotent — if ClinicalHistory already exists (created by `saveHc6`), it updates the `appointmentId` instead of creating a duplicate record.
+- **Data shape**: Full arrays (not delta), `Tooth[]` serialized as-is via `JSON.stringify`.
 
 ### What Was NOT Integrated (Demo-only features)
 - Case selector (CompactCaseSelector) — not needed for HC6

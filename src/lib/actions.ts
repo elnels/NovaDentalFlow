@@ -269,9 +269,49 @@ export async function saveHc6(
     };
   }
 
-  revalidatePath("/");
-  revalidatePath(`/pacientes/${validatedFields.data.patientId}`);
-  return { message: "Odontograma guardado con éxito.", success: true };
+  const rawJson = validatedFields.data.hc6Data;
+
+  try {
+    const odontogramaData = rawJson ? JSON.parse(rawJson) : null;
+    if (!odontogramaData) {
+      return { message: "No hay datos de odontograma para guardar.", success: false };
+    }
+
+    const existing = await prisma.clinicalHistory.findFirst({
+      where: { patientId: validatedFields.data.patientId },
+      orderBy: { fechaHistorial: "desc" },
+    });
+
+    const odontogramaPayload = {
+      permanentTeeth: odontogramaData.teeth,
+      temporaryTeeth: odontogramaData.temporaryTeeth,
+      lastUpdate: new Date().toISOString(),
+    };
+
+    if (existing) {
+      await prisma.clinicalHistory.update({
+        where: { id: existing.id },
+        data: { odontograma: odontogramaPayload },
+      });
+    } else {
+      await prisma.clinicalHistory.create({
+        data: {
+          patientId: validatedFields.data.patientId,
+          diagnostico: "Pendiente de completar",
+          tratamiento: "Pendiente de completar",
+          notas: "Historial creado desde odontograma",
+          estadoPago: "Pendiente",
+          odontograma: odontogramaPayload,
+        },
+      });
+    }
+
+    revalidatePath("/");
+    revalidatePath(`/pacientes/${validatedFields.data.patientId}`);
+    return { message: "Odontograma guardado con éxito.", success: true };
+  } catch (e) {
+    return { message: `Error: ${(e as Error).message}`, success: false };
+  }
 }
 
 export async function saveHc2(
@@ -703,6 +743,23 @@ export async function addHistorialFromObject(historialData: any): Promise<FormSt
 
 export async function addEmptyHistorial(patientId: string, appointmentId?: string): Promise<FormState> {
   try {
+    const existing = await prisma.clinicalHistory.findFirst({
+      where: { patientId },
+      orderBy: { fechaHistorial: "desc" },
+    });
+
+    if (existing) {
+      if (appointmentId) {
+        await prisma.clinicalHistory.update({
+          where: { id: existing.id },
+          data: { appointmentId },
+        });
+      }
+      revalidatePath("/");
+      revalidatePath(`/pacientes/${patientId}`);
+      return { message: "Historial clínico actualizado con cita.", success: true, historyId: existing.id };
+    }
+
     const history = await prisma.clinicalHistory.create({
       data: {
         patientId,

@@ -551,6 +551,17 @@ Successful second attempt at patient name/age in HC6 header:
 
 Also removed the "Restablecer" button, `resetTeeth` function, and `RotateCcw` import.
 
+### 26. `feat/save-odontograma` (on branch, not yet merged)
+Implemented odontograma save & load into the database `ClinicalHistory.odontograma` JSON column:
+
+- **`src/lib/actions.ts` — `saveHc6`**: Replaced no-op with full Prisma write. Parses `hc6Data` JSON (`{ teeth, temporaryTeeth }`), finds latest `ClinicalHistory` for patient, updates `odontograma` field. Creates a new `ClinicalHistory` if none exists (with pending defaults).
+- **`src/lib/actions.ts` — `addEmptyHistorial`**: Made idempotent (Option B). Before creating, checks if a `ClinicalHistory` already exists. If found, updates its `appointmentId` instead of creating a duplicate record. This prevents a second orphan history when HC6 already created one.
+- **`src/components/hc6-form.tsx` — Load**: Extended existing `useEffect` that fetches `getPatientById`. After setting name/age, checks `clinicalHistory[0]?.odontograma` — if saved data exists, seeds `teeth` and `temporaryTeeth` state from it. Falls back to `initialPermanentTeeth`/`initialTemporaryTeeth` if empty.
+- **Build**: ✅ Verified passes.
+- **Roundtrip**: Load (DB → state) via cast from `Prisma.JsonValue` → `setTeeth`/`setTemporaryTeeth`; Save (state → DB) via `JSON.stringify` → `saveHc6` → `prisma.clinicalHistory.upsert`.
+- **Data shape stored**: `{ permanentTeeth: Tooth[], temporaryTeeth: Tooth[], lastUpdate: ISO string }` — full arrays (not delta), same as in-memory format.
+- **No changes to**: `sequential-workflow.tsx`, `prisma/schema.prisma`, odontogram components, any types.
+
 ## Other Tasks
 - Fixed `JSX.IntrinsicElements` error by running `npm install`
 - Confirmed no unit test framework exists in the project

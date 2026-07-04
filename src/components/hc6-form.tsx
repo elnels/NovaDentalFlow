@@ -42,6 +42,13 @@ export function Hc6Form({ patientId, action, onSuccess, onBack }: Hc6FormProps) 
           const age = Math.floor((Date.now() - birth.getTime()) / (365.25 * 24 * 60 * 60 * 1000));
           setPatientAge(age);
         }
+        const odontograma = res.clinicalHistory?.[0]?.odontograma as { permanentTeeth?: Tooth[]; temporaryTeeth?: Tooth[] } | null;
+        if (odontograma?.permanentTeeth) {
+          setTeeth(odontograma.permanentTeeth);
+        }
+        if (odontograma?.temporaryTeeth) {
+          setTemporaryTeeth(odontograma.temporaryTeeth);
+        }
       }
     });
   }, [patientId]);
