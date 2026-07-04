@@ -12,6 +12,8 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Hc1Form } from "@/components/hc1-form";
@@ -283,6 +285,9 @@ export function ClinicalDetailsView({
       {/* Dialogs */}
       <Dialog open={openHc1} onOpenChange={setOpenHc1}>
         <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Editar HC1 — Odontólogo</DialogTitle>
+          </DialogHeader>
           <Hc1Form
             patientId={patientId}
             action={saveHc1Odontologo}
@@ -294,6 +299,9 @@ export function ClinicalDetailsView({
 
       <Dialog open={openHc2} onOpenChange={setOpenHc2}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Editar HC2 — Antecedentes Personales</DialogTitle>
+          </DialogHeader>
           <Hc2Form
             patientId={patientId}
             action={saveHc2}
@@ -305,6 +313,9 @@ export function ClinicalDetailsView({
 
       <Dialog open={openHc3} onOpenChange={setOpenHc3}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Editar HC3 — Heredo-Familiares</DialogTitle>
+          </DialogHeader>
           <Hc3Form
             patientId={patientId}
             action={saveHc3}
@@ -316,6 +327,9 @@ export function ClinicalDetailsView({
 
       <Dialog open={openHc4} onOpenChange={setOpenHc4}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Editar HC4 — No Patológicos</DialogTitle>
+          </DialogHeader>
           <Hc4Form
             patientId={patientId}
             action={saveHc4}
@@ -327,6 +341,9 @@ export function ClinicalDetailsView({
 
       <Dialog open={openHc5} onOpenChange={setOpenHc5}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Editar HC5 — Exploración Bucal</DialogTitle>
+          </DialogHeader>
           <Hc5Form
             patientId={patientId}
             action={saveHc5}
