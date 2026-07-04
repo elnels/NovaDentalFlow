@@ -51,8 +51,10 @@ export async function GET(request: NextRequest) {
         const patient = await prisma.patient.findUnique({
           where: { id },
           include: {
-            appointments: true,
-            clinicalHistory: true,
+            appointments: { orderBy: { fechaCita: "desc" } },
+            clinicalHistory: { orderBy: { fechaHistorial: "desc" } },
+            clinicalDetails: true,
+            familyConditions: true,
           },
         });
         if (!patient) return fail("Paciente no encontrado", 404);
