@@ -92,8 +92,8 @@ export function OdontogramTab({ patientId, onDataUpdate }: OdontogramTabProps) {
           </CardTitle>
         </CardHeader>
         <CardContent>
-           <div className="mb-6 grid grid-cols-1 lg:grid-cols-3 gap-4">
-            <div className="lg:col-span-2 border rounded-lg p-4">
+           <div className="mb-6 grid grid-cols-1 lg:grid-cols-[1100px_1fr] gap-4">
+             <div className="border rounded-lg p-4">
               <Odontogram
                 teeth={teeth}
                 temporaryTeeth={temporaryTeeth}
@@ -104,7 +104,7 @@ export function OdontogramTab({ patientId, onDataUpdate }: OdontogramTabProps) {
                 isDarkMode={false}
               />
             </div>
-            <div className="lg:col-span-1">
+            <div>
               {selectedTooth ? (
                 <div className="border rounded-lg overflow-hidden h-full">
                   <FloatingToothDetailsCard
