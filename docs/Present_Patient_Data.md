@@ -6,7 +6,7 @@ Show all patient data on the profile page (`/pacientes/[id]`): personal informat
 
 ## Status
 
-✅ **Completed** — All 4 steps implemented, tested end-to-end, merged from `feat/patient-profile-data`.
+✅ **Completed** — All 5 steps + bug fixes implemented, tested end-to-end, ready to merge from `feat/patient-profile-data`.
 
 ## What Was Done
 
@@ -51,6 +51,16 @@ Show all patient data on the profile page (`/pacientes/[id]`): personal informat
 - Removed inline MUI `EditableCell` editing — now dialog-only
 - Removed MUI dependencies from profile page (replaced with shadcn/ui)
 - Cleaned up unused imports and handlers from page.tsx
+
+### Bug Fixes (Post-Step 5)
+
+| # | Commit | Issue | Fix |
+|---|--------|-------|-----|
+| 1 | `eb7c0a9` | Historial/Citas forms silently fail on submit | Added `catch` block + success/error toasts matching HC form pattern |
+| 2 | `37327cd` | Edit historial/citas forms silently reject submission | Split ISO date string (`"2024-06-15T00:00:00.000Z"`) to `YYYY-MM-DD` before passing as `initialData` |
+| 3 | `c9667b8` | `"Objects are not valid as a React child (found: Date)"` | Rendered `Date` objects via `toLocaleDateString()` in historial form/table |
+| 4 | `cee3ffb` | `"Unknown argument nombrePadre"` in `updateHistorial` | Removed `nombrePadre`/`nombreMadre` — these belong to `Patient`, not `ClinicalHistory` |
+| 5 | `20db1f1` | `"Decimal objects are not supported"` from server action `getPatientById` | Serialized Prisma return via `JSON.parse(JSON.stringify())` to convert `Decimal`→`string`, `Date`→ISO string |
 
 ## Architecture
 
@@ -105,6 +115,14 @@ All existing HC form components reused **without modification** — each accepts
 4. `4b3e8b3` — `feat: add OdontogramTab component for profile page`
 5. `f52a045` — `feat: refactor patient profile page with tabs, remove debug logs, fix genero→sexo`
 6. `514215d` — `fix: handle null values in edit-patient initialData to prevent null input value error`
+7. `06abe2d` — `feat: replace HistorialTable/CitasTable with card-based HistorialView/CitasView`
+8. `8b2909d` — `docs: update Present_Patient_Data.md with Step 5 card-based refactor`
+9. `bbd61fd` — `fix: add missing DialogTitle to HC1-HC5 edit dialogs for accessibility`
+10. `eb7c0a9` — `fix: add catch/error toasts to historial-form and citas-form handleSubmit`
+11. `37327cd` — `fix: format ISO date to YYYY-MM-DD in historial-view and citas-view initialData`
+12. `c9667b8` — `fix: render Date objects from Prisma as locale string in historial-form/table`
+13. `cee3ffb` — `fix: remove nombrePadre/nombreMadre from updateHistorial`
+14. `20db1f1` — `fix: serialize Prisma objects to plain JSON in getPatientById`
 
 ## Relevant Files
 
@@ -122,3 +140,4 @@ All existing HC form components reused **without modification** — each accepts
 | `src/components/historial-form.tsx` | Create/edit form for history records (dialog) |
 | `src/components/citas-view.tsx` | Card-based view for appointments |
 | `src/components/citas-form.tsx` | Create/edit form for appointments (dialog) |
+| `docs/Present_Patient_Data.md` | This file — architecture doc with all steps and fixes |
