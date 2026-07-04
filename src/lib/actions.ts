@@ -374,7 +374,7 @@ export async function getPatientById(id: string) {
       },
     });
     if (!patient) return null;
-    return patient;
+    return JSON.parse(JSON.stringify(patient));
   } catch {
     return null;
   }
