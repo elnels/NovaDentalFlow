@@ -37,7 +37,6 @@ import {
   deleteCita,
   deleteHistorial
 } from "@/lib/actions";
-import { useAutoRefresh } from "@/hooks/use-auto-refresh";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import {
@@ -53,7 +52,14 @@ import { DeletePatientDialog } from "@/components/delete-patient-dialog";
 import { SequentialWorkflow } from "@/components/sequential-workflow";
 import CitasTable from "@/components/citas-table";
 import HistorialTable from "@/components/historial-table";
-
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
+import { ClinicalDetailsView } from "@/components/clinical-details-view";
+import { OdontogramTab } from "@/components/odontogram-tab";
 
 function getAge(dateString: string) {
   try {
@@ -89,75 +95,36 @@ export default function PatientDetailPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  console.log('🚀 Componente PatientDetailPage iniciando');
-  
   const resolvedParams = use(params);
   const id = resolvedParams.id;
   
-  console.log('🆔 ID del paciente:', id);
-  console.log('📋 Params resueltos:', resolvedParams);
-  console.log('🔧 Preparando para configurar useEffect...');
-  
   const [patient, setPatient] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
-  
-  // Debug: Forzar que loading sea false después de 10 segundos
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      console.log('🚨 TIMEOUT: Forzando loading = false después de 10 segundos');
-      setLoading(false);
-    }, 10000);
-    return () => clearTimeout(timeout);
-  }, []);
   const [syncing, setSyncing] = useState(false);
   const [showWorkflow, setShowWorkflow] = useState(false);
-  const { refreshData, handlePatientSuccess } = useAutoRefresh();
   const { toast } = useToast();
 
-  // Función para cargar datos del paciente
   const loadPatient = useCallback(async (forceRefresh = false) => {
-    if (!id) {
-      console.log('🛑 No hay ID');
-      return;
-    }
-    
-    console.log('🚀 Iniciando carga para ID:', id);
+    if (!id) return;
     setLoading(true);
     try {
-      console.log('📡 Llamando a getPacienteById...');
       const patientData = await getPacienteById(id);
-      console.log('📦 Datos recibidos:', patientData);
-      console.log('📦 Tipo de datos:', typeof patientData);
-      console.log('📦 Es null/undefined?:', patientData == null);
-      
       if (!patientData) {
-        console.log('❌ No hay datos del paciente');
         setPatient(null);
       } else {
-        console.log('✅ Estableciendo datos del paciente');
         setPatient(patientData);
       }
     } catch (error) {
-      console.error('❌ Error loading patient:', error);
+      console.error('Error loading patient:', error);
       setPatient(null);
     } finally {
-      console.log('🏁 Finalizando carga, setLoading(false)');
       setLoading(false);
     }
   }, [id]);
 
-  // useEffect debe estar aquí, antes de cualquier return condicional
   useEffect(() => {
-    console.log('🎯 useEffect EJECUTÁNDOSE con ID:', id);
-    console.log('🎯 Tipo de ID:', typeof id);
-    console.log('🎯 ID es truthy?:', !!id);
-    if (id) {
-      console.log('🎯 ID válido, llamando loadPatient');
-      loadPatient();
-    } else {
-      console.log('🎯 ID no válido:', id);
-    }
-  }, [id, loadPatient]); // Dependiendo del ID y loadPatient
+    if (id) loadPatient();
+  }, [id, loadPatient]);
 
   // Función para actualizar un campo específico
   const updateField = useCallback(async (recordId: string, fieldName: string, newValue: string, recordType: 'history' | 'appointment') => {
@@ -252,11 +219,8 @@ export default function PatientDetailPage({
     if (id && !syncing) {
       setSyncing(true);
       try {
-        console.log('🔄 Actualizando datos para:', id);
         await loadPatient(true);
-        console.log('✅ Datos actualizados correctamente');
       } catch (error) {
-        console.error('❌ Error en actualización:', error);
         toast({ 
           variant: "destructive", 
           title: "Error de actualización", 
@@ -346,10 +310,7 @@ export default function PatientDetailPage({
     }
   }, [id, toast]);
   
-  console.log('🔍 Estado actual - Loading:', loading, 'Patient:', !!patient);
-  
   if (loading) {
-    console.log('⏳ Mostrando pantalla de carga');
     return (
       <div className="flex flex-col justify-center items-center min-h-screen">
         <div className="relative">
@@ -425,7 +386,7 @@ export default function PatientDetailPage({
                 </Avatar>
                  <div className="flex items-center gap-2">
                     <CardTitle className="text-2xl">{`${patient.nombres} ${patient.apellidos}`}</CardTitle>
-                    <GenderIcon gender={patient.genero} />
+                    <GenderIcon gender={patient.sexo} />
                  </div>
                  <div className="flex items-center gap-2 text-sm mt-2">
                     {patient.estado === 'Activo' ? <CheckCircle2 className="h-4 w-4 text-green-500" /> : <XCircle className="h-4 w-4 text-red-500" />}
@@ -449,23 +410,48 @@ export default function PatientDetailPage({
             </Card>
           </div>
 
-          <div className="lg:col-span-2 space-y-8">
-            <HistorialTable 
-              data={patient.historialClinico || []} 
-              onUpdateField={updateField}
-              onDeleteHistorial={handleDeleteHistorial}
-              onAddHistorial={handleAddHistorial}
-              patientId={patient.id}
-              availableCitas={patient.citas || []}
-            />
-
-            <CitasTable 
-              data={patient.citas || []} 
-              onUpdateField={updateField}
-              onDeleteCita={handleDeleteCita}
-              onAddCita={handleAddCita}
-              patientId={patient.id}
-            />
+          <div className="lg:col-span-2">
+            <Tabs defaultValue="historial" className="w-full">
+              <TabsList className="grid w-full grid-cols-4">
+                <TabsTrigger value="historial">Historial</TabsTrigger>
+                <TabsTrigger value="citas">Citas</TabsTrigger>
+                <TabsTrigger value="ficha-clinica">Ficha Clínica</TabsTrigger>
+                <TabsTrigger value="odontograma">Odontograma</TabsTrigger>
+              </TabsList>
+              <TabsContent value="historial" className="mt-4">
+                <HistorialTable 
+                  data={patient.historialClinico || []} 
+                  onUpdateField={updateField}
+                  onDeleteHistorial={handleDeleteHistorial}
+                  onAddHistorial={handleAddHistorial}
+                  patientId={patient.id}
+                  availableCitas={patient.citas || []}
+                />
+              </TabsContent>
+              <TabsContent value="citas" className="mt-4">
+                <CitasTable 
+                  data={patient.citas || []} 
+                  onUpdateField={updateField}
+                  onDeleteCita={handleDeleteCita}
+                  onAddCita={handleAddCita}
+                  patientId={patient.id}
+                />
+              </TabsContent>
+              <TabsContent value="ficha-clinica" className="mt-4">
+                <ClinicalDetailsView
+                  patientId={patient.id}
+                  clinicalDetails={patient.clinicalDetails}
+                  familyConditions={patient.familyConditions}
+                  onDataUpdate={handleDataUpdate}
+                />
+              </TabsContent>
+              <TabsContent value="odontograma" className="mt-4">
+                <OdontogramTab
+                  patientId={patient.id}
+                  onDataUpdate={handleDataUpdate}
+                />
+              </TabsContent>
+            </Tabs>
           </div>
         </div>
       </main>
