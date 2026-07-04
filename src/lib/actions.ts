@@ -954,8 +954,6 @@ export async function updateHistorial(id: string, prevState: FormState, formData
           ? Number(validatedFields.data.costoTratamiento)
           : null,
         estadoPago: validatedFields.data.estadoPago,
-        nombrePadre: validatedFields.data.nombrePadre || null,
-        nombreMadre: validatedFields.data.nombreMadre || null,
         telefonoContacto: validatedFields.data.telefonoContacto || null,
         motivoConsulta: validatedFields.data.motivoConsulta || null,
         antecedentesPersonales: validatedFields.data.antecedentesPersonales || null,
