@@ -106,7 +106,7 @@ export function Hc6Form({ patientId, action, onSuccess, onBack }: Hc6FormProps) 
           </p>
           {patientName && (
             <p className="text-sm text-gray-100">
-              <span className="font-semibold">Name:</span> {patientName}
+              <span className="font-semibold">Nombre:</span> {patientName}
             </p>
           )}
           {patientAge !== null && (
