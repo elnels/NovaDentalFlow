@@ -263,6 +263,8 @@ Full odontogram integration (HC6) — sub-step 5 of 6:
 | `fix/hc6-status-buttons-submit-form` | ✅ | type=button + tool-select-only + selectedTooth sync |
 | `feat/notas-guardar-cancelar` | ❌ | Guardar/Cancelar notes, DD/MM/YY prefix, accumulation |
 | `feat/hc6-patient-info` | ❌ | Reverted — patient name/age in HC6 header broke something; rolled back to 6b7b938 |
+| `fix/temporary-teeth-interaction` | ✅ | Merged via `fix/temporary-teeth-orange-borders` — temp teeth now fully interactive (updateTooth routes to correct array, resetTeeth resets both) |
+| `fix/temporary-teeth-orange-borders` | ✅ | Temporary teeth visually match permanent (same status backgrounds, same borders); only label is `text-orange-500`. Surface base border uses same gray as permanent (`border-gray-300`/`border-gray-600`). |
 
 ### 11. `historial-clinico-new-fields` (reverted)
 Experimented with adding 9 new fields to Historial Clínico (Sexo, Estado Civil, Ocupación, Escolaridad, datos de padres, Motivo Consulta, Antecedentes Personales grid). Required Apps Script changes failed to deploy — reverted completely.
@@ -525,6 +527,19 @@ Added Guardar/Cancelar flow to the Notas tab in FloatingToothDetailsCard (right 
 
 ### 23. `feat/hc6-patient-info` (reverted)
 Added patient name/age to HC6 header, changed header style to white text on gray-800/50, and renamed "Name:" → "Nombre:". Caused a regression — rolled back via `git revert`. Revert also corrupted the CSS import in `FloatingToothDetailsCard.tsx:6` (`import  ;` → fixed to `import './FloatingToothDetailsCard.css';`).
+
+### 24. `fix/temporary-teeth-interaction` + `fix/temporary-teeth-orange-borders` (merged to main)
+Two branches that fix temporary (baby) teeth in the odontogram:
+
+**Interaction fix** (`fix/temporary-teeth-interaction`):
+- Added `setTemporaryTeeth` setter (was missing)
+- `updateTooth` now checks `isTemporary` and updates the correct state array
+- `resetTeeth` resets both `teeth` and `temporaryTeeth`
+
+**Visual parity** (`fix/temporary-teeth-orange-borders`):
+- Removed all `isTemporary` overrides from `getToothStyle` and `getSurfaceStyle` — temp teeth use same status colors and borders as permanent
+- Surface grid template uses same gray base border (`border-gray-300`/`border-gray-600`) for all teeth (was `border-orange-400`/`border-orange-700` for temp)
+- Only visual difference: label number is `text-orange-500`
 
 ## Other Tasks
 - Fixed `JSX.IntrinsicElements` error by running `npm install`
