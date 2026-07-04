@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,6 +13,7 @@ import { Odontogram } from "@/lib/odontograma/components/Odontogram";
 import { ColorLegend } from "@/lib/odontograma/components/ColorLegend";
 import { FloatingToothDetailsCard } from "@/lib/odontograma/components/FloatingToothDetailsCard";
 import { initialPermanentTeeth, initialTemporaryTeeth } from "@/lib/odontograma/data/dentalData";
+import { getPatientById } from "@/lib/actions";
 import type { Tooth } from "@/lib/odontograma/types";
 import type { FormState } from "@/lib/actions";
 
@@ -29,6 +30,21 @@ export function Hc6Form({ patientId, action, onSuccess, onBack }: Hc6FormProps) 
   const [temporaryTeeth, setTemporaryTeeth] = useState<Tooth[]>(initialTemporaryTeeth);
   const [showTemporaryTeeth, setShowTemporaryTeeth] = useState(false);
   const [selectedTooth, setSelectedTooth] = useState<Tooth | null>(null);
+  const [patientName, setPatientName] = useState("");
+  const [patientAge, setPatientAge] = useState<number | null>(null);
+
+  useEffect(() => {
+    getPatientById(patientId).then((res) => {
+      if (res) {
+        setPatientName(`${res.nombres} ${res.apellidos}`);
+        if (res.fechaNacimiento) {
+          const birth = new Date(res.fechaNacimiento);
+          const age = Math.floor((Date.now() - birth.getTime()) / (365.25 * 24 * 60 * 60 * 1000));
+          setPatientAge(age);
+        }
+      }
+    });
+  }, [patientId]);
 
   const handleSubmit = async (formData: FormData) => {
     setIsLoading(true);
@@ -80,10 +96,20 @@ export function Hc6Form({ patientId, action, onSuccess, onBack }: Hc6FormProps) 
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="mb-6 p-3 bg-muted/30 rounded-md">
-          <p className="text-sm text-muted-foreground">
+        <div className="mb-6 p-3 bg-gray-800/50 rounded-md space-y-1">
+          <p className="text-sm text-gray-100">
             <span className="font-semibold">Fecha:</span> {today}
           </p>
+          {patientName && (
+            <p className="text-sm text-gray-100">
+              <span className="font-semibold">Nombre:</span> {patientName}
+            </p>
+          )}
+          {patientAge !== null && (
+            <p className="text-sm text-gray-100">
+              <span className="font-semibold">Edad:</span> {patientAge} años
+            </p>
+          )}
         </div>
 
         <form action={handleSubmit}>
