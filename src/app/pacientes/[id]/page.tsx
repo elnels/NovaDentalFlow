@@ -1,6 +1,5 @@
 'use client';
 
-import { notFound } from "next/navigation";
 import Link from "next/link";
 import {
   ChevronLeft,
@@ -24,20 +23,9 @@ import {
 import { format, parseISO, differenceInYears } from "date-fns";
 import { es } from "date-fns/locale";
 import { useEffect, useState, useCallback, use } from "react";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+
 
 import { getPacienteById } from "@/lib/api";
-import {
-  updatePatientField,
-  updateAppointmentField,
-  updateHistoryField,
-  addCitaFromObject,
-  addHistorialFromObject,
-  deleteCita,
-  deleteHistorial
-} from "@/lib/actions";
-import { useAutoRefresh } from "@/hooks/use-auto-refresh";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import {
@@ -51,9 +39,16 @@ import { Badge } from "@/components/ui/badge";
 import { EditOptionsMenu } from "@/components/edit-options-menu";
 import { DeletePatientDialog } from "@/components/delete-patient-dialog";
 import { SequentialWorkflow } from "@/components/sequential-workflow";
-import CitasTable from "@/components/citas-table";
-import HistorialTable from "@/components/historial-table";
-
+import { HistorialView } from "@/components/historial-view";
+import { CitasView } from "@/components/citas-view";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
+import { ClinicalDetailsView } from "@/components/clinical-details-view";
+import { OdontogramTab } from "@/components/odontogram-tab";
 
 function getAge(dateString: string) {
   try {
@@ -89,174 +84,43 @@ export default function PatientDetailPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  console.log('🚀 Componente PatientDetailPage iniciando');
-  
   const resolvedParams = use(params);
   const id = resolvedParams.id;
   
-  console.log('🆔 ID del paciente:', id);
-  console.log('📋 Params resueltos:', resolvedParams);
-  console.log('🔧 Preparando para configurar useEffect...');
-  
   const [patient, setPatient] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
-  
-  // Debug: Forzar que loading sea false después de 10 segundos
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      console.log('🚨 TIMEOUT: Forzando loading = false después de 10 segundos');
-      setLoading(false);
-    }, 10000);
-    return () => clearTimeout(timeout);
-  }, []);
   const [syncing, setSyncing] = useState(false);
   const [showWorkflow, setShowWorkflow] = useState(false);
-  const { refreshData, handlePatientSuccess } = useAutoRefresh();
   const { toast } = useToast();
 
-  // Función para cargar datos del paciente
   const loadPatient = useCallback(async (forceRefresh = false) => {
-    if (!id) {
-      console.log('🛑 No hay ID');
-      return;
-    }
-    
-    console.log('🚀 Iniciando carga para ID:', id);
+    if (!id) return;
     setLoading(true);
     try {
-      console.log('📡 Llamando a getPacienteById...');
       const patientData = await getPacienteById(id);
-      console.log('📦 Datos recibidos:', patientData);
-      console.log('📦 Tipo de datos:', typeof patientData);
-      console.log('📦 Es null/undefined?:', patientData == null);
-      
       if (!patientData) {
-        console.log('❌ No hay datos del paciente');
         setPatient(null);
       } else {
-        console.log('✅ Estableciendo datos del paciente');
         setPatient(patientData);
       }
     } catch (error) {
-      console.error('❌ Error loading patient:', error);
+      console.error('Error loading patient:', error);
       setPatient(null);
     } finally {
-      console.log('🏁 Finalizando carga, setLoading(false)');
       setLoading(false);
     }
   }, [id]);
 
-  // useEffect debe estar aquí, antes de cualquier return condicional
   useEffect(() => {
-    console.log('🎯 useEffect EJECUTÁNDOSE con ID:', id);
-    console.log('🎯 Tipo de ID:', typeof id);
-    console.log('🎯 ID es truthy?:', !!id);
-    if (id) {
-      console.log('🎯 ID válido, llamando loadPatient');
-      loadPatient();
-    } else {
-      console.log('🎯 ID no válido:', id);
-    }
-  }, [id, loadPatient]); // Dependiendo del ID y loadPatient
-
-  // Función para actualizar un campo específico
-  const updateField = useCallback(async (recordId: string, fieldName: string, newValue: string, recordType: 'history' | 'appointment') => {
-    try {
-      const result = await updatePatientField(
-        recordId,
-        fieldName,
-        newValue,
-        recordType
-      );
-      
-      if (result.success) {
-        setPatient((prev: any) => {
-          if (!prev) return prev;
-          
-          const updated = { ...prev };
-          if (recordType === 'history') {
-            updated.historialClinico = updated.historialClinico?.map((item: any) => 
-              item.id === recordId ? { ...item, [fieldName]: newValue } : item
-            );
-          } else {
-            updated.citas = updated.citas?.map((item: any) => 
-              item.id === recordId ? { ...item, [fieldName]: newValue } : item
-            );
-          }
-          return updated;
-        });
-        
-        toast({
-          title: "Campo actualizado",
-          description: "El cambio se ha guardado correctamente."
-        });
-      } else {
-        throw new Error(result.message || 'Error al actualizar');
-      }
-    } catch (error) {
-      console.error('Error updating field:', error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "No se pudo guardar el cambio."
-      });
-      throw error;
-    }
-  }, [id, toast]);
-
-  const handleDeleteCita = async (citaId: string) => {
-    try {
-      const result = await deleteCita(citaId);
-      if (result.success) {
-        toast({
-          title: "Cita eliminada",
-          description: "La cita se ha eliminado correctamente.",
-        });
-        handleDataUpdate();
-      } else {
-        throw new Error(result.message || 'Error desconocido');
-      }
-    } catch (error) {
-      console.error('Error deleting cita:', error);
-      toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "No se pudo eliminar la cita",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleDeleteHistorial = async (historialId: string) => {
-    try {
-      const result = await deleteHistorial(historialId);
-      if (result.success) {
-        toast({
-          title: "Historial eliminado",
-          description: "El historial se ha eliminado correctamente.",
-        });
-        handleDataUpdate();
-      } else {
-        throw new Error(result.message || 'Error desconocido');
-      }
-    } catch (error) {
-      console.error('Error deleting historial:', error);
-      toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "No se pudo eliminar el historial",
-        variant: "destructive",
-      });
-    }
-  };
+    if (id) loadPatient();
+  }, [id, loadPatient]);
 
   const handleDataUpdate = useCallback(async () => {
     if (id && !syncing) {
       setSyncing(true);
       try {
-        console.log('🔄 Actualizando datos para:', id);
         await loadPatient(true);
-        console.log('✅ Datos actualizados correctamente');
       } catch (error) {
-        console.error('❌ Error en actualización:', error);
         toast({ 
           variant: "destructive", 
           title: "Error de actualización", 
@@ -267,89 +131,8 @@ export default function PatientDetailPage({
       }
     }
   }, [id, loadPatient, syncing, toast]);
-
-  const handleAddCita = useCallback(async (citaData: any) => {
-    try {
-      const citaWithPatient = {
-        patientId: id,
-        ...citaData,
-      };
-      
-      const result = await addCitaFromObject(citaWithPatient);
-      if (result.success) {
-        setPatient((prev: any) => {
-          if (!prev) return prev;
-          const newCita = {
-            id: result.appointmentId || `CITA-${Date.now()}`,
-            patientId: id,
-            ...citaData,
-          };
-          return {
-            ...prev,
-            citas: [...(prev.citas || []), newCita]
-          };
-        });
-        
-        toast({
-          title: "Cita agregada",
-          description: "La cita se ha programado correctamente.",
-        });
-      } else {
-        throw new Error(result.message || 'Error desconocido');
-      }
-    } catch (error) {
-      console.error('Error adding cita:', error);
-      toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "No se pudo agregar la cita",
-        variant: "destructive",
-      });
-    }
-  }, [id, toast]);
-
-  const handleAddHistorial = useCallback(async (historialData: any) => {
-    try {
-      const historialWithPatient = {
-        patientId: id,
-        ...historialData,
-      };
-      
-      const result = await addHistorialFromObject(historialWithPatient);
-      if (result.success) {
-        setPatient((prev: any) => {
-          if (!prev) return prev;
-          const newHistorial = {
-            id: result.historyId || `HIST-${Date.now()}`,
-            patientId: id,
-            ...historialData,
-          };
-          return {
-            ...prev,
-            historialClinico: [...(prev.historialClinico || []), newHistorial]
-          };
-        });
-        
-        toast({
-          title: "Historial agregado",
-          description: "El registro médico ha sido agregado exitosamente.",
-        });
-      } else {
-        throw new Error(result.message || 'Error desconocido');
-      }
-    } catch (error) {
-      console.error('Error adding historial:', error);
-      toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "No se pudo agregar el historial",
-        variant: "destructive",
-      });
-    }
-  }, [id, toast]);
-  
-  console.log('🔍 Estado actual - Loading:', loading, 'Patient:', !!patient);
   
   if (loading) {
-    console.log('⏳ Mostrando pantalla de carga');
     return (
       <div className="flex flex-col justify-center items-center min-h-screen">
         <div className="relative">
@@ -425,7 +208,7 @@ export default function PatientDetailPage({
                 </Avatar>
                  <div className="flex items-center gap-2">
                     <CardTitle className="text-2xl">{`${patient.nombres} ${patient.apellidos}`}</CardTitle>
-                    <GenderIcon gender={patient.genero} />
+                    <GenderIcon gender={patient.sexo} />
                  </div>
                  <div className="flex items-center gap-2 text-sm mt-2">
                     {patient.estado === 'Activo' ? <CheckCircle2 className="h-4 w-4 text-green-500" /> : <XCircle className="h-4 w-4 text-red-500" />}
@@ -449,23 +232,43 @@ export default function PatientDetailPage({
             </Card>
           </div>
 
-          <div className="lg:col-span-2 space-y-8">
-            <HistorialTable 
-              data={patient.historialClinico || []} 
-              onUpdateField={updateField}
-              onDeleteHistorial={handleDeleteHistorial}
-              onAddHistorial={handleAddHistorial}
-              patientId={patient.id}
-              availableCitas={patient.citas || []}
-            />
-
-            <CitasTable 
-              data={patient.citas || []} 
-              onUpdateField={updateField}
-              onDeleteCita={handleDeleteCita}
-              onAddCita={handleAddCita}
-              patientId={patient.id}
-            />
+          <div className="lg:col-span-2">
+            <Tabs defaultValue="historial" className="w-full">
+              <TabsList className="grid w-full grid-cols-4">
+                <TabsTrigger value="historial">Historial</TabsTrigger>
+                <TabsTrigger value="citas">Citas</TabsTrigger>
+                <TabsTrigger value="ficha-clinica">Ficha Clínica</TabsTrigger>
+                <TabsTrigger value="odontograma">Odontograma</TabsTrigger>
+              </TabsList>
+              <TabsContent value="historial" className="mt-4">
+                <HistorialView
+                  data={patient.historialClinico || []}
+                  patientId={patient.id}
+                  onDataUpdate={handleDataUpdate}
+                />
+              </TabsContent>
+              <TabsContent value="citas" className="mt-4">
+                <CitasView
+                  data={patient.citas || []}
+                  patientId={patient.id}
+                  onDataUpdate={handleDataUpdate}
+                />
+              </TabsContent>
+              <TabsContent value="ficha-clinica" className="mt-4">
+                <ClinicalDetailsView
+                  patientId={patient.id}
+                  clinicalDetails={patient.clinicalDetails}
+                  familyConditions={patient.familyConditions}
+                  onDataUpdate={handleDataUpdate}
+                />
+              </TabsContent>
+              <TabsContent value="odontograma" className="mt-4">
+                <OdontogramTab
+                  patientId={patient.id}
+                  onDataUpdate={handleDataUpdate}
+                />
+              </TabsContent>
+            </Tabs>
           </div>
         </div>
       </main>
