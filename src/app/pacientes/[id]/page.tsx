@@ -1,6 +1,5 @@
 'use client';
 
-import { notFound } from "next/navigation";
 import Link from "next/link";
 import {
   ChevronLeft,
@@ -24,19 +23,9 @@ import {
 import { format, parseISO, differenceInYears } from "date-fns";
 import { es } from "date-fns/locale";
 import { useEffect, useState, useCallback, use } from "react";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+
 
 import { getPacienteById } from "@/lib/api";
-import {
-  updatePatientField,
-  updateAppointmentField,
-  updateHistoryField,
-  addCitaFromObject,
-  addHistorialFromObject,
-  deleteCita,
-  deleteHistorial
-} from "@/lib/actions";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import {
@@ -50,8 +39,8 @@ import { Badge } from "@/components/ui/badge";
 import { EditOptionsMenu } from "@/components/edit-options-menu";
 import { DeletePatientDialog } from "@/components/delete-patient-dialog";
 import { SequentialWorkflow } from "@/components/sequential-workflow";
-import CitasTable from "@/components/citas-table";
-import HistorialTable from "@/components/historial-table";
+import { HistorialView } from "@/components/historial-view";
+import { CitasView } from "@/components/citas-view";
 import {
   Tabs,
   TabsContent,
@@ -126,95 +115,6 @@ export default function PatientDetailPage({
     if (id) loadPatient();
   }, [id, loadPatient]);
 
-  // Función para actualizar un campo específico
-  const updateField = useCallback(async (recordId: string, fieldName: string, newValue: string, recordType: 'history' | 'appointment') => {
-    try {
-      const result = await updatePatientField(
-        recordId,
-        fieldName,
-        newValue,
-        recordType
-      );
-      
-      if (result.success) {
-        setPatient((prev: any) => {
-          if (!prev) return prev;
-          
-          const updated = { ...prev };
-          if (recordType === 'history') {
-            updated.historialClinico = updated.historialClinico?.map((item: any) => 
-              item.id === recordId ? { ...item, [fieldName]: newValue } : item
-            );
-          } else {
-            updated.citas = updated.citas?.map((item: any) => 
-              item.id === recordId ? { ...item, [fieldName]: newValue } : item
-            );
-          }
-          return updated;
-        });
-        
-        toast({
-          title: "Campo actualizado",
-          description: "El cambio se ha guardado correctamente."
-        });
-      } else {
-        throw new Error(result.message || 'Error al actualizar');
-      }
-    } catch (error) {
-      console.error('Error updating field:', error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "No se pudo guardar el cambio."
-      });
-      throw error;
-    }
-  }, [id, toast]);
-
-  const handleDeleteCita = async (citaId: string) => {
-    try {
-      const result = await deleteCita(citaId);
-      if (result.success) {
-        toast({
-          title: "Cita eliminada",
-          description: "La cita se ha eliminado correctamente.",
-        });
-        handleDataUpdate();
-      } else {
-        throw new Error(result.message || 'Error desconocido');
-      }
-    } catch (error) {
-      console.error('Error deleting cita:', error);
-      toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "No se pudo eliminar la cita",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleDeleteHistorial = async (historialId: string) => {
-    try {
-      const result = await deleteHistorial(historialId);
-      if (result.success) {
-        toast({
-          title: "Historial eliminado",
-          description: "El historial se ha eliminado correctamente.",
-        });
-        handleDataUpdate();
-      } else {
-        throw new Error(result.message || 'Error desconocido');
-      }
-    } catch (error) {
-      console.error('Error deleting historial:', error);
-      toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "No se pudo eliminar el historial",
-        variant: "destructive",
-      });
-    }
-  };
-
   const handleDataUpdate = useCallback(async () => {
     if (id && !syncing) {
       setSyncing(true);
@@ -231,84 +131,6 @@ export default function PatientDetailPage({
       }
     }
   }, [id, loadPatient, syncing, toast]);
-
-  const handleAddCita = useCallback(async (citaData: any) => {
-    try {
-      const citaWithPatient = {
-        patientId: id,
-        ...citaData,
-      };
-      
-      const result = await addCitaFromObject(citaWithPatient);
-      if (result.success) {
-        setPatient((prev: any) => {
-          if (!prev) return prev;
-          const newCita = {
-            id: result.appointmentId || `CITA-${Date.now()}`,
-            patientId: id,
-            ...citaData,
-          };
-          return {
-            ...prev,
-            citas: [...(prev.citas || []), newCita]
-          };
-        });
-        
-        toast({
-          title: "Cita agregada",
-          description: "La cita se ha programado correctamente.",
-        });
-      } else {
-        throw new Error(result.message || 'Error desconocido');
-      }
-    } catch (error) {
-      console.error('Error adding cita:', error);
-      toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "No se pudo agregar la cita",
-        variant: "destructive",
-      });
-    }
-  }, [id, toast]);
-
-  const handleAddHistorial = useCallback(async (historialData: any) => {
-    try {
-      const historialWithPatient = {
-        patientId: id,
-        ...historialData,
-      };
-      
-      const result = await addHistorialFromObject(historialWithPatient);
-      if (result.success) {
-        setPatient((prev: any) => {
-          if (!prev) return prev;
-          const newHistorial = {
-            id: result.historyId || `HIST-${Date.now()}`,
-            patientId: id,
-            ...historialData,
-          };
-          return {
-            ...prev,
-            historialClinico: [...(prev.historialClinico || []), newHistorial]
-          };
-        });
-        
-        toast({
-          title: "Historial agregado",
-          description: "El registro médico ha sido agregado exitosamente.",
-        });
-      } else {
-        throw new Error(result.message || 'Error desconocido');
-      }
-    } catch (error) {
-      console.error('Error adding historial:', error);
-      toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "No se pudo agregar el historial",
-        variant: "destructive",
-      });
-    }
-  }, [id, toast]);
   
   if (loading) {
     return (
@@ -419,22 +241,17 @@ export default function PatientDetailPage({
                 <TabsTrigger value="odontograma">Odontograma</TabsTrigger>
               </TabsList>
               <TabsContent value="historial" className="mt-4">
-                <HistorialTable 
-                  data={patient.historialClinico || []} 
-                  onUpdateField={updateField}
-                  onDeleteHistorial={handleDeleteHistorial}
-                  onAddHistorial={handleAddHistorial}
+                <HistorialView
+                  data={patient.historialClinico || []}
                   patientId={patient.id}
-                  availableCitas={patient.citas || []}
+                  onDataUpdate={handleDataUpdate}
                 />
               </TabsContent>
               <TabsContent value="citas" className="mt-4">
-                <CitasTable 
-                  data={patient.citas || []} 
-                  onUpdateField={updateField}
-                  onDeleteCita={handleDeleteCita}
-                  onAddCita={handleAddCita}
+                <CitasView
+                  data={patient.citas || []}
                   patientId={patient.id}
+                  onDataUpdate={handleDataUpdate}
                 />
               </TabsContent>
               <TabsContent value="ficha-clinica" className="mt-4">
