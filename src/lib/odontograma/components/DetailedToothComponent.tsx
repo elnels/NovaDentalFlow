@@ -202,31 +202,31 @@ export const DetailedToothComponent: React.FC<DetailedToothComponentProps> = ({
         <div className="absolute inset-0.5 grid grid-cols-3 grid-rows-3 gap-0.5">
           {/* Superficie vestibular (arriba) */}
           <div
-            className={`col-start-2 row-start-1 rounded-sm border ${isTemporary ? (isDarkMode ? 'border-orange-700' : 'border-orange-400') : (isDarkMode ? 'border-gray-600' : 'border-gray-300')} ${getSurfaceStyle(tooth.surfaces?.vestibular || tooth.status)}`}
+            className={`col-start-2 row-start-1 rounded-sm border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} ${getSurfaceStyle(tooth.surfaces?.vestibular || tooth.status)}`}
             title="Superficie vestibular"
           />
           
           {/* Superficie mesial (izquierda) */}
           <div
-            className={`col-start-1 row-start-2 rounded-sm border ${isTemporary ? (isDarkMode ? 'border-orange-700' : 'border-orange-400') : (isDarkMode ? 'border-gray-600' : 'border-gray-300')} ${getSurfaceStyle(tooth.surfaces?.mesial || tooth.status)}`}
+            className={`col-start-1 row-start-2 rounded-sm border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} ${getSurfaceStyle(tooth.surfaces?.mesial || tooth.status)}`}
             title="Superficie mesial"
           />
           
           {/* Superficie oclusal (centro) */}
           <div
-            className={`col-start-2 row-start-2 rounded-sm border ${isTemporary ? (isDarkMode ? 'border-orange-700' : 'border-orange-400') : (isDarkMode ? 'border-gray-600' : 'border-gray-300')} ${getSurfaceStyle(tooth.surfaces?.oclusal || tooth.status)}`}
+            className={`col-start-2 row-start-2 rounded-sm border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} ${getSurfaceStyle(tooth.surfaces?.oclusal || tooth.status)}`}
             title="Superficie oclusal"
           />
           
           {/* Superficie distal (derecha) */}
           <div
-            className={`col-start-3 row-start-2 rounded-sm border ${isTemporary ? (isDarkMode ? 'border-orange-700' : 'border-orange-400') : (isDarkMode ? 'border-gray-600' : 'border-gray-300')} ${getSurfaceStyle(tooth.surfaces?.distal || tooth.status)}`}
+            className={`col-start-3 row-start-2 rounded-sm border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} ${getSurfaceStyle(tooth.surfaces?.distal || tooth.status)}`}
             title="Superficie distal"
           />
           
           {/* Superficie lingual (abajo) */}
           <div
-            className={`col-start-2 row-start-3 rounded-sm border ${isTemporary ? (isDarkMode ? 'border-orange-700' : 'border-orange-400') : (isDarkMode ? 'border-gray-600' : 'border-gray-300')} ${getSurfaceStyle(tooth.surfaces?.lingual || tooth.status)}`}
+            className={`col-start-2 row-start-3 rounded-sm border ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} ${getSurfaceStyle(tooth.surfaces?.lingual || tooth.status)}`}
             title="Superficie lingual"
           />
         </div>
