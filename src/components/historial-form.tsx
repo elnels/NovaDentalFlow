@@ -179,7 +179,7 @@ export function HistorialForm({
                     <SelectItem value="__none__">Sin cita asociada</SelectItem>
                     {availableCitas.map((cita) => (
                       <SelectItem key={cita.id} value={cita.id}>
-                        {cita.fechaCita} - {cita.motivoCita}
+                        {cita.fechaCita instanceof Date ? cita.fechaCita.toLocaleDateString("es") : cita.fechaCita?.split("T")[0]} - {cita.motivoCita}
                       </SelectItem>
                     ))}
                   </SelectContent>
