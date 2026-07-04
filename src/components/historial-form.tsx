@@ -24,11 +24,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { addHistorial, updateHistorial, getPatientById } from "@/lib/actions";
+import { useToast } from "@/hooks/use-toast";
 import type { FormState } from "@/lib/actions";
 
 const historialSchema = z.object({
   patientId: z.string().min(1),
-  fechaHistorial: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Formato inválido"),
+  fechaHistorial: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Formato de fecha inválido"),
   appointmentId: z.string().optional(),
   diagnostico: z.string().optional(),
   tratamiento: z.string().optional(),
@@ -67,7 +68,7 @@ export function HistorialForm({
   onSuccess,
   onBack,
 }: HistorialFormProps) {
-  const [state, setState] = useState<FormState>({ message: "", success: false });
+  const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [availableCitas, setAvailableCitas] = useState<
     { id: string; fechaCita: string; motivoCita: string }[]
@@ -75,7 +76,7 @@ export function HistorialForm({
 
   useEffect(() => {
     getPatientById(patientId).then((res: any) => {
-      if (res?.citas) setAvailableCitas(res.citas);
+      if (res?.appointments) setAvailableCitas(res.appointments);
     });
   }, [patientId]);
 
@@ -103,9 +104,10 @@ export function HistorialForm({
       const formData = new FormData();
       Object.entries(data).forEach(([key, value]) => {
         const v = key === "appointmentId" && value === "__none__" ? "" : value;
-        formData.set(key, v || "");
+        formData.set(key, v ?? "");
       });
 
+      const state: FormState = { message: "", success: false };
       const result =
         mode === "create"
           ? await addHistorial(state, formData)
@@ -114,10 +116,31 @@ export function HistorialForm({
             : { message: "Error: ID no encontrado", success: false };
 
       if (result.success) {
+        toast({ title: "Éxito", description: result.message });
         onSuccess();
       } else {
-        setState(result);
+        if (result.errors) {
+          Object.entries(result.errors).forEach(([key, value]) => {
+            if (value) {
+              form.setError(key as keyof HistorialFormData, {
+                type: "manual",
+                message: value,
+              });
+            }
+          });
+        }
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: result.message || "Error al guardar.",
+        });
       }
+    } catch {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Ocurrió un error inesperado.",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -161,11 +184,6 @@ export function HistorialForm({
                     ))}
                   </SelectContent>
                 </Select>
-                <input
-                  type="hidden"
-                  name="appointmentId"
-                  value={field.value === "__none__" ? "" : field.value || ""}
-                />
                 <FormMessage />
               </FormItem>
             )}

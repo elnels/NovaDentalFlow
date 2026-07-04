@@ -24,6 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { addCita, updateCita } from "@/lib/actions";
+import { useToast } from "@/hooks/use-toast";
 import type { FormState } from "@/lib/actions";
 
 const citaSchema = z.object({
@@ -64,7 +65,7 @@ export function CitasForm({
   onSuccess,
   onBack,
 }: CitasFormProps) {
-  const [state, setState] = useState<FormState>({ message: "", success: false });
+  const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<CitaFormData>({
@@ -89,6 +90,7 @@ export function CitasForm({
         formData.set(key, value || "");
       });
 
+      const state: FormState = { message: "", success: false };
       const result =
         mode === "create"
           ? await addCita(state, formData)
@@ -97,10 +99,31 @@ export function CitasForm({
             : { message: "Error: ID no encontrado", success: false };
 
       if (result.success) {
+        toast({ title: "Éxito", description: result.message });
         onSuccess();
       } else {
-        setState(result);
+        if (result.errors) {
+          Object.entries(result.errors).forEach(([key, value]) => {
+            if (value) {
+              form.setError(key as keyof CitaFormData, {
+                type: "manual",
+                message: value,
+              });
+            }
+          });
+        }
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: result.message || "Error al guardar.",
+        });
       }
+    } catch {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Ocurrió un error inesperado.",
+      });
     } finally {
       setIsSubmitting(false);
     }
