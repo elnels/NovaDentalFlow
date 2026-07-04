@@ -98,7 +98,16 @@ export const FloatingToothDetailsCard: React.FC<FloatingToothDetailsCardProps> =
   };
 
   const handleSaveNotes = () => {
-    onUpdateTooth(tooth.id, { notes: localNotes });
+    if (!localNotes.trim()) return;
+    const now = new Date();
+    const day = String(now.getDate()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const year = String(now.getFullYear()).slice(-2);
+    const dateStr = `${day}/${month}/${year}`;
+    const newEntry = `${dateStr} - ${localNotes.trim()}`;
+    const updatedNotes = tooth.notes ? tooth.notes + '\n' + newEntry : newEntry;
+    onUpdateTooth(tooth.id, { notes: updatedNotes });
+    setLocalNotes('');
     setNotesSaved(true);
   };
 
@@ -241,9 +250,19 @@ export const FloatingToothDetailsCard: React.FC<FloatingToothDetailsCardProps> =
               </button>
             </div>
             {notesSaved && tooth.notes && (
-              <div className="p-3 bg-gray-800 rounded-lg border border-gray-700">
-                <p className="text-xs text-gray-500 mb-1">Nota guardada:</p>
-                <p className="text-sm text-gray-300 whitespace-pre-wrap">{tooth.notes}</p>
+              <div className="space-y-2">
+                <p className="text-xs font-medium text-gray-500">Historial de notas:</p>
+                {tooth.notes.split('\n').map((entry, i) => {
+                  const dateEnd = entry.indexOf(' - ');
+                  const date = dateEnd > -1 ? entry.slice(0, dateEnd) : '';
+                  const text = dateEnd > -1 ? entry.slice(dateEnd + 3) : entry;
+                  return (
+                    <div key={i} className="p-3 bg-gray-800 rounded-lg border border-gray-700">
+                      <p className="text-xs text-gray-400">{date}</p>
+                      <p className="text-sm text-gray-300 mt-0.5">{text}</p>
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>
