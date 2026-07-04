@@ -44,6 +44,14 @@ Show all patient data on the profile page (`/pacientes/[id]`): personal informat
 **Commit `514215d`** → `src/components/edit-patient-modal.tsx`
 - Applied `?? ""` to all optional string fields in `initialData` to prevent `value={null}` React input error
 
+### Step 5 — Historial & Citas Card-Based Refactor
+**Commit `06abe2d`** → 4 new files + page.tsx
+- Replaced MUI `HistorialTable` + `CitasTable` with `HistorialView` + `CitasView` (shadcn card-based layout matching Ficha Clínica style)
+- Created `HistorialForm` and `CitasForm` components for create/edit dialogs (reuses `addHistorial`/`updateHistorial`/`addCita`/`updateCita` server actions)
+- Removed inline MUI `EditableCell` editing — now dialog-only
+- Removed MUI dependencies from profile page (replaced with shadcn/ui)
+- Cleaned up unused imports and handlers from page.tsx
+
 ## Architecture
 
 ### Data Loading
@@ -110,3 +118,7 @@ All existing HC form components reused **without modification** — each accepts
 | `src/lib/api.ts` | Client-side fetch wrapper (unchanged) |
 | `src/lib/actions.ts` | Server actions (`saveHc1`–`saveHc6`) (unchanged) |
 | `src/components/hc1-form.tsx`–`hc5-form.tsx` | Reused inside dialogs (unchanged) |
+| `src/components/historial-view.tsx` | Card-based view for clinical history records |
+| `src/components/historial-form.tsx` | Create/edit form for history records (dialog) |
+| `src/components/citas-view.tsx` | Card-based view for appointments |
+| `src/components/citas-form.tsx` | Create/edit form for appointments (dialog) |
