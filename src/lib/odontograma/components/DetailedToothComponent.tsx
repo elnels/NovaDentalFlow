@@ -65,7 +65,10 @@ export const DetailedToothComponent: React.FC<DetailedToothComponentProps> = ({
     };
     
     if (isTemporary) {
-      return `bg-orange-100 ${baseStyles[status] || 'border-border-color text-text-primary'}`;
+      if (isDarkMode) {
+        return 'bg-orange-900/30 border-orange-600 text-orange-300';
+      }
+      return 'bg-orange-100 border-orange-400 text-orange-700';
     }
     
     if (isDarkMode) {
@@ -103,35 +106,8 @@ export const DetailedToothComponent: React.FC<DetailedToothComponentProps> = ({
 
   const getSurfaceStyle = (status: ToothStatus) => {
     if (isTemporary) {
-      if (isDarkMode) {
-        switch (status) {
-          case 'healthy': return 'bg-orange-900/40 border-green-700';
-          case 'caries': return 'bg-orange-900/40 border-red-700';
-          case 'filled': return 'bg-orange-900/40 border-blue-700';
-          case 'crown': return 'bg-orange-900/40 border-amber-700';
-          case 'extracted': return 'bg-orange-900/40 border-gray-600';
-          case 'implant': return 'bg-orange-900/40 border-purple-700';
-          case 'root_canal': return 'bg-orange-900/40 border-pink-700';
-          case 'fracture': return 'bg-orange-900/40 border-orange-700';
-          case 'bridge': return 'bg-orange-900/40 border-indigo-700';
-          case 'extraction_indicated': return 'bg-orange-900/40 border-red-800';
-          default: return 'bg-orange-900/40 border-gray-600';
-        }
-      } else {
-        switch (status) {
-          case 'healthy': return 'bg-orange-200 border-success';
-          case 'caries': return 'bg-orange-200 border-error';
-          case 'filled': return 'bg-orange-200 border-info';
-          case 'crown': return 'bg-orange-200 border-warning';
-          case 'extracted': return 'bg-orange-200 border-neutral';
-          case 'implant': return 'bg-orange-200 border-primary';
-          case 'root_canal': return 'bg-orange-200 border-secondary';
-          case 'fracture': return 'bg-orange-200 border-orange-600';
-          case 'bridge': return 'bg-orange-200 border-purple-500';
-          case 'extraction_indicated': return 'bg-orange-200 border-red-600';
-          default: return 'bg-orange-200 border-border-color';
-        }
-      }
+      if (isDarkMode) return 'bg-orange-900/40';
+      return 'bg-orange-200/60';
     }
     
     if (isDarkMode) {
