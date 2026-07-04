@@ -40,33 +40,33 @@ export const DetailedToothComponent: React.FC<DetailedToothComponentProps> = ({
   const getToothStyle = (status: ToothStatus) => {
     if (isDarkMode) {
       switch (status) {
-        case 'healthy': return `${isTemporary ? 'bg-orange-900/30' : 'bg-green-900/30'} border-green-700 text-green-300`;
-        case 'caries': return `${isTemporary ? 'bg-orange-900/30' : 'bg-red-900/30'} border-red-700 text-red-300`;
-        case 'filled': return `${isTemporary ? 'bg-orange-900/30' : 'bg-blue-900/30'} border-blue-700 text-blue-300`;
-        case 'crown': return `${isTemporary ? 'bg-orange-900/30' : 'bg-amber-900/30'} border-amber-700 text-amber-300`;
-        case 'extracted': return `${isTemporary ? 'bg-orange-900/30' : 'bg-gray-800/30'} border-gray-600 text-gray-400`;
-        case 'implant': return `${isTemporary ? 'bg-orange-900/30' : 'bg-purple-900/30'} border-purple-700 text-purple-300`;
-        case 'root_canal': return `${isTemporary ? 'bg-orange-900/30' : 'bg-pink-900/30'} border-pink-700 text-pink-300`;
-        case 'fracture': return `${isTemporary ? 'bg-orange-900/30' : 'bg-orange-900/30'} border-orange-700 text-orange-300`;
-        case 'bridge': return `${isTemporary ? 'bg-orange-900/30' : 'bg-indigo-900/30'} border-indigo-700 text-indigo-300`;
-        case 'extraction_indicated': return `${isTemporary ? 'bg-orange-900/30' : 'bg-red-950/30'} border-red-800 text-red-400`;
-        case 'not_erupted': return `${isTemporary ? 'bg-orange-900/30' : 'bg-gray-800'} border-gray-600 text-gray-500 opacity-50`;
-        default: return `${isTemporary ? 'bg-orange-900/30' : 'bg-gray-800'} border-gray-600 text-gray-300`;
+        case 'healthy': return 'bg-green-900/30 border-green-700 text-green-300';
+        case 'caries': return 'bg-red-900/30 border-red-700 text-red-300';
+        case 'filled': return 'bg-blue-900/30 border-blue-700 text-blue-300';
+        case 'crown': return 'bg-amber-900/30 border-amber-700 text-amber-300';
+        case 'extracted': return 'bg-gray-800/30 border-gray-600 text-gray-400';
+        case 'implant': return 'bg-purple-900/30 border-purple-700 text-purple-300';
+        case 'root_canal': return 'bg-pink-900/30 border-pink-700 text-pink-300';
+        case 'fracture': return 'bg-orange-900/30 border-orange-700 text-orange-300';
+        case 'bridge': return 'bg-indigo-900/30 border-indigo-700 text-indigo-300';
+        case 'extraction_indicated': return 'bg-red-950/30 border-red-800 text-red-400';
+        case 'not_erupted': return 'bg-gray-800 border-gray-600 text-gray-500 opacity-50';
+        default: return 'bg-gray-800 border-gray-600 text-gray-300';
       }
     } else {
       switch (status) {
-        case 'healthy': return `${isTemporary ? 'bg-orange-100' : 'bg-success/20'} border-success text-success-content`;
-        case 'caries': return `${isTemporary ? 'bg-orange-100' : 'bg-error/20'} border-error text-error-content`;
-        case 'filled': return `${isTemporary ? 'bg-orange-100' : 'bg-info/20'} border-info text-info-content`;
-        case 'crown': return `${isTemporary ? 'bg-orange-100' : 'bg-warning/20'} border-warning text-warning-content`;
-        case 'extracted': return `${isTemporary ? 'bg-orange-100' : 'bg-gray-500/20'} border-gray-500 text-gray-700`;
-        case 'implant': return `${isTemporary ? 'bg-orange-100' : 'bg-purple-100'} border-purple-500 text-purple-800`;
-        case 'root_canal': return `${isTemporary ? 'bg-orange-100' : 'bg-pink-100'} border-pink-500 text-pink-800`;
-        case 'fracture': return `${isTemporary ? 'bg-orange-100' : 'bg-orange-100'} border-orange-500 text-orange-800`;
-        case 'bridge': return `${isTemporary ? 'bg-orange-100' : 'bg-purple-500/20'} border-purple-500 text-purple-600`;
-        case 'extraction_indicated': return `${isTemporary ? 'bg-orange-100' : 'bg-red-600/20'} border-red-600 text-red-700`;
-        case 'not_erupted': return `${isTemporary ? 'bg-orange-100' : 'bg-gray-100'} border-gray-300 text-gray-400 opacity-50`;
-        default: return `${isTemporary ? 'bg-orange-100' : 'bg-gray-100'} border-gray-300 text-gray-600`;
+        case 'healthy': return 'bg-success/20 border-success text-success-content';
+        case 'caries': return 'bg-error/20 border-error text-error-content';
+        case 'filled': return 'bg-info/20 border-info text-info-content';
+        case 'crown': return 'bg-warning/20 border-warning text-warning-content';
+        case 'extracted': return 'bg-gray-500/20 border-gray-500 text-gray-700';
+        case 'implant': return 'bg-purple-100 border-purple-500 text-purple-800';
+        case 'root_canal': return 'bg-pink-100 border-pink-500 text-pink-800';
+        case 'fracture': return 'bg-orange-100 border-orange-500 text-orange-800';
+        case 'bridge': return 'bg-purple-500/20 border-purple-500 text-purple-600';
+        case 'extraction_indicated': return 'bg-red-600/20 border-red-600 text-red-700';
+        case 'not_erupted': return 'bg-gray-100 border-gray-300 text-gray-400 opacity-50';
+        default: return 'bg-gray-100 border-gray-300 text-gray-600';
       }
     }
   };
@@ -74,33 +74,33 @@ export const DetailedToothComponent: React.FC<DetailedToothComponentProps> = ({
   const getSurfaceStyle = (status: ToothStatus) => {
     if (isDarkMode) {
       switch (status) {
-        case 'healthy': return `${isTemporary ? 'bg-orange-900/40' : 'bg-green-900/40'} border-green-700`;
-        case 'caries': return `${isTemporary ? 'bg-orange-900/40' : 'bg-red-900/40'} border-red-700`;
-        case 'filled': return `${isTemporary ? 'bg-orange-900/40' : 'bg-blue-900/40'} border-blue-700`;
-        case 'crown': return `${isTemporary ? 'bg-orange-900/40' : 'bg-amber-900/40'} border-amber-700`;
-        case 'extracted': return `${isTemporary ? 'bg-orange-900/40' : 'bg-gray-800/40'} border-gray-600`;
-        case 'implant': return `${isTemporary ? 'bg-orange-900/40' : 'bg-purple-900/40'} border-purple-700`;
-        case 'root_canal': return `${isTemporary ? 'bg-orange-900/40' : 'bg-pink-900/40'} border-pink-700`;
-        case 'fracture': return `${isTemporary ? 'bg-orange-900/40' : 'bg-orange-900/40'} border-orange-700`;
-        case 'bridge': return `${isTemporary ? 'bg-orange-900/40' : 'bg-indigo-900/40'} border-indigo-700`;
-        case 'extraction_indicated': return `${isTemporary ? 'bg-orange-900/40' : 'bg-red-950/40'} border-red-800`;
-        case 'not_erupted': return `${isTemporary ? 'bg-orange-900/40' : 'bg-gray-800/40'} border-gray-600`;
-        default: return `${isTemporary ? 'bg-orange-900/40' : 'bg-gray-800/40'} border-gray-600`;
+        case 'healthy': return 'bg-green-900/40 border-green-700';
+        case 'caries': return 'bg-red-900/40 border-red-700';
+        case 'filled': return 'bg-blue-900/40 border-blue-700';
+        case 'crown': return 'bg-amber-900/40 border-amber-700';
+        case 'extracted': return 'bg-gray-800/40 border-gray-600';
+        case 'implant': return 'bg-purple-900/40 border-purple-700';
+        case 'root_canal': return 'bg-pink-900/40 border-pink-700';
+        case 'fracture': return 'bg-orange-900/40 border-orange-700';
+        case 'bridge': return 'bg-indigo-900/40 border-indigo-700';
+        case 'extraction_indicated': return 'bg-red-950/40 border-red-800';
+        case 'not_erupted': return 'bg-gray-800/40 border-gray-600';
+        default: return 'bg-gray-800/40 border-gray-600';
       }
     } else {
       switch (status) {
-        case 'healthy': return `${isTemporary ? 'bg-orange-200' : 'bg-success/40'} border-success`;
-        case 'caries': return `${isTemporary ? 'bg-orange-200' : 'bg-error/40'} border-error`;
-        case 'filled': return `${isTemporary ? 'bg-orange-200' : 'bg-info/40'} border-info`;
-        case 'crown': return `${isTemporary ? 'bg-orange-200' : 'bg-warning/40'} border-warning`;
-        case 'extracted': return `${isTemporary ? 'bg-orange-200' : 'bg-gray-500/40'} border-gray-500`;
-        case 'implant': return `${isTemporary ? 'bg-orange-200' : 'bg-purple-200/60'} border-purple-500`;
-        case 'root_canal': return `${isTemporary ? 'bg-orange-200' : 'bg-pink-200/60'} border-pink-500`;
-        case 'fracture': return `${isTemporary ? 'bg-orange-200' : 'bg-orange-600/40'} border-orange-600`;
-        case 'bridge': return `${isTemporary ? 'bg-orange-200' : 'bg-purple-500/40'} border-purple-500`;
-        case 'extraction_indicated': return `${isTemporary ? 'bg-orange-200' : 'bg-red-600/40'} border-red-600`;
-        case 'not_erupted': return `${isTemporary ? 'bg-orange-200' : 'bg-gray-200/40'} border-gray-300`;
-        default: return `${isTemporary ? 'bg-orange-200' : 'bg-gray-200/40'} border-gray-300`;
+        case 'healthy': return 'bg-success/40 border-success';
+        case 'caries': return 'bg-error/40 border-error';
+        case 'filled': return 'bg-info/40 border-info';
+        case 'crown': return 'bg-warning/40 border-warning';
+        case 'extracted': return 'bg-gray-500/40 border-gray-500';
+        case 'implant': return 'bg-purple-200/60 border-purple-500';
+        case 'root_canal': return 'bg-pink-200/60 border-pink-500';
+        case 'fracture': return 'bg-orange-600/40 border-orange-600';
+        case 'bridge': return 'bg-purple-500/40 border-purple-500';
+        case 'extraction_indicated': return 'bg-red-600/40 border-red-600';
+        case 'not_erupted': return 'bg-gray-200/40 border-gray-300';
+        default: return 'bg-gray-200/40 border-gray-300';
       }
     }
   };
