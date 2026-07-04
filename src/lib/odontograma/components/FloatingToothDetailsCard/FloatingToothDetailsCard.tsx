@@ -212,7 +212,7 @@ export const FloatingToothDetailsCard: React.FC<FloatingToothDetailsCardProps> =
         
         {activeTab === 'historial' && (
           <div className="space-y-4">
-            <h4 className="text-sm font-medium text-gray-400">Procedimientos</h4>
+            <h4 className="text-sm font-medium text-gray-400">Tratamientos</h4>
             {tooth.procedures && tooth.procedures.length > 0 ? (
               tooth.procedures.map((proc) => (
                 <div key={proc.id} className="p-3 bg-gray-800 rounded-lg">
