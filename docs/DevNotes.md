@@ -262,6 +262,7 @@ Full odontogram integration (HC6) — sub-step 5 of 6:
 | `hc6-post-integration-fixes` (main, no branch) | ✅ | Dark mode, removed extraneous fields, ColorLegend fix, Regresar style |
 | `fix/hc6-status-buttons-submit-form` | ✅ | type=button + tool-select-only + selectedTooth sync |
 | `feat/notas-guardar-cancelar` | ❌ | Guardar/Cancelar notes, DD/MM/YY prefix, accumulation |
+| `feat/hc6-patient-info` | ❌ | Reverted — patient name/age in HC6 header broke something; rolled back to 6b7b938 |
 
 ### 11. `historial-clinico-new-fields` (reverted)
 Experimented with adding 9 new fields to Historial Clínico (Sexo, Estado Civil, Ocupación, Escolaridad, datos de padres, Motivo Consulta, Antecedentes Personales grid). Required Apps Script changes failed to deploy — reverted completely.
