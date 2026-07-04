@@ -263,7 +263,7 @@ export function HistorialView({
               recordId={editingRecord.id}
               mode="edit"
               initialData={{
-                fechaHistorial: editingRecord.fechaHistorial || editingRecord.fechaTratamiento,
+                fechaHistorial: (editingRecord.fechaHistorial ?? editingRecord.fechaTratamiento)?.split("T")[0] ?? "",
                 appointmentId: editingRecord.appointmentId,
                 diagnostico: editingRecord.diagnostico,
                 tratamiento: editingRecord.tratamiento,

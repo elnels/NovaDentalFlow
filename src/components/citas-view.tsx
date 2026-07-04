@@ -241,7 +241,7 @@ export function CitasView({ data, onDataUpdate, patientId }: CitasViewProps) {
               recordId={editingCita.id}
               mode="edit"
               initialData={{
-                fechaCita: editingCita.fechaCita,
+                fechaCita: editingCita.fechaCita?.split("T")[0] ?? "",
                 horaInicio: editingCita.horaInicio,
                 horaFin: editingCita.horaFin,
                 motivoCita: editingCita.motivoCita,
