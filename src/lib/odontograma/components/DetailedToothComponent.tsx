@@ -207,7 +207,7 @@ export const DetailedToothComponent: React.FC<DetailedToothComponentProps> = ({
     <div>
       <div className={`text-xs font-bold flex items-center gap-1 ${isTemporary ? 'text-orange-500' : 'text-cyan-400'}`}>
         <span>{tooth.clinicalId || tooth.id}</span>
-        {tooth.notes && (
+        {(tooth.notes || (tooth.procedures && tooth.procedures.length > 0)) && (
           <span className="w-1.5 h-1.5 bg-purple-500 rounded-full animate-pulse"></span>
         )}
       </div>
