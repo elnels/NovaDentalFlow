@@ -523,6 +523,9 @@ Added Guardar/Cancelar flow to the Notas tab in FloatingToothDetailsCard (right 
 - **Multi-entry display**: "Historial de notas:" section renders each dated entry as a separate card with date in small gray text and note body below (matching the Historial tab procedure card style).
 - **Textarea clears on tooth switch**: When clicking a different tooth, textarea starts blank ready for a new note; history section still loads previous notes correctly.
 
+### 23. `feat/hc6-patient-info` (reverted)
+Added patient name/age to HC6 header, changed header style to white text on gray-800/50, and renamed "Name:" → "Nombre:". Caused a regression — rolled back via `git revert`. Revert also corrupted the CSS import in `FloatingToothDetailsCard.tsx:6` (`import  ;` → fixed to `import './FloatingToothDetailsCard.css';`).
+
 ## Other Tasks
 - Fixed `JSX.IntrinsicElements` error by running `npm install`
 - Confirmed no unit test framework exists in the project

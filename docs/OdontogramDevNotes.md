@@ -48,7 +48,7 @@ Matches demo: `grid grid-cols-1 lg:grid-cols-3` with:
 11. **Removed extraneous fields** — Diagnóstico de Presunción, Estudios Auxiliares, Observaciones removed from HC6 form. Prisma schema columns dropped accordingly.
 12. **ColorLegend repositioned** — Moved outside odontogram grid to below the entire form section to prevent overflow.
 13. **Regresar button style** — Changed `variant="outline"` → `variant="default"` to match Continuar.
-14. ~~**Patient name & age in HC6 header** — `hc6-form.tsx` now fetches patient data via `getPatientById` (same pattern as hc2/hc5) and displays name + age below Fecha. Header background changed to `bg-gray-800/50` with `text-gray-100`. Label "Name:" → "Nombre:". Merged via `feat/hc6-patient-info` branch.~~ **REVERTED** — rolled back to 6b7b938.
+14. ~~**Patient name & age in HC6 header** — `hc6-form.tsx` now fetches patient data via `getPatientById` (same pattern as hc2/hc5) and displays name + age below Fecha. Header background changed to `bg-gray-800/50` with `text-gray-100`. Label "Name:" → "Nombre:". Merged via `feat/hc6-patient-info` branch.~~ **REVERTED** — rolled back to 6b7b938. Revert corrupted `import './FloatingToothDetailsCard.css'` to `import  ;` — fixed.
 
 ### What Was NOT Integrated (Demo-only features)
 - Case selector (CompactCaseSelector) — not needed for HC6

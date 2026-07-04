@@ -3,7 +3,7 @@ import { X, Activity, FileText, Syringe, Check, AlertCircle, CircleDot, Crown, P
 import { Button } from '@/components/ui/button';
 import type { Tooth, ToothStatus, ToothProcedure } from '@/lib/odontograma/types';
 import { SurfacesSection } from './sections/SurfacesSection';
-import  ;
+import './FloatingToothDetailsCard.css';
 
 interface FloatingToothDetailsCardProps {
   tooth: Tooth;
