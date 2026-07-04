@@ -38,39 +38,6 @@ export const DetailedToothComponent: React.FC<DetailedToothComponentProps> = ({
   developerMode = false
 }) => {
   const getToothStyle = (status: ToothStatus) => {
-    const baseStyles = isDarkMode ? {
-      healthy: 'border-green-700 text-green-300',
-      caries: 'border-red-700 text-red-300',
-      filled: 'border-blue-700 text-blue-300',
-      crown: 'border-amber-700 text-amber-300',
-      extracted: 'border-gray-600 text-gray-400',
-      implant: 'border-purple-700 text-purple-300',
-      root_canal: 'border-pink-700 text-pink-300',
-      fracture: 'border-orange-700 text-orange-300',
-      bridge: 'border-indigo-700 text-indigo-300',
-      extraction_indicated: 'border-red-800 text-red-400',
-      not_erupted: 'border-gray-600 text-gray-500',
-    } : {
-      healthy: 'border-success text-success-content',
-      caries: 'border-error text-error-content',
-      filled: 'border-info text-info-content',
-      crown: 'border-warning text-warning-content',
-      extracted: 'border-gray-500 text-gray-700',
-      implant: 'border-primary text-primary-content',
-      root_canal: 'border-secondary text-secondary-content',
-      fracture: 'border-accent text-accent-content',
-      bridge: 'border-purple-500 text-purple-600',
-      extraction_indicated: 'border-red-600 text-red-700',
-      not_erupted: 'border-gray-300 text-gray-400',
-    };
-    
-    if (isTemporary) {
-      if (isDarkMode) {
-        return 'bg-orange-900/30 border-orange-600 text-orange-300';
-      }
-      return 'bg-orange-100 border-orange-400 text-orange-700';
-    }
-    
     if (isDarkMode) {
       switch (status) {
         case 'healthy': return 'bg-green-900/30 border-green-700 text-green-300';
@@ -105,11 +72,6 @@ export const DetailedToothComponent: React.FC<DetailedToothComponentProps> = ({
   };
 
   const getSurfaceStyle = (status: ToothStatus) => {
-    if (isTemporary) {
-      if (isDarkMode) return 'bg-orange-900/40';
-      return 'bg-orange-200/60';
-    }
-    
     if (isDarkMode) {
       switch (status) {
         case 'healthy': return 'bg-green-900/40 border-green-700';
