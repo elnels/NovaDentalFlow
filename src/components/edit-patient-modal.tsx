@@ -50,22 +50,19 @@ export function EditPatientModal({
   const updatePatientWithId = updatePatient.bind(null, patient.id);
 
   const initialData = {
-    nombres: patient.nombres,
-    apellidos: patient.apellidos,
+    nombres: patient.nombres ?? "",
+    apellidos: patient.apellidos ?? "",
     fechaNacimiento: (() => {
       const dateField = patient.fechaNacimiento;
       if (!dateField || dateField === 'N/A') return '';
       try {
-        // Si ya está en formato YYYY-MM-DD, devolverlo tal como está
         if (/^\d{4}-\d{2}-\d{2}$/.test(dateField)) {
           return dateField;
         }
-        // Si está en formato DD/MM/YYYY, convertirlo
         if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateField)) {
           const [day, month, year] = dateField.split('/');
           return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
         }
-        // Intentar parsear como fecha ISO
         const date = new Date(dateField);
         if (isNaN(date.getTime())) return '';
         return date.toISOString().split('T')[0];
@@ -73,18 +70,18 @@ export function EditPatientModal({
         return '';
       }
     })(),
-    telefonoPrincipal: patient.telefonoPrincipal,
-    telefonoAlternativo: patient.telefonoAlternativo,
-    email: patient.email,
-    direccion: patient.direccion,
-    sexo: patient.sexo,
-    estadoCivil: patient.estadoCivil,
-    ocupacion: patient.ocupacion,
-    escolaridad: patient.escolaridad,
-    nombrePadre: patient.nombrePadre,
-    nombreMadre: patient.nombreMadre,
-    telefonoPadre: patient.telefonoPadre,
-    telefonoMadre: patient.telefonoMadre,
+    telefonoPrincipal: patient.telefonoPrincipal ?? "",
+    telefonoAlternativo: patient.telefonoAlternativo ?? "",
+    email: patient.email ?? "",
+    direccion: patient.direccion ?? "",
+    sexo: patient.sexo ?? undefined,
+    estadoCivil: patient.estadoCivil ?? "",
+    ocupacion: patient.ocupacion ?? "",
+    escolaridad: patient.escolaridad ?? "",
+    nombrePadre: patient.nombrePadre ?? "",
+    nombreMadre: patient.nombreMadre ?? "",
+    telefonoPadre: patient.telefonoPadre ?? "",
+    telefonoMadre: patient.telefonoMadre ?? "",
     esMenor: patient.esMenor || false,
   };
 
