@@ -100,17 +100,17 @@ export function Hc6Form({ patientId, action, onSuccess, onBack }: Hc6FormProps) 
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="mb-6 p-3 bg-muted/30 rounded-md space-y-1">
-          <p className="text-sm text-muted-foreground">
+        <div className="mb-6 p-3 bg-gray-800/50 rounded-md space-y-1">
+          <p className="text-sm text-gray-100">
             <span className="font-semibold">Fecha:</span> {today}
           </p>
           {patientName && (
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-gray-100">
               <span className="font-semibold">Name:</span> {patientName}
             </p>
           )}
           {patientAge !== null && (
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-gray-100">
               <span className="font-semibold">Edad:</span> {patientAge} años
             </p>
           )}
