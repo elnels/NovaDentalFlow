@@ -49,6 +49,7 @@ import {
 } from "@/components/ui/tabs";
 import { ClinicalDetailsView } from "@/components/clinical-details-view";
 import { OdontogramTab } from "@/components/odontogram-tab";
+import { PacienteView } from "@/components/paciente-view";
 
 function getAge(dateString: string) {
   try {
@@ -233,13 +234,20 @@ export default function PatientDetailPage({
           </div>
 
           <div className="lg:col-span-2">
-            <Tabs defaultValue="historial" className="w-full">
-              <TabsList className="grid w-full grid-cols-4">
+            <Tabs defaultValue="paciente" className="w-full">
+              <TabsList className="grid w-full grid-cols-5">
+                <TabsTrigger value="paciente">Paciente</TabsTrigger>
                 <TabsTrigger value="historial">Historial</TabsTrigger>
                 <TabsTrigger value="citas">Citas</TabsTrigger>
                 <TabsTrigger value="ficha-clinica">Ficha Clínica</TabsTrigger>
                 <TabsTrigger value="odontograma">Odontograma</TabsTrigger>
               </TabsList>
+              <TabsContent value="paciente" className="mt-4">
+                <PacienteView
+                  patient={patient}
+                  onDataUpdate={handleDataUpdate}
+                />
+              </TabsContent>
               <TabsContent value="historial" className="mt-4">
                 <HistorialView
                   data={patient.historialClinico || []}
