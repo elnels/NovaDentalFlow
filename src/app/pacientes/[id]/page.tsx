@@ -186,7 +186,7 @@ export default function PatientDetailPage({
         </div>
       </header>
 
-      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-[1550px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Mensaje informativo sobre actualización de datos */}
         <div className="mb-6 p-3 bg-blue-50 border border-blue-200 rounded-lg">
           <div className="flex items-center gap-2 text-sm text-blue-700">
@@ -195,7 +195,7 @@ export default function PatientDetailPage({
           </div>
         </div>
         
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-8">
           <div className="lg:col-span-1">
             <Card>
               <CardHeader className="flex flex-col items-center text-center">

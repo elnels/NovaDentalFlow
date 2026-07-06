@@ -103,7 +103,7 @@ export const Odontogram: React.FC<OdontogramProps> = ({
         </div>
       </div>
       
-      <div className="flex-1 flex flex-col items-center justify-center p-8">
+      <div className="flex-1 flex flex-col items-center justify-center overflow-hidden p-2">
         {/* Contenedor principal */}
         <div className="relative">
           {/* Estructura de 3 columnas */}
