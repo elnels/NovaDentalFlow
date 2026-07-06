@@ -138,7 +138,15 @@ export function ClinicalDetailsView({
   } catch {}
 
   const activeHc2Conditions = hc2Conditions.filter((c) => c.presents);
-  const activeFamilyConditions = (familyConditions || []).filter((fc: any) => fc.hasCondition);
+  const ALL_HC3_CONDITIONS = [
+    "Diabetes",
+    "Hipertensión Arterial",
+    "Cáncer",
+    "Cardiópatas",
+    "Nefrópatas",
+    "Malformaciones",
+    "Otros",
+  ];
 
   return (
     <div className="space-y-6">
@@ -177,27 +185,23 @@ export function ClinicalDetailsView({
 
       {/* HC3 — Heredo-Familiares */}
       <SectionCard title="Antecedentes Heredo-Familiares" icon={HeartPulse} onEdit={() => setOpenHc3(true)}>
-        {activeFamilyConditions.length > 0 ? (
-          <div className="divide-y text-sm">
-            {activeFamilyConditions.map((fc: any) => (
-              <div key={fc.conditionName} className="py-1.5 flex items-center gap-2">
-                <span className="font-medium">{fc.conditionName}</span>
-                {fc.relatives && (
-                  <span className="text-muted-foreground">
-                    — {typeof fc.relatives === "string" ? fc.relatives : JSON.stringify(fc.relatives)}
-                  </span>
+        <div className="divide-y text-sm">
+          {ALL_HC3_CONDITIONS.map((conditionName) => {
+            const saved = (familyConditions || []).find((fc: any) => fc.conditionName === conditionName);
+            const hasCondition = saved?.hasCondition ?? false;
+            return (
+              <div key={conditionName}>
+                <InfoRow label={conditionName} value={<YesNoBadge value={hasCondition} />} />
+                {hasCondition && saved?.relatives && (
+                  <InfoRow label="¿Quién?" value={saved.relatives as string} />
                 )}
-                {fc.tipo && (
-                  <span className="text-muted-foreground">
-                    ({fc.tipo})
-                  </span>
+                {hasCondition && saved?.tipo && (conditionName === "Cáncer" || conditionName === "Malformaciones") && (
+                  <InfoRow label="Tipo" value={saved.tipo as string} />
                 )}
               </div>
-            ))}
-          </div>
-        ) : (
-          <EmptyState message="Sin antecedentes familiares registrados" />
-        )}
+            );
+          })}
+        </div>
       </SectionCard>
 
       {/* HC4 — No Patológicos */}
