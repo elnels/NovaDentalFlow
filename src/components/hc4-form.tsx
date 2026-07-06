@@ -97,7 +97,7 @@ const QUESTIONS: QuestionDef[] = [
     womenOnly: true,
     detailLabel: "Fecha de última menstruación",
     detailKey: "fechaUltimaMenstruacion",
-    detailPlaceholder: "YYYY-MM-DD",
+    detailPlaceholder: "DD/MM/AAAA",
     detailType: "date",
   },
   {

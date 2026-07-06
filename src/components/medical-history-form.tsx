@@ -30,7 +30,7 @@ import { useToast } from "@/hooks/use-toast";
 const medicalHistorySchema = z.object({
   patientId: z.string().min(1, "El ID del paciente es requerido"),
   appointmentId: z.string().optional().or(z.literal("")),
-  fechaHistorial: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Formato de fecha inválido (YYYY-MM-DD)"),
+  fechaHistorial: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Formato de fecha inválida"),
   diagnostico: z.string().min(1, "El diagnóstico es requerido"),
   tratamiento: z.string().min(1, "El tratamiento realizado es requerido"),
   prescripciones: z.string().optional(),

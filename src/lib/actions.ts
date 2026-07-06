@@ -384,7 +384,7 @@ const patientSchema = z.object({
   dni: z.string().optional().or(z.literal("")),
   nombres: z.string().min(2, "El nombre es requerido"),
   apellidos: z.string().min(2, "El apellido es requerido"),
-  fechaNacimiento: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Formato de fecha inválido (YYYY-MM-DD)"),
+  fechaNacimiento: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Formato de fecha inválida"),
   telefonoPrincipal: z.string().min(7, "El teléfono principal es requerido"),
   telefonoAlternativo: z.string().optional(),
   email: z.string().email("Email inválido"),
@@ -402,7 +402,7 @@ const patientSchema = z.object({
 
 const appointmentSchema = z.object({
   patientId: z.string().min(1, "El ID del paciente es requerido"),
-  fechaCita: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Formato de fecha inválido (YYYY-MM-DD)"),
+  fechaCita: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Formato de fecha inválida"),
   horaInicio: z.string().regex(/^\d{2}:\d{2}$/, "Formato de hora inválido (HH:MM)"),
   horaFin: z.string().regex(/^\d{2}:\d{2}$/, "Formato de hora inválido (HH:MM)"),
   motivoCita: z.string().min(1, "El motivo de la cita es requerido"),
@@ -414,7 +414,7 @@ const appointmentSchema = z.object({
 const medicalHistorySchema = z.object({
   patientId: z.string().min(1, "El ID del paciente es requerido"),
   appointmentId: z.string().optional().or(z.literal("")),
-  fechaHistorial: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Formato de fecha inválido (YYYY-MM-DD)"),
+  fechaHistorial: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Formato de fecha inválida"),
   diagnostico: z.string().optional().or(z.literal("")),
   tratamiento: z.string().optional().or(z.literal("")),
   prescripciones: z.string().optional().or(z.literal("")),
