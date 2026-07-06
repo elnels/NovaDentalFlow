@@ -32,6 +32,7 @@ import { format, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
 import type { ClinicalHistory } from "@/types";
 import { useToast } from "@/hooks/use-toast";
+import { formatDateDisplay } from "@/lib/formatDate";
 
 interface HistorialTableProps {
   data: ClinicalHistory[];
@@ -342,7 +343,7 @@ export function HistorialTable({ data, onUpdateField, onDeleteHistorial, onAddHi
                 </MenuItem>
                 {availableCitas.map((cita) => (
                   <MenuItem key={cita.id} value={cita.id}>
-                    {cita.fechaCita instanceof Date ? cita.fechaCita.toLocaleDateString("es") : cita.fechaCita?.split("T")[0]} - {cita.motivoCita}
+                    {cita.fechaCita instanceof Date ? cita.fechaCita.toLocaleDateString("es-MX", { day: "2-digit", month: "2-digit", year: "numeric" }) : formatDateDisplay(cita.fechaCita)} - {cita.motivoCita}
                   </MenuItem>
                 ))}
               </TextField>

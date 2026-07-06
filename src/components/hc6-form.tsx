@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Search } from "lucide-react";
+import { formatTodayDate } from "@/lib/formatDate";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -89,11 +90,7 @@ export function Hc6Form({ patientId, action, onSuccess, onBack }: Hc6FormProps) 
     );
   };
 
-  const today = new Date().toLocaleDateString("es-MX", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+  const today = formatTodayDate();
 
   return (
     <Card className="!bg-[rgb(30,30,30)] border-gray-700 text-gray-100">

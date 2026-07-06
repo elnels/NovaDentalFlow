@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Loader2, HeartPulse } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { formatTodayDate } from "@/lib/formatDate";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -238,11 +239,7 @@ export function Hc4Form({ patientId, action, onSuccess, onBack }: Hc4FormProps) 
     );
   }
 
-  const today = new Date().toLocaleDateString("es-MX", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+  const today = formatTodayDate();
 
   return (
     <Card>

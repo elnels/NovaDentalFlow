@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Loader2, Stethoscope } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { formatTodayDate } from "@/lib/formatDate";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -155,11 +156,7 @@ export function Hc2Form({ patientId, action, onSuccess, onBack }: Hc2FormProps) 
     });
   }, []);
 
-  const today = new Date().toLocaleDateString("es-MX", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+  const today = formatTodayDate();
 
   const handleSubmit = async (formData: FormData) => {
     setIsLoading(true);

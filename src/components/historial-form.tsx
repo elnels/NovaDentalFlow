@@ -24,6 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { addHistorial, updateHistorial, getPatientById } from "@/lib/actions";
+import { formatDateDisplay } from "@/lib/formatDate";
 import { useToast } from "@/hooks/use-toast";
 import type { FormState } from "@/lib/actions";
 
@@ -179,7 +180,7 @@ export function HistorialForm({
                     <SelectItem value="__none__">Sin cita asociada</SelectItem>
                     {availableCitas.map((cita) => (
                       <SelectItem key={cita.id} value={cita.id}>
-                        {cita.fechaCita instanceof Date ? cita.fechaCita.toLocaleDateString("es") : cita.fechaCita?.split("T")[0]} - {cita.motivoCita}
+                        {cita.fechaCita instanceof Date ? cita.fechaCita.toLocaleDateString("es-MX", { day: "2-digit", month: "2-digit", year: "numeric" }) : formatDateDisplay(cita.fechaCita)} - {cita.motivoCita}
                       </SelectItem>
                     ))}
                   </SelectContent>

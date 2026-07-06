@@ -270,7 +270,8 @@ Full odontogram integration (HC6) — sub-step 5 of 6:
 | `fix/odontogram-tab-background` | ✅ | Odontogram wrapper bg-gray-900 + isDarkMode=true (matches ColorLegend) |
 | `fix/hc5-readonly-fields` | ✅ | HC3/HC5 read-only: all fields shown with YesNoBadge (HC4-style) |
 | `feat/odontogram-temp-teeth-default` | ✅ | "Dientes temporales" auto-enables for minor patients |
-| `fix/odontogram-status-not-erupted` | ⏳ | Added "No erupcionado" to status selection panel (on branch, not merged) |
+| `fix/odontogram-status-not-erupted` | ✅ | Added "No erupcionado" to status selection panel |
+| `fix/date-format-mx` | ⏳ | Standardized all dates to DD/MM/YYYY, 24h time, 4-digit years; created `src/lib/formatDate.ts` utility |
 
 ### 11. `historial-clinico-new-fields` (reverted)
 Experimented with adding 9 new fields to Historial Clínico (Sexo, Estado Civil, Ocupación, Escolaridad, datos de padres, Motivo Consulta, Antecedentes Personales grid). Required Apps Script changes failed to deploy — reverted completely.
@@ -602,12 +603,22 @@ Fixed Ficha Clínica tab read-only views for HC3 and HC5:
 - The API already returns `esMenor` as part of the full patient object — no backend changes needed
 - **Commit**: `f05f138`
 
-### 31. `fix/odontogram-status-not-erupted` (on branch)
+### 31. `fix/odontogram-status-not-erupted` (merged to main)
 Added "No erupcionado" to the status selection panel:
 - **Root cause**: `statusOptions` array in `FloatingToothDetailsCard.tsx` had 10 statuses but was missing `not_erupted` — even though `ToothStatus` type and `ColorLegend` already included it
 - **Fix**: Added `HelpCircle` icon + `{ id: 'not_erupted', name: 'No erupcionado', icon: HelpCircle, color: '#14b8a6' }` to `statusOptions`
 - Same component used by both HC6 workflow and profile tab — one change applies everywhere
 - **Commit**: `1f2700b`
+
+### 32. `fix/date-format-mx` (on branch)
+Standardized all dates to Mexican locale (DD/MM/YYYY, 24h time, 4-digit years):
+- **Created** `src/lib/formatDate.ts` with `formatDateDisplay`, `formatTodayDate`, `formatTimeDisplay` helpers
+- **HC1–HC6 forms**: Replaced `toLocaleDateString("es-MX", {month: "long"})` with `formatTodayDate()` — changed 7 spots
+- **Paciente/Citas/Historial views**: Replaced `format(..., "d 'de' MMMM 'de' yyyy")` with `formatDateDisplay()` — changed 3 spots
+- **Historial-form/Historial-table dropdowns**: Changed `toLocaleDateString("es")` to `toLocaleDateString("es-MX", {2-digit})`/`formatDateDisplay()` — changed 2 spots
+- **Patients-table**: Changed `"es-ES"` to `"es-MX"` for consistency
+- **Dashboard**: Replaced `toLocaleTimeString()` with `formatTimeDisplay()` (24h HH:MM)
+- **FloatingToothDetailsCard notes/procedures**: Changed `.slice(-2)` to `getFullYear()` — 2-digit → 4-digit year
 
 ## Other Tasks
 - Fixed `JSX.IntrinsicElements` error by running `npm install`

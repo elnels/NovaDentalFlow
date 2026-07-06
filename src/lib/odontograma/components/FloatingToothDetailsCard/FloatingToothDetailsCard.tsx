@@ -105,7 +105,7 @@ export const FloatingToothDetailsCard: React.FC<FloatingToothDetailsCardProps> =
     const now = new Date();
     const day = String(now.getDate()).padStart(2, '0');
     const month = String(now.getMonth() + 1).padStart(2, '0');
-    const year = String(now.getFullYear()).slice(-2);
+    const year = String(now.getFullYear());
     const dateStr = `${day}/${month}/${year}`;
     const newEntry = `${dateStr} - ${localNotes.trim()}`;
     const updatedNotes = tooth.notes ? tooth.notes + '\n' + newEntry : newEntry;
@@ -124,7 +124,7 @@ export const FloatingToothDetailsCard: React.FC<FloatingToothDetailsCardProps> =
     const now = new Date();
     const day = String(now.getDate()).padStart(2, '0');
     const month = String(now.getMonth() + 1).padStart(2, '0');
-    const year = String(now.getFullYear()).slice(-2);
+    const year = String(now.getFullYear());
     const newProc: ToothProcedure = {
       id: crypto.randomUUID(),
       type: localTratamiento.trim(),

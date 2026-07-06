@@ -452,7 +452,7 @@ const PatientRow = memo(({ patient }: { patient: Patient }) => {
     // Evitar problemas de zona horaria parseando la fecha como local
     const [year, month, day] = dateString.split('-');
     const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
-    return date.toLocaleDateString('es-ES', {
+    return date.toLocaleDateString('es-MX', {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric'

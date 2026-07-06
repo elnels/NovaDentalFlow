@@ -1,7 +1,7 @@
 "use client";
 
-import { format, parseISO, differenceInYears } from "date-fns";
-import { es } from "date-fns/locale";
+import { parseISO, differenceInYears } from "date-fns";
+import { formatDateDisplay } from "@/lib/formatDate";
 import { Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -63,7 +63,7 @@ export function PacienteView({ patient, onDataUpdate }: PacienteViewProps) {
             label="Fecha de Nacimiento"
             value={
               patient.fechaNacimiento
-                ? `${format(parseISO(patient.fechaNacimiento), "d 'de' MMMM 'de' yyyy", { locale: es })}${age !== null ? ` (${age} años)` : ""}`
+                ? `${formatDateDisplay(patient.fechaNacimiento)}${age !== null ? ` (${age} años)` : ""}`
                 : undefined
             }
           />

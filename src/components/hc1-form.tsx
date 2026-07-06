@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Loader2, Stethoscope } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { formatTodayDate } from "@/lib/formatDate";
 import { Input } from "@/components/ui/input";
 import {
   Card,
@@ -104,11 +105,7 @@ export function Hc1Form({ patientId, action, onSuccess, onBack }: Hc1FormProps) 
     fetchPatient();
   }, [patientId]);
 
-  const today = new Date().toLocaleDateString("es-MX", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+  const today = formatTodayDate();
 
   const form = useForm<OdontologoFormData>({
     resolver: zodResolver(odontologoSchema),
@@ -123,9 +120,9 @@ export function Hc1Form({ patientId, action, onSuccess, onBack }: Hc1FormProps) 
       const date = new Date(dateStr);
       if (isNaN(date.getTime())) return dateStr;
       return date.toLocaleDateString("es-MX", {
+        day: "2-digit",
+        month: "2-digit",
         year: "numeric",
-        month: "long",
-        day: "numeric",
       });
     } catch {
       return dateStr;

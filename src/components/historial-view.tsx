@@ -30,8 +30,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { format, parseISO } from "date-fns";
-import { es } from "date-fns/locale";
+import { formatDateDisplay } from "@/lib/formatDate";
 import { useToast } from "@/hooks/use-toast";
 import { HistorialForm } from "@/components/historial-form";
 import { deleteHistorial } from "@/lib/actions";
@@ -73,7 +72,7 @@ function RecordCard({
   const formattedDate = displayDate
     ? (() => {
         try {
-          return format(parseISO(displayDate), "d 'de' MMMM 'de' yyyy", { locale: es });
+          return formatDateDisplay(displayDate);
         } catch {
           return displayDate;
         }

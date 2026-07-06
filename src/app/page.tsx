@@ -19,6 +19,7 @@ import { SequentialWorkflow } from "@/components/sequential-workflow";
 import { CalendarEmbed } from "@/components/calendar-embed";
 import { getPacientesWithAppointments } from "@/lib/api";
 import type { Patient } from "@/types";
+import { formatTimeDisplay } from "@/lib/formatDate";
 
 export default function HomePage() {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -125,7 +126,7 @@ export default function HomePage() {
                 </div>
                 <div className="bg-purple-50 rounded-xl p-4 border border-purple-100">
                   <div className="text-2xl font-bold text-purple-600">
-                    {lastUpdated ? lastUpdated.toLocaleTimeString() : '--:--'}
+                    {lastUpdated ? formatTimeDisplay(lastUpdated) : '--:--'}
                   </div>
                   <div className="text-sm text-purple-600">Última Actualización</div>
                 </div>

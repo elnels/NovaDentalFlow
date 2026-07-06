@@ -25,8 +25,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { format, parseISO } from "date-fns";
-import { es } from "date-fns/locale";
+import { formatDateDisplay } from "@/lib/formatDate";
 import { useToast } from "@/hooks/use-toast";
 import { CitasForm } from "@/components/citas-form";
 import { deleteCita } from "@/lib/actions";
@@ -66,7 +65,7 @@ function AppointmentCard({
 }) {
   const formattedDate = (() => {
     try {
-      return format(parseISO(appointment.fechaCita), "d 'de' MMMM 'de' yyyy", { locale: es });
+      return formatDateDisplay(appointment.fechaCita);
     } catch {
       return appointment.fechaCita;
     }
