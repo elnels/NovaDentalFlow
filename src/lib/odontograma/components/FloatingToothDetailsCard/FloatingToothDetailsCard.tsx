@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Activity, FileText, Syringe, Check, AlertCircle, CircleDot, Crown, Plus, Zap, AlertTriangle, Link, AlertOctagon } from 'lucide-react';
+import { X, Activity, FileText, Syringe, Check, AlertCircle, CircleDot, Crown, Plus, Zap, AlertTriangle, Link, AlertOctagon, HelpCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { Tooth, ToothStatus, ToothProcedure } from '@/lib/odontograma/types';
 import { SurfacesSection } from './sections/SurfacesSection';
@@ -26,6 +26,7 @@ const statusOptions = [
   { id: 'fracture' as ToothStatus, name: 'Fractura', icon: AlertTriangle, color: '#f97316' },
   { id: 'bridge' as ToothStatus, name: 'Puente', icon: Link, color: '#6366f1' },
   { id: 'extraction_indicated' as ToothStatus, name: 'Extracción indicada', icon: AlertOctagon, color: '#dc2626' },
+  { id: 'not_erupted' as ToothStatus, name: 'No erupcionado', icon: HelpCircle, color: '#14b8a6' },
 ];
 
 export const FloatingToothDetailsCard: React.FC<FloatingToothDetailsCardProps> = ({ 
