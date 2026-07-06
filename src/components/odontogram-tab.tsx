@@ -93,7 +93,7 @@ export function OdontogramTab({ patientId, onDataUpdate }: OdontogramTabProps) {
         </CardHeader>
         <CardContent>
            <div className="mb-6 grid grid-cols-1 lg:grid-cols-[1100px_1fr] gap-4">
-              <div className="border rounded-lg p-4 bg-muted">
+              <div className="bg-gray-100 shadow-sm border-gray-200 rounded-lg border p-4">
                <Odontogram
                 teeth={teeth}
                 temporaryTeeth={temporaryTeeth}
@@ -106,7 +106,7 @@ export function OdontogramTab({ patientId, onDataUpdate }: OdontogramTabProps) {
             </div>
             <div>
               {selectedTooth ? (
-                <div className="border rounded-lg overflow-hidden h-full bg-muted">
+                <div className="bg-gray-100 shadow-sm border-gray-200 rounded-lg border overflow-hidden h-full">
                   <FloatingToothDetailsCard
                     tooth={selectedTooth}
                     onUpdateTooth={updateTooth}
@@ -115,7 +115,7 @@ export function OdontogramTab({ patientId, onDataUpdate }: OdontogramTabProps) {
                   />
                 </div>
               ) : (
-                <div className="border rounded-lg p-6 h-full flex items-center justify-center bg-muted min-h-[300px]">
+                <div className="bg-gray-100 shadow-sm border-gray-200 rounded-lg border p-6 h-full flex items-center justify-center min-h-[300px]">
                   <div className="text-center text-muted-foreground">
                     <p className="text-lg font-medium mb-2">Selecciona un diente</p>
                     <p className="text-sm max-w-xs mx-auto">
