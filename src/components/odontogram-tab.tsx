@@ -41,6 +41,7 @@ export function OdontogramTab({ patientId, onDataUpdate }: OdontogramTabProps) {
         if (odontograma?.temporaryTeeth) {
           setTemporaryTeeth(odontograma.temporaryTeeth);
         }
+        if (res.esMenor) setShowTemporaryTeeth(true);
       }
     });
   }, [patientId]);

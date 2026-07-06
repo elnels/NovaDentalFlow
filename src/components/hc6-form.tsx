@@ -49,6 +49,7 @@ export function Hc6Form({ patientId, action, onSuccess, onBack }: Hc6FormProps) 
         if (odontograma?.temporaryTeeth) {
           setTemporaryTeeth(odontograma.temporaryTeeth);
         }
+        if (res.esMenor) setShowTemporaryTeeth(true);
       }
     });
   }, [patientId]);
