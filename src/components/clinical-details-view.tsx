@@ -249,35 +249,50 @@ export function ClinicalDetailsView({
 
       {/* HC5 — Exploración Bucal */}
       <SectionCard title="Exploración Bucal" icon={Search} onEdit={() => setOpenHc5(true)}>
-        <InfoRow
-          label="Tejidos Blandos"
-          value={hc5Data.tejidosBlandos || "Sin datos"}
-        />
-        {hc5Data.oclusion && (
-          <div className="pt-2">
-            <span className="text-sm font-medium text-muted-foreground">Oclusión</span>
-            <div className="mt-1 space-y-1 text-sm">
-              {hc5Data.oclusion.lineaMedia?.valor && (
-                <p>Línea Media: {hc5Data.oclusion.lineaMedia.valor}{hc5Data.oclusion.lineaMedia.notas ? ` — ${hc5Data.oclusion.lineaMedia.notas}` : ""}</p>
-              )}
-              {hc5Data.oclusion.mordidaCruzada?.presente && (
-                <p>Mordida Cruzada: Sí{hc5Data.oclusion.mordidaCruzada.ubicacion ? ` (${hc5Data.oclusion.mordidaCruzada.ubicacion})` : ""}</p>
-              )}
-              {hc5Data.oclusion.traslapeHorizontal?.presente && (
-                <p>Traslape Horizontal: {hc5Data.oclusion.traslapeHorizontal.mm} mm</p>
-              )}
-              {hc5Data.oclusion.traslapeVertical?.presente && (
-                <p>Traslape Vertical: {hc5Data.oclusion.traslapeVertical.mm} mm</p>
-              )}
-              {hc5Data.oclusion.bordeABorde && <p>Borde a Borde</p>}
-              {hc5Data.oclusion.mordidaAbierta && <p>Mordida Abierta</p>}
-              {hc5Data.oclusion.habitosNocivos?.presente && (
-                <p>Hábitos Nocivos: {hc5Data.oclusion.habitosNocivos.cual}</p>
-              )}
-            </div>
+        {hc5Data.tejidosBlandos || hc5Data.oclusion ? (
+          <div className="divide-y text-sm">
+            <InfoRow label="Tejidos Blandos" value={hc5Data.tejidosBlandos || "Sin datos"} />
+            {hc5Data.oclusion && (
+              <>
+                <div className="py-2 text-sm font-medium text-muted-foreground">Oclusión</div>
+                <InfoRow
+                  label="Línea Media"
+                  value={
+                    hc5Data.oclusion.lineaMedia?.valor
+                      ? `${hc5Data.oclusion.lineaMedia.valor}${hc5Data.oclusion.lineaMedia.notas ? ` — ${hc5Data.oclusion.lineaMedia.notas}` : ""}`
+                      : "No especificado"
+                  }
+                />
+                <InfoRow label="Plano Terminal Derecho" value={hc5Data.oclusion.planosTerminales?.derecho || "No especificado"} />
+                <InfoRow label="Plano Terminal Izquierdo" value={hc5Data.oclusion.planosTerminales?.izquierdo || "No especificado"} />
+                <InfoRow label="Espacios Terminales" value={<YesNoBadge value={hc5Data.oclusion.espaciosTerminales?.presente ?? null} />} />
+                {hc5Data.oclusion.espaciosTerminales?.presente && hc5Data.oclusion.espaciosTerminales?.ubicacion && (
+                  <InfoRow label="Ubicación Espacios" value={hc5Data.oclusion.espaciosTerminales.ubicacion} />
+                )}
+                <InfoRow label="Clase Angle Derecho" value={hc5Data.oclusion.claseAngle?.derecho || "No especificado"} />
+                <InfoRow label="Clase Angle Izquierdo" value={hc5Data.oclusion.claseAngle?.izquierdo || "No especificado"} />
+                <InfoRow label="Mordida Cruzada" value={<YesNoBadge value={hc5Data.oclusion.mordidaCruzada?.presente ?? null} />} />
+                {hc5Data.oclusion.mordidaCruzada?.presente && hc5Data.oclusion.mordidaCruzada?.ubicacion && (
+                  <InfoRow label="Ubicación" value={hc5Data.oclusion.mordidaCruzada.ubicacion} />
+                )}
+                <InfoRow label="Traslape Horizontal" value={<YesNoBadge value={hc5Data.oclusion.traslapeHorizontal?.presente ?? null} />} />
+                {hc5Data.oclusion.traslapeHorizontal?.presente && (
+                  <InfoRow label="Medida Horizontal" value={hc5Data.oclusion.traslapeHorizontal.mm ? `${hc5Data.oclusion.traslapeHorizontal.mm} mm` : "No especificado"} />
+                )}
+                <InfoRow label="Traslape Vertical" value={<YesNoBadge value={hc5Data.oclusion.traslapeVertical?.presente ?? null} />} />
+                {hc5Data.oclusion.traslapeVertical?.presente && (
+                  <InfoRow label="Medida Vertical" value={hc5Data.oclusion.traslapeVertical.mm ? `${hc5Data.oclusion.traslapeVertical.mm} mm` : "No especificado"} />
+                )}
+                <InfoRow label="Borde a Borde" value={<YesNoBadge value={hc5Data.oclusion.bordeABorde ?? null} />} />
+                <InfoRow label="Mordida Abierta" value={<YesNoBadge value={hc5Data.oclusion.mordidaAbierta ?? null} />} />
+                <InfoRow label="Hábitos Nocivos" value={<YesNoBadge value={hc5Data.oclusion.habitosNocivos?.presente ?? null} />} />
+                {hc5Data.oclusion.habitosNocivos?.presente && hc5Data.oclusion.habitosNocivos?.cual && (
+                  <InfoRow label="¿Cuál?" value={hc5Data.oclusion.habitosNocivos.cual} />
+                )}
+              </>
+            )}
           </div>
-        )}
-        {!hc5Data.tejidosBlandos && !hc5Data.oclusion && (
+        ) : (
           <EmptyState message="Sin exploración bucal registrada" />
         )}
       </SectionCard>
