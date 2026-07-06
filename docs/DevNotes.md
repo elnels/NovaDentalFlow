@@ -266,6 +266,7 @@ Full odontogram integration (HC6) — sub-step 5 of 6:
 | `fix/temporary-teeth-interaction` | ✅ | Merged via `fix/temporary-teeth-orange-borders` — temp teeth now fully interactive (updateTooth routes to correct array, resetTeeth resets both) |
 | `fix/temporary-teeth-orange-borders` | ✅ | Temporary teeth visually match permanent (same status backgrounds, same borders); only label is `text-orange-500`. Surface base border uses same gray as permanent (`border-gray-300`/`border-gray-600`). |
 | `feat/hc6-patient-header` | ✅ | Patient name & age in HC6 header below Fecha, white text on `bg-gray-800/50`. Restablecer button removed. |
+| `feat/paciente-tab` | ✅ | Paciente tab with read-only card + edit modal; left sidebar panel removed |
 
 ### 11. `historial-clinico-new-fields` (reverted)
 Experimented with adding 9 new fields to Historial Clínico (Sexo, Estado Civil, Ocupación, Escolaridad, datos de padres, Motivo Consulta, Antecedentes Personales grid). Required Apps Script changes failed to deploy — reverted completely.
@@ -561,6 +562,23 @@ Implemented odontograma save & load into the database `ClinicalHistory.odontogra
 - **Roundtrip**: Load (DB → state) via cast from `Prisma.JsonValue` → `setTeeth`/`setTemporaryTeeth`; Save (state → DB) via `JSON.stringify` → `saveHc6` → `prisma.clinicalHistory.upsert`.
 - **Data shape stored**: `{ permanentTeeth: Tooth[], temporaryTeeth: Tooth[], lastUpdate: ISO string }` — full arrays (not delta), same as in-memory format.
 - **No changes to**: `sequential-workflow.tsx`, `prisma/schema.prisma`, odontogram components, any types.
+
+### 27. `feat/paciente-tab` (merged to main)
+Added a dedicated "Paciente" tab to the patient profile page showing all registration fields, and removed the redundant left sidebar:
+
+- **`src/components/paciente-view.tsx`** (new):
+  - Card-based read-only view of all patient fields (nombres, apellidos, fechaNacimiento, sexo, estadoCivil, ocupación, escolaridad, teléfonos, email, dirección, estado)
+  - Tutor section shown conditionally when `esMenor` is true
+  - "Editar" button reuses existing `EditPatientModal` (wraps `PatientForm`) — same pattern as Historial/Citas/Ficha Clínica tabs
+
+- **`src/app/pacientes/[id]/page.tsx`**:
+  - Added `PacienteView` import, `"paciente"` as first tab
+  - `grid-cols-4` → `grid-cols-5` for tab pills
+  - Removed entire left sidebar panel (Card/Avatar/InfoItems) and grid wrapper
+  - Removed unused imports: `Card`, `CardContent`, `CardHeader`, `CardTitle`, `Avatar`, `Badge`, `getAge`, `InfoItem`, `GenderIcon`, date-fns (`format`/`parseISO`/`differenceInYears`), lucide (`User`, `Cake`, `Phone`, `Mail`, `Home`, `Venus`, `Mars`, `Smartphone`, `CheckCircle2`, `XCircle`, `FileClock`, `FileText`, `Calendar`, `ClipboardList`)
+  - Bundle size: 255kB → 253kB, lines: 295 → 206
+
+- **Commits**: `6abe6ea` (Paciente tab), `ef70a62` (left panel removal, merged to main)
 
 ## Other Tasks
 - Fixed `JSX.IntrinsicElements` error by running `npm install`

@@ -2,11 +2,11 @@
 
 ## Goal
 
-Show all patient data on the profile page (`/pacientes/[id]`): personal information, clinical history (HC1–HC6 with interactive odontogram), and appointments in a tabbed layout with editable sections.
+Show all patient data on the profile page (`/pacientes/[id]`): personal information, clinical history (HC1–HC6 with interactive odontogram), and appointments in a tabbed layout with card-based editable sections.
 
 ## Status
 
-✅ **Completed** — All 5 steps + bug fixes implemented, tested end-to-end, ready to merge from `feat/patient-profile-data`.
+✅ **Completed** — 5 tabs (Paciente, Historial, Citas, Ficha Clínica, Odontograma). Left sidebar removed — all patient data shown in the dedicated Paciente tab.
 
 ## What Was Done
 
@@ -62,6 +62,22 @@ Show all patient data on the profile page (`/pacientes/[id]`): personal informat
 | 4 | `cee3ffb` | `"Unknown argument nombrePadre"` in `updateHistorial` | Removed `nombrePadre`/`nombreMadre` — these belong to `Patient`, not `ClinicalHistory` |
 | 5 | `20db1f1` | `"Decimal objects are not supported"` from server action `getPatientById` | Serialized Prisma return via `JSON.parse(JSON.stringify())` to convert `Decimal`→`string`, `Date`→ISO string |
 
+### Step 6 — Paciente Tab & Left Panel Removal
+
+**Commits `6abe6ea` + `ef70a62`** on branch `feat/paciente-tab` (merged to `main` as `ef70a62`)
+
+Added a dedicated **"Paciente"** tab as the first of 5 tabs, showing all registration fields in a read-only card with an "Editar" button opening the existing `EditPatientModal`. The redundant left sidebar (avatar, name, status, info items) was removed since the Paciente tab now displays everything.
+
+**New file:**
+- `src/components/paciente-view.tsx` — Card-based read-only view of all patient fields (nombres, apellidos, fechaNacimiento, sexo, estadoCivil, ocupación, escolaridad, teléfonos, email, dirección, estado) with conditional tutor section when `esMenor` is true. "Editar" button reuses existing `EditPatientModal` (wraps `PatientForm`).
+
+**Modified:**
+- `src/app/pacientes/[id]/page.tsx` — Added `PacienteView` import, changed `grid-cols-4` → `grid-cols-5` for tab pills, set first tab to `"paciente"`, removed entire left sidebar panel and grid wrapper.
+
+**Reused components (no changes needed):**
+- `EditPatientModal` — already wraps `PatientForm` in a dialog
+- `PatientForm` — full registration/edit form with Zod validation |
+
 ## Architecture
 
 ### Data Loading
@@ -100,12 +116,14 @@ All existing HC form components reused **without modification** — each accepts
 ### Profile Page Layout
 
 ```
-┌───────────────────┬─────────────────────────────────────────────┐
-│  Patient Card     │  [Historial] [Citas] [Ficha Clínica] [Odontograma]  │
-│  (col-span-1)     │                                                     │
-│                   │  Tab content renders the relevant section           │
-└───────────────────┴─────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────────┐
+│ [Paciente] [Historial] [Citas] [Ficha Clínica] [Odontograma]  │
+│                                                                │
+│ Tab content renders the relevant section                       │
+└────────────────────────────────────────────────────────────────┘
 ```
+
+The left sidebar was removed in Step 6 — all patient data is now accessed via the dedicated Paciente tab.
 
 ## Commits (in order)
 
@@ -123,6 +141,8 @@ All existing HC form components reused **without modification** — each accepts
 12. `c9667b8` — `fix: render Date objects from Prisma as locale string in historial-form/table`
 13. `cee3ffb` — `fix: remove nombrePadre/nombreMadre from updateHistorial`
 14. `20db1f1` — `fix: serialize Prisma objects to plain JSON in getPatientById`
+15. `6abe6ea` — `feat: add Paciente tab with read-only card + edit modal`
+16. `ef70a62` — `refactor: remove redundant left sidebar panel (data now in Paciente tab)`
 
 ## Relevant Files
 
@@ -131,7 +151,8 @@ All existing HC form components reused **without modification** — each accepts
 | `src/app/api/proxy/route.ts` | Prisma includes for `getPacienteById` |
 | `src/components/clinical-details-view.tsx` | HC1–HC5 read-only + edit dialogs |
 | `src/components/odontogram-tab.tsx` | HC6 interactive odontogram (light) |
-| `src/app/pacientes/[id]/page.tsx` | Tab layout, all sections wired |
+| `src/app/pacientes/[id]/page.tsx` | 5-tab layout, all sections wired |
+| `src/components/paciente-view.tsx` | Paciente tab — read-only card + edit modal |
 | `src/components/edit-patient-modal.tsx` | Null-safe initial data |
 | `src/lib/api.ts` | Client-side fetch wrapper (unchanged) |
 | `src/lib/actions.ts` | Server actions (`saveHc1`–`saveHc6`) (unchanged) |
