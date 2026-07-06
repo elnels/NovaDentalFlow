@@ -267,6 +267,10 @@ Full odontogram integration (HC6) — sub-step 5 of 6:
 | `fix/temporary-teeth-orange-borders` | ✅ | Temporary teeth visually match permanent (same status backgrounds, same borders); only label is `text-orange-500`. Surface base border uses same gray as permanent (`border-gray-300`/`border-gray-600`). |
 | `feat/hc6-patient-header` | ✅ | Patient name & age in HC6 header below Fecha, white text on `bg-gray-800/50`. Restablecer button removed. |
 | `feat/paciente-tab` | ✅ | Paciente tab with read-only card + edit modal; left sidebar panel removed |
+| `fix/odontogram-tab-background` | ✅ | Odontogram wrapper bg-gray-900 + isDarkMode=true (matches ColorLegend) |
+| `fix/hc5-readonly-fields` | ✅ | HC3/HC5 read-only: all fields shown with YesNoBadge (HC4-style) |
+| `feat/odontogram-temp-teeth-default` | ✅ | "Dientes temporales" auto-enables for minor patients |
+| `fix/odontogram-status-not-erupted` | ⏳ | Added "No erupcionado" to status selection panel (on branch, not merged) |
 
 ### 11. `historial-clinico-new-fields` (reverted)
 Experimented with adding 9 new fields to Historial Clínico (Sexo, Estado Civil, Ocupación, Escolaridad, datos de padres, Motivo Consulta, Antecedentes Personales grid). Required Apps Script changes failed to deploy — reverted completely.
@@ -579,6 +583,31 @@ Added a dedicated "Paciente" tab to the patient profile page showing all registr
   - Bundle size: 255kB → 253kB, lines: 295 → 206
 
 - **Commits**: `6abe6ea` (Paciente tab), `ef70a62` (left panel removal, merged to main)
+
+### 28. `fix/odontogram-tab-background` (merged to main)
+Fixed odontogram tab background in patient profile page — same issue as the HC6 workflow:
+- **Root cause**: Wrapper div had `bg-muted` (invisible in light mode) — the tooth grid area blended into the white Card background
+- **Fix**: Changed all three wrapper divs to `bg-gray-900 shadow-sm border-gray-700 rounded-lg border` + switched `isDarkMode={false}` → `isDarkMode={true}`, matching the ColorLegend section
+- **Commit**: `f19cff1`
+
+### 29. `fix/hc5-readonly-fields` (merged to main)
+Fixed Ficha Clínica tab read-only views for HC3 and HC5:
+- **HC5 — Exploración Bucal**: Added 6 missing fields (`planosTerminales.derecho`, `planosTerminales.izquierdo`, `espaciosTerminales.presente`, `espaciosTerminales.ubicacion`, `claseAngle.derecho`, `claseAngle.izquierdo`). All booleans now use `YesNoBadge` (always visible, matching HC4 pattern)
+- **HC3 — Heredo-Familiares**: Replaced `activeFamilyConditions` filter with static `ALL_HC3_CONDITIONS` list (7 conditions). Each shows `YesNoBadge` + conditional details (`¿Quién?` for all, `Tipo` for Cáncer/Malformaciones)
+- **Commit**: `96bccfa`
+
+### 30. `feat/odontogram-temp-teeth-default` (merged to main)
+"Dientes temporales" toggle auto-enables for minor patients:
+- Added `if (res.esMenor) setShowTemporaryTeeth(true)` to the `getPatientById` useEffect in both `hc6-form.tsx` and `odontogram-tab.tsx`
+- The API already returns `esMenor` as part of the full patient object — no backend changes needed
+- **Commit**: `f05f138`
+
+### 31. `fix/odontogram-status-not-erupted` (on branch)
+Added "No erupcionado" to the status selection panel:
+- **Root cause**: `statusOptions` array in `FloatingToothDetailsCard.tsx` had 10 statuses but was missing `not_erupted` — even though `ToothStatus` type and `ColorLegend` already included it
+- **Fix**: Added `HelpCircle` icon + `{ id: 'not_erupted', name: 'No erupcionado', icon: HelpCircle, color: '#14b8a6' }` to `statusOptions`
+- Same component used by both HC6 workflow and profile tab — one change applies everywhere
+- **Commit**: `1f2700b`
 
 ## Other Tasks
 - Fixed `JSX.IntrinsicElements` error by running `npm install`

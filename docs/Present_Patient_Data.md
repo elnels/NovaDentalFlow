@@ -6,7 +6,7 @@ Show all patient data on the profile page (`/pacientes/[id]`): personal informat
 
 ## Status
 
-✅ **Completed** — 5 tabs (Paciente, Historial, Citas, Ficha Clínica, Odontograma). Left sidebar removed — all patient data shown in the dedicated Paciente tab.
+✅ **Completed** — 5 tabs (Paciente, Historial, Citas, Ficha Clínica, Odontograma). Left sidebar removed. Ficha Clínica HC3/HC5 read-only views now show all fields (HC4-style). Odontogram tab uses dark theme (`bg-gray-900` + `isDarkMode=true`) matching ColorLegend. "Dientes temporales" toggle auto-enables for minor patients. "No erupcionado" status added to right panel.
 
 ## What Was Done
 
@@ -78,6 +78,24 @@ Added a dedicated **"Paciente"** tab as the first of 5 tabs, showing all registr
 - `EditPatientModal` — already wraps `PatientForm` in a dialog
 - `PatientForm` — full registration/edit form with Zod validation |
 
+### Step 7 — Odontogram Tab Dark Mode & Ficha Clínica Read-only Fixes
+
+**Branches:** `fix/odontogram-tab-background`, `fix/hc5-readonly-fields`, `feat/odontogram-temp-teeth-default`, `fix/odontogram-status-not-erupted`
+
+| # | Commit | Fix |
+|---|--------|-----|
+| 1 | `f19cff1` | Odontogram tab wrapper: `bg-gray-900` + `isDarkMode=true` (matching ColorLegend pattern, replacing invisible `bg-muted`) |
+| 2 | `96bccfa` | **HC5 read-only**: Added 6 missing fields (`planosTerminales`, `espaciosTerminales`, `claseAngle`). All booleans now use `YesNoBadge` (always visible). **HC3 read-only**: Shows all 7 conditions with `YesNoBadge` + conditional details (replaces filtered list) |
+| 3 | `f05f138` | "Dientes temporales" toggle auto-enables when `patient.esMenor` is true — applies to both HC6 workflow and profile tab |
+| 4 | `1f2700b` | Added "No erupcionado" (`not_erupted`) status button to the right panel's status grid (`FloatingToothDetailsCard`) |
+
+**Files changed:**
+- `src/components/odontogram-tab.tsx` — dark theme wrapper + `isDarkMode=true`
+- `src/components/clinical-details-view.tsx` — HC3/HC5 read-all fields with YesNoBadge
+- `src/components/hc6-form.tsx` — auto-enable temp teeth for minors
+- `src/components/odontogram-tab.tsx` — auto-enable temp teeth for minors
+- `src/lib/odontograma/components/FloatingToothDetailsCard/FloatingToothDetailsCard.tsx` — added not_erupted to statusOptions
+
 ## Architecture
 
 ### Data Loading
@@ -109,7 +127,9 @@ All existing HC form components reused **without modification** — each accepts
 
 ### Odontograma Tab (`OdontogramTab`)
 
-- Light-mode interactive odontogram
+- Dark-mode interactive odontogram (`bg-gray-900` + `isDarkMode=true`, matching ColorLegend style)
+- "Dientes temporales" toggle auto-enables for minor patients (`esMenor`)
+- Right panel status grid includes all statuses: Sano, Caries, Obturado, Corona, Endodoncia, Implante, Extraído, Fractura, Puente, Extracción indicada, **No erupcionado**
 - Loads saved data, falls back to `initialPermanentTeeth` / `initialTemporaryTeeth`
 - "Guardar Cambios" saves via `saveHc6`
 
@@ -143,6 +163,10 @@ The left sidebar was removed in Step 6 — all patient data is now accessed via 
 14. `20db1f1` — `fix: serialize Prisma objects to plain JSON in getPatientById`
 15. `6abe6ea` — `feat: add Paciente tab with read-only card + edit modal`
 16. `ef70a62` — `refactor: remove redundant left sidebar panel (data now in Paciente tab)`
+17. `f19cff1` — `fix: hardcoded bg-gray-900 + isDarkMode=true on odontogram wrappers (matching ColorLegend)`
+18. `96bccfa` — `fix: HC3/HC5 read-only now shows all fields with YesNoBadge (matching HC4 pattern)`
+19. `f05f138` — `feat: auto-enable Dientes temporales toggle when patient is a minor (esMenor)`
+20. `1f2700b` — `fix: add No erupcionado (not_erupted) to status selection panel`
 
 ## Relevant Files
 
@@ -157,6 +181,7 @@ The left sidebar was removed in Step 6 — all patient data is now accessed via 
 | `src/lib/api.ts` | Client-side fetch wrapper (unchanged) |
 | `src/lib/actions.ts` | Server actions (`saveHc1`–`saveHc6`) (unchanged) |
 | `src/components/hc1-form.tsx`–`hc5-form.tsx` | Reused inside dialogs (unchanged) |
+| `src/lib/odontograma/components/FloatingToothDetailsCard/FloatingToothDetailsCard.tsx` | Right panel status grid (11 statuses including not_erupted) |
 | `src/components/historial-view.tsx` | Card-based view for clinical history records |
 | `src/components/historial-form.tsx` | Create/edit form for history records (dialog) |
 | `src/components/citas-view.tsx` | Card-based view for appointments |
