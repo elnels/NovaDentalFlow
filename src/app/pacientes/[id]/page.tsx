@@ -3,39 +3,14 @@
 import Link from "next/link";
 import {
   ChevronLeft,
-  User,
-  Cake,
-  Phone,
-  Mail,
-  Home,
-  FileText,
-  Calendar,
-  ClipboardList,
-  Venus,
-  Mars,
-  Smartphone,
-  CheckCircle2,
-  XCircle,
-  FileClock,
   RefreshCw,
   UserPlus
 } from "lucide-react";
-import { format, parseISO, differenceInYears } from "date-fns";
-import { es } from "date-fns/locale";
 import { useEffect, useState, useCallback, use } from "react";
-
 
 import { getPacienteById } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { EditOptionsMenu } from "@/components/edit-options-menu";
 import { DeletePatientDialog } from "@/components/delete-patient-dialog";
 import { SequentialWorkflow } from "@/components/sequential-workflow";
@@ -50,32 +25,6 @@ import {
 import { ClinicalDetailsView } from "@/components/clinical-details-view";
 import { OdontogramTab } from "@/components/odontogram-tab";
 import { PacienteView } from "@/components/paciente-view";
-
-function getAge(dateString: string) {
-  try {
-    return differenceInYears(new Date(), parseISO(dateString));
-  } catch (error) {
-    return "N/A";
-  }
-}
-
-function InfoItem({ icon: Icon, label, value }: { icon: React.ElementType, label: string, value: React.ReactNode }) {
-    return (
-        <div className="flex items-start">
-            <Icon className="h-5 w-5 text-muted-foreground mt-1 mr-3 flex-shrink-0" />
-            <div>
-                <p className="text-sm text-muted-foreground">{label}</p>
-                <p className="font-medium text-foreground">{value || "No especificado"}</p>
-            </div>
-        </div>
-    );
-}
-
-function GenderIcon({ gender }: { gender: string }) {
-    if (gender === 'Masculino') return <Mars className="h-5 w-5 text-blue-500" />;
-    if (gender === 'Femenino') return <Venus className="h-5 w-5 text-pink-500" />;
-    return null;
-}
 
 // Componente de celda editable
 
@@ -196,45 +145,7 @@ export default function PatientDetailPage({
           </div>
         </div>
         
-        <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-8">
-          <div className="lg:col-span-1">
-            <Card>
-              <CardHeader className="flex flex-col items-center text-center">
-                <Avatar className="h-24 w-24 mb-4">
-                  <AvatarImage src={`https://ui-avatars.com/api/?name=${patient.nombres}+${patient.apellidos}&background=random&size=128`} />
-                  <AvatarFallback className="text-3xl">
-                    {patient.nombres?.[0]}
-                    {patient.apellidos?.[0]}
-                  </AvatarFallback>
-                </Avatar>
-                 <div className="flex items-center gap-2">
-                    <CardTitle className="text-2xl">{`${patient.nombres} ${patient.apellidos}`}</CardTitle>
-                    <GenderIcon gender={patient.sexo} />
-                 </div>
-                 <div className="flex items-center gap-2 text-sm mt-2">
-                    {patient.estado === 'Activo' ? <CheckCircle2 className="h-4 w-4 text-green-500" /> : <XCircle className="h-4 w-4 text-red-500" />}
-                    <span className={patient.estado === 'Activo' ? 'text-green-600' : 'text-red-600'}>
-                        {patient.estado}
-                    </span>
-                 </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                  <InfoItem icon={Cake} label="Fecha de Nacimiento" value={`${format(parseISO(patient.fechaNacimiento), "d 'de' MMMM 'de' yyyy", { locale: es })} (${getAge(patient.fechaNacimiento)} años)`} />
-                  <InfoItem icon={Phone} label="Teléfono Principal" value={patient.telefonoPrincipal} />
-                  <InfoItem icon={Smartphone} label="Teléfono Alternativo" value={patient.telefonoAlternativo} />
-                  <InfoItem icon={Mail} label="Email" value={patient.email} />
-                  <InfoItem icon={Home} label="Dirección" value={patient.direccion || "No registrada"} />
-                  {patient.nombrePadre && <InfoItem icon={User} label="Nombre del Padre" value={patient.nombrePadre} />}
-                  {patient.telefonoPadre && <InfoItem icon={Phone} label="Teléfono del Padre" value={patient.telefonoPadre} />}
-                  {patient.nombreMadre && <InfoItem icon={User} label="Nombre de la Madre" value={patient.nombreMadre} />}
-                  {patient.telefonoMadre && <InfoItem icon={Phone} label="Teléfono de la Madre" value={patient.telefonoMadre} />}
-                  <InfoItem icon={FileClock} label="Fecha de Registro" value={format(parseISO(patient.fechaRegistro), "dd/MM/yyyy", { locale: es })} />
-              </CardContent>
-            </Card>
-          </div>
-
-          <div className="lg:col-span-2">
-            <Tabs defaultValue="paciente" className="w-full">
+        <Tabs defaultValue="paciente" className="w-full">
               <TabsList className="grid w-full grid-cols-5">
                 <TabsTrigger value="paciente">Paciente</TabsTrigger>
                 <TabsTrigger value="historial">Historial</TabsTrigger>
@@ -277,8 +188,6 @@ export default function PatientDetailPage({
                 />
               </TabsContent>
             </Tabs>
-          </div>
-        </div>
       </main>
       
       {showWorkflow && (
