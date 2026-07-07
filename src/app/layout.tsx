@@ -37,22 +37,6 @@ export default function RootLayout({
           {children}
         </main>
         
-        {/* Footer con derechos de autor en todas las páginas */}
-        <footer className="mt-auto py-4 text-center text-sm text-muted-foreground border-t bg-white/50">
-          <p>
-            Desarrollado por{" "}
-            <a 
-              href="https://www.billcodex.com/" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-primary hover:underline transition-colors font-medium"
-            >
-              BillCodex
-            </a>
-            {" "}© {new Date().getFullYear()}
-          </p>
-        </footer>
-        
         <Toaster />
       </body>
     </html>
