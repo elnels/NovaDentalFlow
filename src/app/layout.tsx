@@ -37,7 +37,7 @@ export default function RootLayout({
           {children}
         </main>
         
-        <footer className="mt-auto py-2 text-center text-xs text-muted-foreground border-t bg-white/50">
+        <footer className="mt-auto py-2 text-center text-[10px] text-muted-foreground border-t bg-white/50">
           <p>
             Desarrollado por{" "}
             <a 
