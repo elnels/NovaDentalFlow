@@ -11,7 +11,6 @@ import { useEffect, useState, useCallback, use } from "react";
 import { getPacienteById } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
-import { EditOptionsMenu } from "@/components/edit-options-menu";
 import { DeletePatientDialog } from "@/components/delete-patient-dialog";
 import { SequentialWorkflow } from "@/components/sequential-workflow";
 import { HistorialView } from "@/components/historial-view";
@@ -130,7 +129,6 @@ export default function PatientDetailPage({
               <UserPlus className="h-4 w-4" />
               Registrar Paciente
             </Button>
-            <EditOptionsMenu patient={patient} onDataUpdate={handleDataUpdate} />
             <DeletePatientDialog patientId={patient.id} onDataUpdate={handleDataUpdate} />
           </div>
         </div>
