@@ -37,6 +37,21 @@ export default function RootLayout({
           {children}
         </main>
         
+        <footer className="mt-auto py-2 text-center text-xs text-muted-foreground border-t bg-white/50">
+          <p>
+            Desarrollado por{" "}
+            <a 
+              href="https://www.billcodex.com/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-primary hover:underline transition-colors font-medium"
+            >
+              BillCodex
+            </a>
+            {" "}© {new Date().getFullYear()}
+          </p>
+        </footer>
+        
         <Toaster />
       </body>
     </html>
