@@ -42,9 +42,9 @@ export default function PatientDetailPage({
   const [showWorkflow, setShowWorkflow] = useState(false);
   const { toast } = useToast();
 
-  const loadPatient = useCallback(async (forceRefresh = false) => {
+  const loadPatient = useCallback(async (showLoading = true) => {
     if (!id) return;
-    setLoading(true);
+    if (showLoading) setLoading(true);
     try {
       const patientData = await getPacienteById(id);
       if (!patientData) {
@@ -56,19 +56,19 @@ export default function PatientDetailPage({
       console.error('Error loading patient:', error);
       setPatient(null);
     } finally {
-      setLoading(false);
+      if (showLoading) setLoading(false);
     }
   }, [id]);
 
   useEffect(() => {
-    if (id) loadPatient();
+    if (id) loadPatient(true);
   }, [id, loadPatient]);
 
   const handleDataUpdate = useCallback(async () => {
     if (id && !syncing) {
       setSyncing(true);
       try {
-        await loadPatient(true);
+        await loadPatient(false);
       } catch (error) {
         toast({ 
           variant: "destructive", 
