@@ -146,9 +146,9 @@ export default function PatientDetailPage({
         <Tabs defaultValue="paciente" className="w-full">
               <TabsList className="grid w-full grid-cols-5">
                 <TabsTrigger value="paciente">Paciente</TabsTrigger>
-                <TabsTrigger value="historial">Historial</TabsTrigger>
+                <TabsTrigger value="historial">Historial de Tratamientos</TabsTrigger>
                 <TabsTrigger value="citas">Citas</TabsTrigger>
-                <TabsTrigger value="ficha-clinica">Ficha Clínica</TabsTrigger>
+                <TabsTrigger value="ficha-clinica">Historia Clínica</TabsTrigger>
                 <TabsTrigger value="odontograma">Odontograma</TabsTrigger>
               </TabsList>
               <TabsContent value="paciente" className="mt-4">
