@@ -162,6 +162,7 @@ export default function PatientDetailPage({
                   data={patient.historialClinico || []}
                   patientId={patient.id}
                   onDataUpdate={handleDataUpdate}
+                  initialMotivoConsulta={patient.clinicalDetails?.motivoConsulta}
                 />
               </TabsContent>
               <TabsContent value="citas" className="mt-4">

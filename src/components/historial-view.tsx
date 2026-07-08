@@ -41,6 +41,7 @@ interface HistorialViewProps {
   onDataUpdate: () => Promise<void>;
   patientId: string;
   availableCitas?: Array<{ id: string; fechaCita: string; motivoCita: string }>;
+  initialMotivoConsulta?: string;
 }
 
 const paymentColors: Record<string, string> = {
@@ -147,6 +148,7 @@ export function HistorialView({
   onDataUpdate,
   patientId,
   availableCitas = [],
+  initialMotivoConsulta,
 }: HistorialViewProps) {
   const { toast } = useToast();
   const [openCreate, setOpenCreate] = useState(false);
@@ -180,6 +182,19 @@ export function HistorialView({
   if (!data || data.length === 0) {
     return (
       <>
+        {initialMotivoConsulta && (
+          <Card className="mb-4 border-blue-200 bg-blue-50/50">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm flex items-center gap-2 text-blue-700">
+                <FileText className="h-4 w-4" />
+                Motivo de Consulta Inicial
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-blue-900">{initialMotivoConsulta}</p>
+            </CardContent>
+          </Card>
+        )}
         <Card>
           <CardContent className="py-8 text-center">
             <AlertCircle className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
@@ -215,6 +230,19 @@ export function HistorialView({
 
   return (
     <>
+      {initialMotivoConsulta && (
+        <Card className="mb-4 border-blue-200 bg-blue-50/50">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm flex items-center gap-2 text-blue-700">
+              <FileText className="h-4 w-4" />
+              Motivo de Consulta Inicial
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-blue-900">{initialMotivoConsulta}</p>
+          </CardContent>
+        </Card>
+      )}
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold">Historial Clínico ({data.length})</h3>
         <Button onClick={() => setOpenCreate(true)} className="flex items-center gap-2">
