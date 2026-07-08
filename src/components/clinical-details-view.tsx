@@ -33,6 +33,7 @@ interface ClinicalDetailsViewProps {
   patientId: string;
   clinicalDetails: any;
   familyConditions: any[];
+  createdAt?: string;
   onDataUpdate: () => Promise<void>;
 }
 
@@ -103,6 +104,7 @@ export function ClinicalDetailsView({
   patientId,
   clinicalDetails,
   familyConditions,
+  createdAt,
   onDataUpdate,
 }: ClinicalDetailsViewProps) {
   const [openHc1, setOpenHc1] = useState(false);
@@ -148,8 +150,23 @@ export function ClinicalDetailsView({
     "Otros",
   ];
 
+  const formattedDate = createdAt
+    ? new Date(createdAt).toLocaleDateString("es-MX", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    : null;
+
   return (
     <div className="space-y-6">
+      {formattedDate && (
+        <Card>
+          <CardContent className="pt-4">
+            <InfoRow label="Fecha de Creación" value={formattedDate} />
+          </CardContent>
+        </Card>
+      )}
       {/* HC1 — Odontólogo */}
       <SectionCard title="Odontólogo" icon={User} onEdit={() => setOpenHc1(true)}>
         <InfoRow

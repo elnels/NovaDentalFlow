@@ -731,11 +731,7 @@ export async function addHistorialFromObject(historialData: any): Promise<FormSt
 
     revalidatePath("/");
     revalidatePath(`/pacientes/${validatedFields.data.patientId}`);
-    return {
-      message: "Historial clínico agregado correctamente.",
-      success: true,
-      historyId: history.id,
-    };
+    return { message: "Historial clínico agregado con éxito.", success: true, historyId: history.id };
   } catch (e) {
     return { message: `Error: ${(e as Error).message}`, success: false };
   }

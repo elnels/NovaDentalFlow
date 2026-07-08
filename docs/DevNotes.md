@@ -663,6 +663,14 @@ Shows initial motivoConsulta at top of Historial de Tratamientos tab:
 - Visible in empty state and records list
 - **Commit**: `f9f79a5`
 
+### 39. `fecha-creacion-hc-readonly` (pending merge)
+Shows auto-created clinical history creation date as read-only on "Historia Clínica" tab:
+- **`src/components/clinical-details-view.tsx`**: Added `createdAt?: string` prop; displays "Fecha de Creación" as a read-only `InfoRow` card at the top of the tab
+- **`src/app/pacientes/[id]/page.tsx`**: Passes `patient.historialClinico?.[0]?.fechaHistorial` as `createdAt`
+- **`src/lib/actions.ts`**: Restored `fechaHistorial` field (already present in main; minor return message formatting)
+- **Build**: Verified passes
+- **Branch**: `fecha-creacion-hc-readonly`
+
 ## Branch Status
 - Fixed `JSX.IntrinsicElements` error by running `npm install`
 - Confirmed no unit test framework exists in the project
