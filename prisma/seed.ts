@@ -70,32 +70,28 @@ const sampleProcedures = [
   { code: "PROT-001", name: "Corona de Metal-Cerámica", category: "Prótesis", defaultPrice: 5000 },
 ];
 
-const procedureNames = [
-  "CON-001 — Consulta General",
-  "CON-002 — Consulta de Urgencia",
-  "DIAG-001 — Radiografía Periapical",
-  "PREV-001 — Profilaxis (Limpieza Dental)",
-  "PREV-002 — Aplicación de Flúor",
-  "OP-001 — Resina Simple (1 superficie)",
-  "EXO-001 — Extracción Simple",
-  "PERIO-001 — Raspaje y Alisado Radicular (Cuadrante)",
-];
-
 async function main() {
   console.log("Seeding sample data...");
+
+  const existingProcs = await prisma.procedureCatalog.count();
+  let procedures: Awaited<ReturnType<typeof prisma.procedureCatalog.create>>[];
+  if (existingProcs === 0) {
+    procedures = await Promise.all(
+      sampleProcedures.map((p) =>
+        prisma.procedureCatalog.create({ data: p })
+      )
+    );
+    console.log(`  ✓ Created ${procedures.length} procedure catalog items`);
+  } else {
+    procedures = await prisma.procedureCatalog.findMany();
+    console.log(`  ○ Using ${procedures.length} existing procedure catalog items`);
+  }
 
   const existing = await prisma.patient.count();
   if (existing > 0) {
     console.log(`Database already has ${existing} patients, skipping seed.`);
     return;
   }
-
-  const procedures = await Promise.all(
-    sampleProcedures.map((p) =>
-      prisma.procedureCatalog.create({ data: p })
-    )
-  );
-  console.log(`  ✓ Created ${procedures.length} procedure catalog items`);
 
   for (const p of samplePatients) {
     const patient = await prisma.patient.create({
