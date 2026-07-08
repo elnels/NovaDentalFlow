@@ -38,7 +38,13 @@ export async function GET(request: NextRequest) {
         const patients = await prisma.patient.findMany({
           include: {
             appointments: true,
-            clinicalHistory: true,
+            clinicalHistory: {
+              include: {
+                procedureLineItems: {
+                  include: { procedureCatalog: true },
+                },
+              },
+            },
           },
           orderBy: { fechaRegistro: "desc" },
         });
@@ -52,7 +58,14 @@ export async function GET(request: NextRequest) {
           where: { id },
           include: {
             appointments: { orderBy: { fechaCita: "desc" } },
-            clinicalHistory: { orderBy: { fechaHistorial: "desc" } },
+            clinicalHistory: {
+              orderBy: { fechaHistorial: "desc" },
+              include: {
+                procedureLineItems: {
+                  include: { procedureCatalog: true },
+                },
+              },
+            },
             clinicalDetails: true,
             familyConditions: true,
           },
@@ -75,6 +88,14 @@ export async function GET(request: NextRequest) {
           orderBy: { fechaRegistro: "desc" },
         });
         return ok(patients);
+      }
+
+      case "getProcedureCatalog": {
+        const procedures = await prisma.procedureCatalog.findMany({
+          where: { isActive: true },
+          orderBy: { name: "asc" },
+        });
+        return ok(procedures);
       }
 
       case "debugHeaders": {

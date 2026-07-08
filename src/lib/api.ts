@@ -1,6 +1,6 @@
 // Archivo: src/lib/api.ts (VERSIÓN CORREGIDA Y SIMPLIFICADA)
 
-import type { Patient } from "@/types";
+import type { Patient, ProcedureCatalog } from "@/types";
 
 // Usar el proxy interno en lugar de la URL directa
 const API_URL = '/api/proxy';
@@ -72,6 +72,14 @@ export async function getPacienteById(id: string): Promise<Patient | null> {
     const timestamp = Date.now();
     const url = `${FULL_API_URL}?action=getPacienteById&id=${encodeURIComponent(id)}&_t=${timestamp}`;
     return fetchAPI(url, false); // El segundo parámetro es false por si hay un error, devuelve null.
+}
+
+/**
+ * Obtiene el catálogo de procedimientos.
+ */
+export async function getProcedureCatalog(): Promise<ProcedureCatalog[]> {
+    const url = `${FULL_API_URL}?action=getProcedureCatalog&_t=${Date.now()}`;
+    return fetchAPI(url, true);
 }
 
 /**
