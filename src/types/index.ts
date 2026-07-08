@@ -43,6 +43,31 @@ export interface ClinicalHistory {
   motivoConsulta?: string;
   antecedentesPersonales?: string;
   idDoctor?: string;
+  procedureLineItems?: ProcedureLineItem[];
+  cancelled?: boolean;
+  cancelReason?: string;
+}
+
+export interface ProcedureCatalog {
+  id: string;
+  code: string;
+  name: string;
+  description?: string;
+  category?: string;
+  defaultPrice: number;
+  isActive: boolean;
+}
+
+export interface ProcedureLineItem {
+  id: string;
+  clinicalHistoryId: string;
+  procedureCatalogId: string;
+  procedureCatalog?: ProcedureCatalog;
+  toothId?: number;
+  quantity: number;
+  fee: number;
+  discount: number;
+  notes?: string;
 }
 
 export interface Appointment {
