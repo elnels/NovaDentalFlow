@@ -35,13 +35,13 @@ const medicalHistorySchema = z.object({
   tratamiento: z.string().min(1, "El tratamiento realizado es requerido"),
   prescripciones: z.string().optional(),
   notas: z.string().optional(),
-  costoTratamiento: z.string().min(1, "El costo del tratamiento es requerido"),
   estadoPago: z.enum(["Pendiente", "Pagado", "Parcial"], {
     required_error: "El estado de pago es requerido",
   }),
   telefonoContacto: z.string().optional().or(z.literal("")),
   motivoConsulta: z.string().optional().or(z.literal("")),
   antecedentesPersonales: z.string().optional().or(z.literal("")),
+  procedureLineItems: z.string().optional(),
 });
 
 type MedicalHistoryFormData = z.infer<typeof medicalHistorySchema>;
@@ -96,7 +96,6 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
             tratamiento: initialData?.tratamiento || "",
             prescripciones: initialData?.prescripciones || "",
             notas: initialData?.notas || "",
-            costoTratamiento: initialData?.costoTratamiento || "",
             estadoPago: initialData?.estadoPago || "Pendiente",
             telefonoContacto: initialData?.telefonoContacto || "",
             motivoConsulta: initialData?.motivoConsulta || "",
@@ -114,7 +113,6 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
                 tratamiento: initialData.tratamiento || "",
                 prescripciones: initialData.prescripciones || "",
                 notas: initialData.notas || "",
-                costoTratamiento: initialData.costoTratamiento || "",
                 estadoPago: initialData.estadoPago || "Pendiente",
                 telefonoContacto: initialData.telefonoContacto || "",
                 motivoConsulta: initialData.motivoConsulta || "",
@@ -302,47 +300,28 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
                         )}
                     />
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <FormField
-                            control={form.control}
-                            name="costoTratamiento"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Costo del Tratamiento</FormLabel>
+                    <FormField
+                        control={form.control}
+                        name="estadoPago"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Estado del Pago</FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
                                     <FormControl>
-                                        <Input 
-                                            type="text" 
-                                            placeholder="0.00"
-                                            {...field}
-                                        />
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Seleccione el estado" />
+                                        </SelectTrigger>
                                     </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="estadoPago"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Estado del Pago</FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                        <FormControl>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Seleccione el estado" />
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            <SelectItem value="Pendiente">Pendiente</SelectItem>
-                                            <SelectItem value="Pagado">Pagado</SelectItem>
-                                            <SelectItem value="Parcial">Parcial</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    </div>
+                                    <SelectContent>
+                                        <SelectItem value="Pendiente">Pendiente</SelectItem>
+                                        <SelectItem value="Pagado">Pagado</SelectItem>
+                                        <SelectItem value="Parcial">Parcial</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
 
                     <FormField
                         control={form.control}

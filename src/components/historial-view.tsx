@@ -114,14 +114,35 @@ function RecordCard({
           label="Observaciones"
           value={record.notas}
         />
-        <InfoRow
-          label="Costo"
-          value={
-            record.costoTratamiento
-              ? `$${parseFloat(record.costoTratamiento).toLocaleString()}`
-              : undefined
-          }
-        />
+        {record.procedureLineItems && record.procedureLineItems.length > 0 ? (
+          <div className="grid grid-cols-[180px_1fr] gap-4 py-2 border-b last:border-b-0 text-sm">
+            <span className="text-muted-foreground font-medium">Procedimientos</span>
+            <div>
+              {record.procedureLineItems.map((pli) => (
+                <div key={pli.id} className="flex justify-between items-center py-0.5">
+                  <span>
+                    {pli.procedureCatalog?.name || "Procedimiento"}
+                    {pli.quantity > 1 && <span className="text-muted-foreground ml-1">x{pli.quantity}</span>}
+                  </span>
+                  <span className="font-mono text-xs">
+                    ${((pli.fee - pli.discount) * pli.quantity).toLocaleString()}
+                  </span>
+                </div>
+              ))}
+              <div className="flex justify-between items-center pt-1 mt-1 border-t font-semibold">
+                <span>Total</span>
+                <span>${record.procedureLineItems
+                  .reduce((s, p) => s + (p.fee - p.discount) * p.quantity, 0)
+                  .toLocaleString()}</span>
+              </div>
+            </div>
+          </div>
+        ) : record.costoTratamiento ? (
+          <InfoRow
+            label="Costo"
+            value={`$${parseFloat(record.costoTratamiento).toLocaleString()}`}
+          />
+        ) : null}
         <InfoRow
           label="Estado de Pago"
           value={
@@ -244,7 +265,7 @@ export function HistorialView({
         </Card>
       )}
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold">Historial Clínico ({data.length})</h3>
+        <h3 className="text-lg font-semibold">Tratamientos ({data.length})</h3>
         <Button onClick={() => setOpenCreate(true)} className="flex items-center gap-2">
           <Plus className="h-4 w-4" />
           Nuevo Registro
@@ -296,11 +317,23 @@ export function HistorialView({
                 tratamiento: editingRecord.tratamiento,
                 prescripciones: editingRecord.prescripciones,
                 notas: editingRecord.notas,
-                costoTratamiento: editingRecord.costoTratamiento,
                 estadoPago: editingRecord.estadoPago as "Pendiente" | "Pagado" | "Parcial" | "Cancelado",
                 telefonoContacto: editingRecord.telefonoContacto,
                 motivoConsulta: editingRecord.motivoConsulta,
                 antecedentesPersonales: editingRecord.antecedentesPersonales,
+                procedureLineItems: editingRecord.procedureLineItems
+                  ? JSON.stringify(
+                      editingRecord.procedureLineItems.map((pli) => ({
+                        id: pli.id,
+                        procedureCatalogId: pli.procedureCatalogId,
+                        procedureName: pli.procedureCatalog?.name || "",
+                        fee: String(pli.fee),
+                        discount: String(pli.discount),
+                        quantity: String(pli.quantity),
+                        notes: pli.notes || "",
+                      }))
+                    )
+                  : undefined,
               }}
               onSuccess={closeAndRefresh}
               onBack={() => setEditingRecord(null)}

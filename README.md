@@ -26,6 +26,9 @@ Utiliza **PostgreSQL como base de datos** corriendo en Docker para un rendimient
     *   **Historia Clínica:** HC1–HC5 en secciones editables vía diálogos.
     *   **Odontograma:** Interactivo en modo oscuro con panel de 3 pestañas (Estado/Notas/Historial).
 *   **Odontograma Interactivo:** Selecciona dientes, aplica estados (caries, obturado, corona, etc.) por superficie vía SVG interactivo. Soporte para dientes temporales. Guardado/carga desde la base de datos.
+*   **Catálogo de Procedimientos:** Administre precios y procedimientos desde una página CRUD dedicada (`/catalogo-procedimientos`). Incluye 25 procedimientos comunes pre-cargados.
+*   **Costos por Procedimiento:** En lugar de un costo único por visita, los tratamientos ahora se registran como una lista detallada de procedimientos con cantidades, honorarios y descuentos — el total se calcula automáticamente.
+*   **Selección Inteligente de Procedimientos:** Componente `ProcedurePicker` con búsqueda por nombre/código para agregar procedimientos rápidamente desde el catálogo.
 *   **Historial Clínico en 6 Sub-pasos:** HC1 (Revisión), HC2 (Antecedentes Personales), HC3 (Heredo-Familiares), HC4 (No Patológicos), HC5 (Exploración Bucal), HC6 (Odontograma).
 *   **Base de datos local con PostgreSQL:** Datos persistentes y consultas eficientes a través de Prisma ORM.
 *   **Sincronización con Google Calendar:** Opcional, bidireccional para citas.
