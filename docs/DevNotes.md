@@ -277,6 +277,9 @@ Full odontogram integration (HC6) — sub-step 5 of 6:
 | `fix/tab-stay-on-edit` | ✅ | Background refreshes skip loading spinner, Tabs stays mounted |
 | `fix/tab-rename` | ✅ | Historial → Historial de Tratamientos, Ficha Clínica → Historia Clínica |
 | `feat/initial-motivo-consulta` | ✅ | Initial motivoConsulta shown at top of Historial de Tratamientos tab |
+| `feat/pricing-procedures-payments` | ✅ | Phase 1: ProcedureCatalog + ProcedureLineItem models, admin CRUD page, itemized costs, dual-write backward compat, seed 25 procedures |
+| `fecha-creacion-hc-readonly` | ❌ | Read-only creation date on Historia Clínica tab |
+| `feat/auto-generate-procedure-code` | ❌ | Auto-generate procedure code on category selection, code input readOnly |
 
 ### 11. `historial-clinico-new-fields` (reverted)
 Experimented with adding 9 new fields to Historial Clínico (Sexo, Estado Civil, Ocupación, Escolaridad, datos de padres, Motivo Consulta, Antecedentes Personales grid). Required Apps Script changes failed to deploy — reverted completely.
@@ -670,6 +673,86 @@ Shows auto-created clinical history creation date as read-only on "Historia Clí
 - **`src/lib/actions.ts`**: Restored `fechaHistorial` field (already present in main; minor return message formatting)
 - **Build**: Verified passes
 - **Branch**: `fecha-creacion-hc-readonly`
+
+### 40. `feat/pricing-procedures-payments` (merged to main)
+Phase 1 of pricing/procedures/payments domain separation — added structured procedure catalog and itemized line items:
+
+**Schema + Migration:**
+- `ProcedureCatalog` model: `code` (unique), `name`, `description`, `category`, `defaultPrice`, `isActive`
+- `ProcedureLineItem` model: `clinicalHistoryId`, `procedureCatalogId`, `toothId`, `quantity`, `fee`, `discount`, `notes`
+- `ClinicalHistory`: added `cancelled Boolean @default(false)`, `cancelReason String?`
+- Migration: `20260708154214_add_procedure_catalog_line_items`
+
+**Admin page (`/catalogo-procedimientos`):**
+- Table with search by name/code/category, price formatting, active/inactive badge
+- Add dialog with code (auto-generated), name, category select, description, price
+- Edit dialog (same fields, code readOnly), delete with confirm
+- Build: passes
+
+**ProcedurePicker component (`src/components/procedure-picker.tsx`):**
+- cmdk-based searchable popover (installed `cmdk` dependency)
+- Searches by name or code
+- Calls `onChange(procedureId, procedureObject)` on select
+
+**Historial form (`historial-form.tsx`):**
+- Replaced single `costoTratamiento` `<Input type="number">` with line-item table
+- Columns: ProcedurePicker, Cant., Honorarios, Desc., Remove button
+- "Agregar" button adds a row; total auto-computed from `(fee - discount) * quantity`
+- Line items serialized as JSON hidden input for FormData submission
+- Backward compat: empty line items array still works (shows "No hay procedimientos" text)
+
+**Historial view (`historial-view.tsx`):**
+- Itemized cost display: each line item shows procedure name, quantity, subtotal
+- Total row at bottom
+- Fallback: if no `procedureLineItems` but `costoTratamiento` exists → show flat cost
+- Edit dialog passes line items as JSON string in `initialData`
+
+**Clinical history views (`medical-history-form.tsx`, `historial-table.tsx`):**
+- `medical-history-form.tsx`: removed `costoTratamiento` field from schema and form; added `procedureLineItems` to schema
+- `historial-table.tsx` (MUI): removed `costoTratamiento` from both add dialogs and default state
+
+**Server actions (`actions.ts`):**
+- New: `addProcedureCatalogItem`, `updateProcedureCatalogItem`, `deleteProcedureCatalogItem`, `getProcedureCatalog`
+- Modified: `addHistorial`/`updateHistorial` dual-write — saves line items + `costoTratamiento` (total)
+- `medicalHistorySchema`: removed `costoTratamiento`, added `procedureLineItems` (JSON string)
+
+**Seed script (`prisma/seed.ts`):**
+- 25 sample procedures across 8 categories (Consulta, Preventiva, Restauradora, Endodoncia, Cirugía, Periodoncia, Ortodoncia, Prótesis, Radiología, Estética)
+- Patients created with randomized line items (1–4 procedures, random quantities, 30% chance of 10% discount)
+- Fix: procedure catalog seeded before patient check to prevent unreachable code on re-runs
+- Fix: renamed `genero` → `sexo` in sample patient data
+
+**API proxy route (`proxy/route.ts`):**
+- `getPacienteById`/`getPacientesWithAppointments`: include `procedureLineItems { include procedureCatalog }`
+- New standalone `getProcedureCatalog` handler
+
+**Client API (`api.ts`):**
+- Added `getProcedureCatalog()` fetch function
+
+**Home page (`page.tsx`):**
+- Added "Catálogo de Procedimientos" button in hero card (purple outline)
+
+**Commits**: `30b40e9` `863d308` `8c16a3e` `6b5b63f` `0f89e90` `756aea1` `601d05e`
+- Prisma models + types → server actions → proxy route → API client → admin page + ProcedurePicker → UI forms → seed ordering fix → `genero`→`sexo` fix
+
+**Key lesson**: Procedure catalog `Promise.all` was placed after `patient.count()` early return — unreachable on re-runs. Fixed by moving catalog seeding before the check, using `count() === 0` guard for idempotency.
+
+### 41. Label change: "Historial Clínico" → "Tratamientos"
+Changed the heading label on the patient detail page from "Historial Clínico" to "Tratamientos":
+- **`src/components/historial-view.tsx`**: `<h3>Historial Clínico ({data.length})</h3>` → `<h3>Tratamientos ({data.length})</h3>` (line 268)
+- **`src/components/historial-table.tsx`**: `<Typography>Historial Clínico ({data.length})</Typography>` → `<Typography>Tratamientos ({data.length})</Typography>` (MUI variant)
+- Dialog titles, empty state messages, and buttons were intentionally NOT changed
+- **Commit**: `0f89e90` (included in the pricing-procedures-payments branch)
+
+### 42. `feat/auto-generate-procedure-code` (on main)
+Procedure code auto-generates when category is selected in the "Agregar/Editar Procedimiento" dialog:
+- **Category→Prefix map**: `Consulta→CON`, `Preventiva→PREV`, `Restauradora→REST`, `Endodoncia→END`, `Cirugía→CIR`, `Periodoncia→PERIO`, `Ortodoncia→ORT`, `Prótesis→PROT`, `Radiología→RADIO`, `Estética→EST`
+- **`generateNextCode(category, existing)`**: Scans existing codes for `{PREFIX}-{NNN}`, finds max numeric suffix, returns next in sequence (padded to 3 digits)
+- **Auto-fill logic**: `useEffect` watches `category` field. On create: fills code immediately. On edit: skips initial mount (preserves existing code), updates only when category changes
+- **Code input**: Always `readOnly` — user cannot manually edit
+- **File**: `src/app/catalogo-procedimientos/page.tsx`
+- **Commit**: `f5bb657` (auto-generate on create), `78839db` (also on edit mode)
+- **Branch**: `feat/auto-generate-procedure-code`
 
 ## Branch Status
 - Fixed `JSX.IntrinsicElements` error by running `npm install`
