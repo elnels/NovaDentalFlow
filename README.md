@@ -14,17 +14,21 @@ Utiliza **PostgreSQL como base de datos** corriendo en Docker para un rendimient
 
 *   **Registro de Pacientes en 3 Pasos:**
     1.  **Datos Personales:** Captura la información esencial del paciente.
-    2.  **Gestión de Citas:** Agenda la primera cita (fecha, hora, motivo).
-    3.  **Historial Clínico (Opcional):** Añade detalles clínicos, tratamientos y control de pagos desde el inicio.
+    2.  **Historial Clínico (6 sub-pasos):** Desde la ficha de revisión (HC1) hasta el odontograma interactivo (HC6) con antecedentes, exploración bucal y más.
+    3.  **Gestión de Citas:** Agenda la primera cita (fecha, hora, doctor).
 *   **Panel de Gestión de Pacientes:**
     *   Visualiza a todos tus pacientes en una tabla clara, ordenada por la cita más próxima.
     *   Accede al perfil individual de cada paciente con un solo clic.
-*   **Dashboard del Paciente:**
-    *   Consulta toda la información centralizada: datos personales, citas programadas e historial clínico.
-    *   Añade nuevas citas o registros clínicos al historial del paciente en cualquier momento.
-*   **Historial Clínico en 6 Sub-pasos:** Desde la ficha de revisión (HC1) hasta el odontograma interactivo (HC6), cada sección se guarda de forma independiente.
-*   **Odontograma Interactivo:** Selecciona dientes, aplica estados (caries, obturado, corona, etc.) por superficie vía SVG interactivo, con panel de detalles de 3 pestañas (Estado/Notas/Historial).
+*   **Perfil del Paciente con 5 Pestañas:**
+    *   **Paciente:** Datos personales completos con botón Editar.
+    *   **Historial de Tratamientos:** Registros clínicos en formato de tarjetas.
+    *   **Citas:** Calendario de citas programadas.
+    *   **Historia Clínica:** HC1–HC5 en secciones editables vía diálogos.
+    *   **Odontograma:** Interactivo en modo oscuro con panel de 3 pestañas (Estado/Notas/Historial).
+*   **Odontograma Interactivo:** Selecciona dientes, aplica estados (caries, obturado, corona, etc.) por superficie vía SVG interactivo. Soporte para dientes temporales. Guardado/carga desde la base de datos.
+*   **Historial Clínico en 6 Sub-pasos:** HC1 (Revisión), HC2 (Antecedentes Personales), HC3 (Heredo-Familiares), HC4 (No Patológicos), HC5 (Exploración Bucal), HC6 (Odontograma).
 *   **Base de datos local con PostgreSQL:** Datos persistentes y consultas eficientes a través de Prisma ORM.
+*   **Sincronización con Google Calendar:** Opcional, bidireccional para citas.
 
 ### 🛠️ Stack Tecnológico
 

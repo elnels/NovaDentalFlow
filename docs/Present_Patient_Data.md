@@ -6,7 +6,7 @@ Show all patient data on the profile page (`/pacientes/[id]`): personal informat
 
 ## Status
 
-✅ **Completed** — 5 tabs (Paciente, Historial, Citas, Ficha Clínica, Odontograma). Left sidebar removed. Ficha Clínica HC3/HC5 read-only views now show all fields (HC4-style). Odontogram tab uses dark theme (`bg-gray-900` + `isDarkMode=true`) matching ColorLegend. "Dientes temporales" toggle auto-enables for minor patients. "No erupcionado" status added to right panel.
+✅ **Completed** — 5 tabs (Paciente, Historial de Tratamientos, Citas, Historia Clínica, Odontograma). Left sidebar removed. Ficha Clínica HC3/HC5 read-only views now show all fields (HC4-style). Odontogram tab uses dark theme (`bg-gray-900` + `isDarkMode=true`) matching ColorLegend. "Dientes temporales" toggle auto-enables for minor patients. "No erupcionado" status added to right panel. All dates in DD/MM/YYYY (Mexican locale). HTML lang set to `es-MX`. Edit button removed from sticky header. Active tab preserved after background data refresh. Initial `motivoConsulta` shown at top of Historial de Tratamientos tab.
 
 ## What Was Done
 
@@ -96,6 +96,42 @@ Added a dedicated **"Paciente"** tab as the first of 5 tabs, showing all registr
 - `src/components/odontogram-tab.tsx` — auto-enable temp teeth for minors
 - `src/lib/odontograma/components/FloatingToothDetailsCard/FloatingToothDetailsCard.tsx` — added not_erupted to statusOptions
 
+### Step 8 — Date Format Standardization
+
+**Branch `fix/date-format-mx` (merged `d5804a0`)**
+
+Created `src/lib/formatDate.ts` with `formatDateDisplay()`, `formatTodayDate()`, `formatTimeDisplay()`. Replaced `toLocaleDateString("es")` / `format()` calls across HC1–HC6 forms, paciente-view, citas-view, historial-view, historial-form, historial-table, patients-table, dashboard, and FloatingToothDetailsCard. All dates now DD/MM/YYYY, 24h HH:MM, 4-digit years.
+
+### Step 9 — HTML lang fix
+
+**Commit `cfc39e4`**
+
+Changed `layout.tsx` `lang="en"` → `lang="es-MX"`. This is the root cause of MM/DD/YYYY showing in native `<input type="date">` elements — browsers use the HTML lang attribute to determine date format. Updated HC4 placeholder text. Removed "(YYYY-MM-DD)" from Zod error messages.
+
+### Step 10 — Header Edit Button Removed
+
+**Commit `66c1c9f`**
+
+Removed the redundant `<EditOptionsMenu>` from the sticky header in `page.tsx`. Edit functionality remains accessible exclusively through the Paciente tab's "Editar" button — consistent with the pattern used by all other tabs.
+
+### Step 11 — Active Tab Preserved on Refresh
+
+**Branch `fix/tab-stay-on-edit` (merged `1209e2a`)**
+
+`loadPatient()` now accepts a `showLoading` boolean parameter. Background data refreshes call `loadPatient(false)`, which skips the loading spinner. This prevents `<Tabs>` from unmounting/remounting — the active tab and scroll position are preserved after edits from any tab.
+
+### Step 12 — Tab Rename
+
+**Commit `4102220`**
+
+Tabs renamed for clarity: `Historial` → `Historial de Tratamientos`, `Ficha Clínica` → `Historia Clínica`. Change made in `page.tsx:149,151`.
+
+### Step 13 — Initial MotivoConsulta in Historial de Tratamientos Tab
+
+**Branch `feat/initial-motivo-consulta` (merged `f9f79a5`)**
+
+Reads `clinicalDetails.motivoConsulta` and renders a blue read-only card "Motivo de Consulta Inicial" at the top of the Historial de Tratamientos tab (visible in both empty state and records list). This is the initial reason for consultation stored on `clinical_details` — distinct from per-visit `motivoConsulta` on each `clinical_history` RecordCard.
+
 ## Architecture
 
 ### Data Loading
@@ -137,7 +173,7 @@ All existing HC form components reused **without modification** — each accepts
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
-│ [Paciente] [Historial] [Citas] [Ficha Clínica] [Odontograma]  │
+│ [Paciente] [Historial de Tratamientos] [Citas] [Historia Clínica] [Odontograma]  │
 │                                                                │
 │ Tab content renders the relevant section                       │
 └────────────────────────────────────────────────────────────────┘
@@ -167,6 +203,13 @@ The left sidebar was removed in Step 6 — all patient data is now accessed via 
 18. `96bccfa` — `fix: HC3/HC5 read-only now shows all fields with YesNoBadge (matching HC4 pattern)`
 19. `f05f138` — `feat: auto-enable Dientes temporales toggle when patient is a minor (esMenor)`
 20. `1f2700b` — `fix: add No erupcionado (not_erupted) to status selection panel`
+21. `d5804a0` — `fix: standardize all dates to Mexican locale (DD/MM/YYYY, 24h time, 4-digit years)`
+22. `cfc39e4` — `fix: set HTML lang to es-MX for correct date input locale`
+23. `66c1c9f` — `refactor: remove redundant EditOptionsMenu from sticky header`
+24. `1209e2a` — `fix: preserve active tab after data refresh`
+25. `4102220` — `fix: rename tabs - Historial → Historial de Tratamientos, Ficha Clínica → Historia Clínica`
+26. `85e62ea` — `chore: reduce footer text to 10px`
+27. `f9f79a5` — `feat: show initial motivoConsulta at top of Historial de Tratamientos tab`
 
 ## Relevant Files
 

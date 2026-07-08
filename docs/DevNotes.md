@@ -271,7 +271,12 @@ Full odontogram integration (HC6) — sub-step 5 of 6:
 | `fix/hc5-readonly-fields` | ✅ | HC3/HC5 read-only: all fields shown with YesNoBadge (HC4-style) |
 | `feat/odontogram-temp-teeth-default` | ✅ | "Dientes temporales" auto-enables for minor patients |
 | `fix/odontogram-status-not-erupted` | ✅ | Added "No erupcionado" to status selection panel |
-| `fix/date-format-mx` | ⏳ | Standardized all dates to DD/MM/YYYY, 24h time, 4-digit years; created `src/lib/formatDate.ts` utility |
+| `fix/date-format-mx` | ✅ | Standardized all dates to DD/MM/YYYY, 24h time, 4-digit years; created `src/lib/formatDate.ts` utility |
+| `fix/html-lang-es-mx` | ✅ | HTML lang set to es-MX for correct date input locale |
+| `fix/remove-header-edit-button` | ✅ | Removed EditOptionsMenu from sticky header |
+| `fix/tab-stay-on-edit` | ✅ | Background refreshes skip loading spinner, Tabs stays mounted |
+| `fix/tab-rename` | ✅ | Historial → Historial de Tratamientos, Ficha Clínica → Historia Clínica |
+| `feat/initial-motivo-consulta` | ✅ | Initial motivoConsulta shown at top of Historial de Tratamientos tab |
 
 ### 11. `historial-clinico-new-fields` (reverted)
 Experimented with adding 9 new fields to Historial Clínico (Sexo, Estado Civil, Ocupación, Escolaridad, datos de padres, Motivo Consulta, Antecedentes Personales grid). Required Apps Script changes failed to deploy — reverted completely.
@@ -610,7 +615,7 @@ Added "No erupcionado" to the status selection panel:
 - Same component used by both HC6 workflow and profile tab — one change applies everywhere
 - **Commit**: `1f2700b`
 
-### 32. `fix/date-format-mx` (on branch)
+### 32. `fix/date-format-mx` (merged to main)
 Standardized all dates to Mexican locale (DD/MM/YYYY, 24h time, 4-digit years):
 - **Created** `src/lib/formatDate.ts` with `formatDateDisplay`, `formatTodayDate`, `formatTimeDisplay` helpers
 - **HC1–HC6 forms**: Replaced `toLocaleDateString("es-MX", {month: "long"})` with `formatTodayDate()` — changed 7 spots
@@ -620,7 +625,45 @@ Standardized all dates to Mexican locale (DD/MM/YYYY, 24h time, 4-digit years):
 - **Dashboard**: Replaced `toLocaleTimeString()` with `formatTimeDisplay()` (24h HH:MM)
 - **FloatingToothDetailsCard notes/procedures**: Changed `.slice(-2)` to `getFullYear()` — 2-digit → 4-digit year
 
-## Other Tasks
+### 33. `fix/html-lang-es-mx` (merged to main)
+Fixed `<html lang>` attribute causing MM/DD/YYYY in native date inputs:
+- **`layout.tsx`**: Changed `lang="en"` → `lang="es-MX"` — browsers use `lang` to determine date format in `<input type="date">`
+- **`hc4-form.tsx`**: Placeholder changed from `"YYYY-MM-DD"` → `"DD/MM/AAAA"`
+- **Zod error messages**: Stripped `"(YYYY-MM-DD)"` from validation messages
+- **Commit**: `cfc39e4`
+
+### 34. `fix/remove-header-edit-button` (merged to main)
+Removed redundant edit button from sticky header:
+- **`src/app/pacientes/[id]/page.tsx`**: Removed `<EditOptionsMenu>` import and usage (line 14, 133)
+- Edit still available via Paciente tab's "Editar" button — single entry point
+- **Commit**: `66c1c9f`
+
+### 35. `fix/tab-stay-on-edit` (merged to main)
+Preserved active tab after background data refresh:
+- **`src/app/pacientes/[id]/page.tsx`**: `loadPatient` now accepts `showLoading` param (default `true`)
+- Background refreshes call `loadPatient(false)` — skips loading spinner, `<Tabs>` stays mounted
+- Active tab and scroll position are preserved after edits from any tab
+- **Commit**: `1209e2a`
+
+### 36. `chore/billcodex-footer-removal` (committed to main)
+Removed then restored BillCodex footer at smaller size:
+- `57c8ccf` — Removed BillCodex footer from layout
+- `c2c099a` — Restored with `text-xs py-2`
+- `85e62ea` — Final size: `text-[10px]` + `py-2`
+
+### 37. `fix/tab-rename` (committed to main)
+Tabs renamed for clarity:
+- **`page.tsx`**: `Historial` → `Historial de Tratamientos`, `Ficha Clínica` → `Historia Clínica`
+- **Commit**: `4102220`
+
+### 38. `feat/initial-motivo-consulta` (merged to main)
+Shows initial motivoConsulta at top of Historial de Tratamientos tab:
+- Reads `clinicalDetails.motivoConsulta` and renders a blue read-only card "Motivo de Consulta Inicial"
+- Distinct from per-visit `motivoConsulta` on each `clinical_history` RecordCard
+- Visible in empty state and records list
+- **Commit**: `f9f79a5`
+
+## Branch Status
 - Fixed `JSX.IntrinsicElements` error by running `npm install`
 - Confirmed no unit test framework exists in the project
 - Created session notes file `docs/DNIRemovedOptionalAddress.md` → renamed to `docs/DevNotes.md`
