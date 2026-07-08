@@ -445,7 +445,7 @@ export function HistorialTable({ data, onUpdateField, onDeleteHistorial, onAddHi
     <>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
         <Typography variant="h6" component="h3">
-          Historial Clínico ({data.length})
+          Tratamientos ({data.length})
         </Typography>
         {onAddHistorial && (
           <Button

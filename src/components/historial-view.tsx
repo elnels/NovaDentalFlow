@@ -265,7 +265,7 @@ export function HistorialView({
         </Card>
       )}
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold">Historial Clínico ({data.length})</h3>
+        <h3 className="text-lg font-semibold">Tratamientos ({data.length})</h3>
         <Button onClick={() => setOpenCreate(true)} className="flex items-center gap-2">
           <Plus className="h-4 w-4" />
           Nuevo Registro

@@ -1,5 +1,26 @@
 # Pricing, Procedures & Payments — Domain Separation Plan
 
+## Phase 1 Implementation Status ✅ (Merged to main)
+
+| Item | Status | Notes |
+|------|--------|-------|
+| `ProcedureCatalog` model + migration | ✅ Done | 25 seed procedures across 8 categories |
+| `ProcedureLineItem` model + migration | ✅ Done | Linked to ClinicalHistory + ProcedureCatalog |
+| `cancelled`/`cancelReason` on ClinicalHistory | ✅ Done | |
+| Admin CRUD page at `/catalogo-procedimientos` | ✅ Done | Table, search, add/edit/delete dialogs |
+| `ProcedurePicker` component | ✅ Done | cmdk-based searchable popover |
+| Line-item table in `historial-form.tsx` | ✅ Done | Replaces flat `costoTratamiento` input |
+| Itemized display in `historial-view.tsx` | ✅ Done | Shows procedure breakdown, flat cost fallback |
+| Dual-write in `addHistorial`/`updateHistorial` | ✅ Done | Writes both line items + `costoTratamiento` (total) |
+| `medical-history-form.tsx` — no `costoTratamiento` | ✅ Done | |
+| `historial-table.tsx` (MUI) — updated | ✅ Done | No `costoTratamiento` in add dialogs |
+| Home page — catalog button | ✅ Done | Opens `/catalogo-procedimientos` |
+| Seed script — catalog + line items | ✅ Done | 25 procedures; patients created with randomized line items |
+| Build passes | ✅ Done | `npm run build` OK |
+| Label: "Historial Clínico" → "Tratamientos" | ✅ Done | Patient detail page heading |
+
+See the sections below for the full architectural plan (Phase 2—Payments and Phase 3—Odontogram Integration are still pending).
+
 ## 1. Current Architecture (Problem)
 
 Today, all financial and treatment data is embedded as flat fields on the `ClinicalHistory` model (one row per visit):
