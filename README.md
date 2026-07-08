@@ -169,7 +169,14 @@ Sigue estos pasos para ejecutar DentalFlow en tu máquina local:
     npm run start
     ```
 
-6.  **Scripts adicionales**
+6.  **Ejecutar pruebas automatizadas**
+
+    ```bash
+    npm test           # ejecutar una vez
+    npm run test:watch # modo vigilancia (watch)
+    ```
+
+7.  **Scripts adicionales**
 
     - Para trabajar con `genkit` (si lo usas):
       - `npm run genkit:dev` — inicia `genkit` con `src/ai/dev.ts`.
