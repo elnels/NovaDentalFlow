@@ -14,7 +14,7 @@ const samplePatients = [
     apellidos: "Pérez García",
     telefonoPrincipal: "555-0101",
     email: "juan.perez@email.com",
-    genero: "Masculino",
+    sexo: "Masculino",
   },
   {
     dni: "23456789",
@@ -22,7 +22,7 @@ const samplePatients = [
     apellidos: "López Hernández",
     telefonoPrincipal: "555-0102",
     email: "maria.lopez@email.com",
-    genero: "Femenino",
+    sexo: "Femenino",
   },
   {
     dni: "34567890",
@@ -30,7 +30,7 @@ const samplePatients = [
     apellidos: "Martínez Rodríguez",
     telefonoPrincipal: "555-0103",
     email: "carlos.martinez@email.com",
-    genero: "Masculino",
+    sexo: "Masculino",
   },
 ];
 
