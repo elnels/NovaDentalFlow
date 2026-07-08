@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Pencil, Trash2, ArrowLeft, Search, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -349,9 +349,14 @@ function ProcedureForm({
 
   const watchedCategory = form.watch("category");
   const isCreate = !initialData;
+  const initialMount = useRef(true);
 
   useEffect(() => {
-    if (!isCreate) return;
+    if (initialMount.current) {
+      initialMount.current = false;
+      if (!isCreate) return;
+    }
+    if (!watchedCategory) return;
     const generated = generateNextCode(watchedCategory, existingProcedures);
     if (generated) {
       form.setValue("code", generated);
@@ -382,7 +387,7 @@ function ProcedureForm({
               <FormItem>
                 <FormLabel>Código</FormLabel>
                 <FormControl>
-                  <Input placeholder="CONS-001" readOnly={isCreate} {...field} />
+                  <Input placeholder="CONS-001" readOnly {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
