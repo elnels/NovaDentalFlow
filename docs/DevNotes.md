@@ -280,6 +280,7 @@ Full odontogram integration (HC6) — sub-step 5 of 6:
 | `feat/pricing-procedures-payments` | ✅ | Phase 1: ProcedureCatalog + ProcedureLineItem models, admin CRUD page, itemized costs, dual-write backward compat, seed 25 procedures |
 | `fecha-creacion-hc-readonly` | ❌ | Read-only creation date on Historia Clínica tab |
 | `feat/auto-generate-procedure-code` | ❌ | Auto-generate procedure code on category selection, code input readOnly |
+| `feat/testing-setup-vitest` | ❌ | Vitest with jsdom, 19 tests; Playwright-ready structure |
 
 ### 11. `historial-clinico-new-fields` (reverted)
 Experimented with adding 9 new fields to Historial Clínico (Sexo, Estado Civil, Ocupación, Escolaridad, datos de padres, Motivo Consulta, Antecedentes Personales grid). Required Apps Script changes failed to deploy — reverted completely.
@@ -753,6 +754,40 @@ Procedure code auto-generates when category is selected in the "Agregar/Editar P
 - **File**: `src/app/catalogo-procedimientos/page.tsx`
 - **Commit**: `f5bb657` (auto-generate on create), `78839db` (also on edit mode)
 - **Branch**: `feat/auto-generate-procedure-code`
+
+### 43. `feat/testing-setup-vitest` (current branch)
+Automated testing setup with Vitest, structured for future Playwright addition:
+
+**Dependencies installed:**
+- `vitest` — test runner (v4.1.10)
+- `@testing-library/react` + `@testing-library/jest-dom` + `@testing-library/user-event` — React component testing
+- `jsdom` — DOM environment for component tests
+- `@vitejs/plugin-react` — JSX transform in test pipeline
+
+**New files:**
+| File | Purpose |
+|------|---------|
+| `vitest.config.ts` | Config with jsdom, `@/` path alias, react plugin, globals |
+| `src/test/setup.ts` | Imports `@testing-library/jest-dom/vitest` matchers |
+| `playwright.config.ts` | Commented placeholder — uncomment when `@playwright/test` installed |
+| `e2e-tests/.gitkeep` | Future Playwright test directory |
+
+**Test scripts in package.json:**
+- `npm test` → `vitest run` (single run, CI)
+- `npm run test:watch` → `vitest` (watch mode)
+
+**Tests written (19 total, all passing):**
+1. `src/lib/__tests__/generateNextCode.test.ts` — 6 tests for auto-generated procedure codes
+2. `src/lib/__tests__/schemas.test.ts` — 10 tests for Zod schema validation (procedure + line item)
+3. `src/components/__tests__/render.test.tsx` — 3 tests proving jsdom + RTL + userEvent pipeline
+
+**Test patterns:**
+- Vitest excludes `e2e-tests/` — Playwright tests run independently
+- Pure logic tests in `src/lib/__tests__/` (no mocking needed)
+- Component tests in `src/components/__tests__/` (jsdom + testing-library)
+- Future E2E tests in `e2e-tests/` (Playwright)
+
+**Commit**: (pending merge)
 
 ## Branch Status
 - Fixed `JSX.IntrinsicElements` error by running `npm install`

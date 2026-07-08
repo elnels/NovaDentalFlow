@@ -17,6 +17,7 @@
 | Home page — catalog button | ✅ Done | Opens `/catalogo-procedimientos` |
 | Seed script — catalog + line items | ✅ Done | 25 procedures; patients created with randomized line items |
 | Build passes | ✅ Done | `npm run build` OK |
+| Automated testing setup | ✅ Done | Vitest + jsdom + @testing-library; 19 tests across 3 files |
 | Label: "Historial Clínico" → "Tratamientos" | ✅ Done | Patient detail page heading |
 
 See the sections below for the full architectural plan (Phase 2—Payments and Phase 3—Odontogram Integration are still pending).
