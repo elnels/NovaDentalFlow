@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Pencil, Trash2, ArrowLeft, Search, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -267,6 +267,7 @@ export default function CatalogoProcedimientosPage() {
             onSubmit={handleCreate}
             isSubmitting={isSubmitting}
             onCancel={() => setOpenCreate(false)}
+            existingProcedures={procedures}
           />
         </DialogContent>
       </Dialog>
@@ -288,6 +289,7 @@ export default function CatalogoProcedimientosPage() {
               onSubmit={handleUpdate}
               isSubmitting={isSubmitting}
               onCancel={() => setEditingItem(null)}
+              existingProcedures={procedures}
             />
           )}
         </DialogContent>
@@ -296,16 +298,43 @@ export default function CatalogoProcedimientosPage() {
   );
 }
 
+const categoryToPrefix: Record<string, string> = {
+  Consulta: "CON",
+  Preventiva: "PREV",
+  Restauradora: "REST",
+  Endodoncia: "END",
+  Cirugía: "CIR",
+  Periodoncia: "PERIO",
+  Ortodoncia: "ORT",
+  Prótesis: "PROT",
+  Radiología: "RADIO",
+  Estética: "EST",
+};
+
+function generateNextCode(category: string, existing: ProcedureCatalog[]): string {
+  const prefix = categoryToPrefix[category];
+  if (!prefix) return "";
+  const maxNum = existing
+    .filter((p) => p.code.startsWith(prefix + "-"))
+    .reduce((max, p) => {
+      const num = parseInt(p.code.split("-")[1], 10);
+      return isNaN(num) ? max : Math.max(max, num);
+    }, 0);
+  return `${prefix}-${String(maxNum + 1).padStart(3, "0")}`;
+}
+
 function ProcedureForm({
   initialData,
   onSubmit,
   isSubmitting,
   onCancel,
+  existingProcedures,
 }: {
   initialData?: ProcedureFormData;
   onSubmit: (data: ProcedureFormData) => Promise<void>;
   isSubmitting: boolean;
   onCancel: () => void;
+  existingProcedures: ProcedureCatalog[];
 }) {
   const form = useForm<ProcedureFormData>({
     resolver: zodResolver(procedureSchema),
@@ -317,6 +346,22 @@ function ProcedureForm({
       defaultPrice: "",
     },
   });
+
+  const watchedCategory = form.watch("category");
+  const isCreate = !initialData;
+  const initialMount = useRef(true);
+
+  useEffect(() => {
+    if (initialMount.current) {
+      initialMount.current = false;
+      if (!isCreate) return;
+    }
+    if (!watchedCategory) return;
+    const generated = generateNextCode(watchedCategory, existingProcedures);
+    if (generated) {
+      form.setValue("code", generated);
+    }
+  }, [watchedCategory, isCreate, existingProcedures, form]);
 
   const categories = [
     "Consulta",
@@ -342,7 +387,7 @@ function ProcedureForm({
               <FormItem>
                 <FormLabel>Código</FormLabel>
                 <FormControl>
-                  <Input placeholder="CONS-001" {...field} />
+                  <Input placeholder="CONS-001" readOnly {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
