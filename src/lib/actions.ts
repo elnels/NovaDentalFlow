@@ -380,6 +380,112 @@ export async function getPatientById(id: string) {
   }
 }
 
+export async function getProcedureCatalog(includeInactive = false) {
+  try {
+    const procedures = await prisma.procedureCatalog.findMany({
+      where: includeInactive ? {} : { isActive: true },
+      orderBy: { name: "asc" },
+    });
+    return JSON.parse(JSON.stringify(procedures));
+  } catch {
+    return [];
+  }
+}
+
+export async function addProcedureCatalogItem(
+  prevState: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const rawData = Object.fromEntries(formData.entries());
+  const schema = z.object({
+    code: z.string().min(1, "El código es requerido"),
+    name: z.string().min(1, "El nombre es requerido"),
+    description: z.string().optional().or(z.literal("")),
+    category: z.string().optional().or(z.literal("")),
+    defaultPrice: z.string().min(1, "El precio es requerido"),
+  });
+  const validatedFields = schema.safeParse(rawData);
+
+  if (!validatedFields.success) {
+    return {
+      message: "Por favor, corrija los errores.",
+      errors: validatedFields.error.flatten().fieldErrors as Record<string, string>,
+      success: false,
+    };
+  }
+
+  try {
+    await prisma.procedureCatalog.create({
+      data: {
+        code: validatedFields.data.code,
+        name: validatedFields.data.name,
+        description: validatedFields.data.description || null,
+        category: validatedFields.data.category || null,
+        defaultPrice: Number(validatedFields.data.defaultPrice),
+      },
+    });
+
+    revalidatePath("/catalogo-procedimientos");
+    return { message: "Procedimiento agregado con éxito.", success: true };
+  } catch (e) {
+    return { message: `Error: ${(e as Error).message}`, success: false };
+  }
+}
+
+export async function updateProcedureCatalogItem(
+  id: string,
+  prevState: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const rawData = Object.fromEntries(formData.entries());
+  const schema = z.object({
+    code: z.string().min(1, "El código es requerido"),
+    name: z.string().min(1, "El nombre es requerido"),
+    description: z.string().optional().or(z.literal("")),
+    category: z.string().optional().or(z.literal("")),
+    defaultPrice: z.string().min(1, "El precio es requerido"),
+    isActive: z.string().optional(),
+  });
+  const validatedFields = schema.safeParse(rawData);
+
+  if (!validatedFields.success) {
+    return {
+      message: "Por favor, corrija los errores.",
+      errors: validatedFields.error.flatten().fieldErrors as Record<string, string>,
+      success: false,
+    };
+  }
+
+  try {
+    await prisma.procedureCatalog.update({
+      where: { id },
+      data: {
+        code: validatedFields.data.code,
+        name: validatedFields.data.name,
+        description: validatedFields.data.description || null,
+        category: validatedFields.data.category || null,
+        defaultPrice: Number(validatedFields.data.defaultPrice),
+        isActive: validatedFields.data.isActive === "true",
+      },
+    });
+
+    revalidatePath("/catalogo-procedimientos");
+    return { message: "Procedimiento actualizado con éxito.", success: true };
+  } catch (e) {
+    return { message: `Error: ${(e as Error).message}`, success: false };
+  }
+}
+
+export async function deleteProcedureCatalogItem(id: string): Promise<{ success: boolean; message: string }> {
+  try {
+    await prisma.procedureCatalog.delete({ where: { id } });
+    revalidatePath("/catalogo-procedimientos");
+    return { success: true, message: "Procedimiento eliminado correctamente." };
+  } catch (e) {
+    return { success: false, message: `Error: ${(e as Error).message}` };
+  }
+}
+
 const patientSchema = z.object({
   dni: z.string().optional().or(z.literal("")),
   nombres: z.string().min(2, "El nombre es requerido"),
@@ -424,6 +530,7 @@ const medicalHistorySchema = z.object({
   telefonoContacto: z.string().optional().or(z.literal("")),
   motivoConsulta: z.string().optional().or(z.literal("")),
   antecedentesPersonales: z.string().optional().or(z.literal("")),
+  procedureLineItems: z.string().optional().or(z.literal("")),
 });
 
 export type FormState = {
@@ -670,6 +777,21 @@ export async function addHistorial(prevState: FormState, formData: FormData): Pr
     };
   }
 
+  let parsedLineItems: any[] = [];
+  const rawLineItems = validatedFields.data.procedureLineItems;
+  if (rawLineItems) {
+    try {
+      parsedLineItems = JSON.parse(rawLineItems);
+    } catch {
+      return { message: "Error al procesar los procedimientos.", success: false };
+    }
+  }
+
+  const totalFee = parsedLineItems.reduce(
+    (sum: number, item: any) => sum + (Number(item.fee) - Number(item.discount || 0)) * Number(item.quantity || 1),
+    0
+  );
+
   try {
     const history = await prisma.clinicalHistory.create({
       data: {
@@ -680,13 +802,23 @@ export async function addHistorial(prevState: FormState, formData: FormData): Pr
         tratamiento: validatedFields.data.tratamiento || null,
         prescripciones: validatedFields.data.prescripciones || null,
         notas: validatedFields.data.notas || null,
-        costoTratamiento: validatedFields.data.costoTratamiento
-          ? Number(validatedFields.data.costoTratamiento)
-          : null,
+        costoTratamiento: totalFee > 0 ? totalFee : (validatedFields.data.costoTratamiento ? Number(validatedFields.data.costoTratamiento) : null),
         estadoPago: validatedFields.data.estadoPago,
         telefonoContacto: validatedFields.data.telefonoContacto || null,
         motivoConsulta: validatedFields.data.motivoConsulta || null,
         antecedentesPersonales: validatedFields.data.antecedentesPersonales || null,
+        procedureLineItems: parsedLineItems.length > 0
+          ? {
+              create: parsedLineItems.map((item: any) => ({
+                procedureCatalogId: item.procedureCatalogId,
+                toothId: item.toothId ? Number(item.toothId) : null,
+                quantity: Number(item.quantity || 1),
+                fee: Number(item.fee || 0),
+                discount: Number(item.discount || 0),
+                notes: item.notes || null,
+              })),
+            }
+          : undefined,
       },
     });
 
@@ -709,6 +841,21 @@ export async function addHistorialFromObject(historialData: any): Promise<FormSt
     };
   }
 
+  let parsedLineItems: any[] = [];
+  const rawLineItems = validatedFields.data.procedureLineItems;
+  if (rawLineItems) {
+    try {
+      parsedLineItems = typeof rawLineItems === "string" ? JSON.parse(rawLineItems) : rawLineItems;
+    } catch {
+      parsedLineItems = [];
+    }
+  }
+
+  const totalFee = parsedLineItems.reduce(
+    (sum: number, item: any) => sum + (Number(item.fee) - Number(item.discount || 0)) * Number(item.quantity || 1),
+    0
+  );
+
   try {
     const history = await prisma.clinicalHistory.create({
       data: {
@@ -719,13 +866,23 @@ export async function addHistorialFromObject(historialData: any): Promise<FormSt
         tratamiento: validatedFields.data.tratamiento || null,
         prescripciones: validatedFields.data.prescripciones || null,
         notas: validatedFields.data.notas || null,
-        costoTratamiento: validatedFields.data.costoTratamiento
-          ? Number(validatedFields.data.costoTratamiento)
-          : null,
+        costoTratamiento: totalFee > 0 ? totalFee : (validatedFields.data.costoTratamiento ? Number(validatedFields.data.costoTratamiento) : null),
         estadoPago: validatedFields.data.estadoPago,
         telefonoContacto: validatedFields.data.telefonoContacto || null,
         motivoConsulta: validatedFields.data.motivoConsulta || null,
         antecedentesPersonales: validatedFields.data.antecedentesPersonales || null,
+        procedureLineItems: parsedLineItems.length > 0
+          ? {
+              create: parsedLineItems.map((item: any) => ({
+                procedureCatalogId: item.procedureCatalogId,
+                toothId: item.toothId ? Number(item.toothId) : null,
+                quantity: Number(item.quantity || 1),
+                fee: Number(item.fee || 0),
+                discount: Number(item.discount || 0),
+                notes: item.notes || null,
+              })),
+            }
+          : undefined,
       },
     });
 
@@ -937,23 +1094,53 @@ export async function updateHistorial(id: string, prevState: FormState, formData
     };
   }
 
+  let parsedLineItems: any[] = [];
+  const rawLineItems = validatedFields.data.procedureLineItems;
+  if (rawLineItems) {
+    try {
+      parsedLineItems = JSON.parse(rawLineItems);
+    } catch {
+      return { message: "Error al procesar los procedimientos.", success: false };
+    }
+  }
+
+  const totalFee = parsedLineItems.reduce(
+    (sum: number, item: any) => sum + (Number(item.fee) - Number(item.discount || 0)) * Number(item.quantity || 1),
+    0
+  );
+
   try {
-    await prisma.clinicalHistory.update({
-      where: { id },
-      data: {
-        fechaHistorial: new Date(validatedFields.data.fechaHistorial),
-        diagnostico: validatedFields.data.diagnostico || null,
-        tratamiento: validatedFields.data.tratamiento || null,
-        prescripciones: validatedFields.data.prescripciones || null,
-        notas: validatedFields.data.notas || null,
-        costoTratamiento: validatedFields.data.costoTratamiento
-          ? Number(validatedFields.data.costoTratamiento)
-          : null,
-        estadoPago: validatedFields.data.estadoPago,
-        telefonoContacto: validatedFields.data.telefonoContacto || null,
-        motivoConsulta: validatedFields.data.motivoConsulta || null,
-        antecedentesPersonales: validatedFields.data.antecedentesPersonales || null,
-      },
+    await prisma.$transaction(async (tx) => {
+      await tx.clinicalHistory.update({
+        where: { id },
+        data: {
+          fechaHistorial: new Date(validatedFields.data.fechaHistorial),
+          diagnostico: validatedFields.data.diagnostico || null,
+          tratamiento: validatedFields.data.tratamiento || null,
+          prescripciones: validatedFields.data.prescripciones || null,
+          notas: validatedFields.data.notas || null,
+          costoTratamiento: totalFee > 0 ? totalFee : (validatedFields.data.costoTratamiento ? Number(validatedFields.data.costoTratamiento) : null),
+          estadoPago: validatedFields.data.estadoPago,
+          telefonoContacto: validatedFields.data.telefonoContacto || null,
+          motivoConsulta: validatedFields.data.motivoConsulta || null,
+          antecedentesPersonales: validatedFields.data.antecedentesPersonales || null,
+        },
+      });
+
+      if (parsedLineItems.length > 0) {
+        await tx.procedureLineItem.deleteMany({ where: { clinicalHistoryId: id } });
+        await tx.procedureLineItem.createMany({
+          data: parsedLineItems.map((item: any) => ({
+            clinicalHistoryId: id,
+            procedureCatalogId: item.procedureCatalogId,
+            toothId: item.toothId ? Number(item.toothId) : null,
+            quantity: Number(item.quantity || 1),
+            fee: Number(item.fee || 0),
+            discount: Number(item.discount || 0),
+            notes: item.notes || null,
+          })),
+        });
+      }
     });
 
     revalidatePath("/");
