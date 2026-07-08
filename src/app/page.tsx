@@ -180,6 +180,16 @@ export default function HomePage() {
                   <CalendarDays className="mr-2 h-5 w-5" />
                   Calendario
                 </Button>
+
+                <Button 
+                  size="lg" 
+                  variant="outline"
+                  onClick={() => window.location.href = "/catalogo-procedimientos"}
+                  className="border-2 border-purple-200 text-purple-600 hover:bg-purple-50 px-8 py-4 text-lg font-semibold rounded-xl transition-all duration-200"
+                >
+                  <Activity className="mr-2 h-5 w-5" />
+                  Catálogo de Procedimientos
+                </Button>
               </div>
             </div>
           </motion.div>

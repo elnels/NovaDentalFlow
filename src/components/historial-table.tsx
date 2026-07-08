@@ -221,7 +221,6 @@ export function HistorialTable({ data, onUpdateField, onDeleteHistorial, onAddHi
     tratamiento: '',
     prescripciones: '',
     notas: '',
-    costoTratamiento: '',
     estadoPago: 'Pendiente',
     nombrePadre: '',
     nombreMadre: '',
@@ -260,7 +259,6 @@ export function HistorialTable({ data, onUpdateField, onDeleteHistorial, onAddHi
         tratamiento: '',
         prescripciones: '',
         notas: '',
-        costoTratamiento: '',
         estadoPago: 'Pendiente',
         nombrePadre: '',
         nombreMadre: '',
@@ -347,13 +345,6 @@ export function HistorialTable({ data, onUpdateField, onDeleteHistorial, onAddHi
                   </MenuItem>
                 ))}
               </TextField>
-              <TextField
-                label="Costo del Tratamiento"
-                type="number"
-                value={newHistorial.costoTratamiento}
-                onChange={(e) => setNewHistorial({ ...newHistorial, costoTratamiento: e.target.value })}
-                fullWidth
-              />
               <TextField
                 label="Diagnóstico"
                 value={newHistorial.diagnostico}
@@ -602,13 +593,6 @@ export function HistorialTable({ data, onUpdateField, onDeleteHistorial, onAddHi
               value={newHistorial.fechaHistorial}
               onChange={(e) => setNewHistorial({ ...newHistorial, fechaHistorial: e.target.value })}
               InputLabelProps={{ shrink: true }}
-              fullWidth
-            />
-            <TextField
-              label="Costo del Tratamiento"
-              type="number"
-              value={newHistorial.costoTratamiento}
-              onChange={(e) => setNewHistorial({ ...newHistorial, costoTratamiento: e.target.value })}
               fullWidth
             />
             <TextField
