@@ -789,6 +789,24 @@ Automated testing setup with Vitest, structured for future Playwright addition:
 
 **Commit**: (pending merge)
 
+### 44. `feat/center-paciente-fields` (merged to main)
+Centered all InfoRow fields inside each tab's Cards with `mx-auto max-w-2xl`:
+- **`paciente-view.tsx`**: Wrapped all InfoRows inside `<div className="mx-auto max-w-2xl">` in CardContent
+- **`historial-view.tsx`**: Same wrapper inside `RecordCard`'s CardContent
+- **`citas-view.tsx`**: Same wrapper inside `AppointmentCard`'s CardContent
+- **`clinical-details-view.tsx`**: Same wrapper inside `SectionCard`'s CardContent + standalone date card
+- CardHeader stays full-width; only the field content is centered
+- **Commits**: `fda8490` (paciente tab), `f027cd0` (all 3 remaining tabs)
+
+### 45. `feat/replace-procedure-catalog` (merged to main)
+Replaced all 25 old seed procedures with 34 real procedures matching the clinic's price list:
+- Deleted all existing data: `ProcedureLineItem` → `ProcedureCatalog` → `Patient` (cascades to everything)
+- Seeded 34 new procedures across 7 categories with real-world prices
+- Updated `prisma/seed.ts` with cleanup-then-seed pattern (always clears + re-seeds)
+- Categories used: Consulta (1), Preventiva (4), Restauradora (7), Endodoncia (4), Cirugía (4), Prótesis (13), Radiología (1)
+- Old categories removed: Diagnóstico, Operatoria, Periodoncia, Ortodoncia, Estética
+- **Commit**: `5797710`
+
 ## Branch Status
 - Fixed `JSX.IntrinsicElements` error by running `npm install`
 - Confirmed no unit test framework exists in the project

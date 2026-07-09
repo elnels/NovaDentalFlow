@@ -4,7 +4,7 @@
 
 | Item | Status | Notes |
 |------|--------|-------|
-| `ProcedureCatalog` model + migration | ✅ Done | 25 seed procedures across 8 categories |
+| `ProcedureCatalog` model + migration | ✅ Done | 34 procedures across 7 categories |
 | `ProcedureLineItem` model + migration | ✅ Done | Linked to ClinicalHistory + ProcedureCatalog |
 | `cancelled`/`cancelReason` on ClinicalHistory | ✅ Done | |
 | Admin CRUD page at `/catalogo-procedimientos` | ✅ Done | Table, search, add/edit/delete dialogs |
@@ -15,10 +15,11 @@
 | `medical-history-form.tsx` — no `costoTratamiento` | ✅ Done | |
 | `historial-table.tsx` (MUI) — updated | ✅ Done | No `costoTratamiento` in add dialogs |
 | Home page — catalog button | ✅ Done | Opens `/catalogo-procedimientos` |
-| Seed script — catalog + line items | ✅ Done | 25 procedures; patients created with randomized line items |
+| Seed script — catalog + line items | ✅ Done | 34 procedures; patients created with randomized line items |
 | Build passes | ✅ Done | `npm run build` OK |
 | Automated testing setup | ✅ Done | Vitest + jsdom + @testing-library; 19 tests across 3 files |
 | Label: "Historial Clínico" → "Tratamientos" | ✅ Done | Patient detail page heading |
+| **Procedure catalog replaced (feat/replace-procedure-catalog)** | ✅ Done | 25 old → 34 real procedures with prices; old categories → clinic-standard taxonomy |
 
 See the sections below for the full architectural plan (Phase 2—Payments and Phase 3—Odontogram Integration are still pending).
 
@@ -459,41 +460,46 @@ GROUP BY p.id, p.nombres, p.apellidos, pay.total_paid;
 
 ## 10. Common Dental Procedures — Seed Data Template
 
-Proposed initial catalog for Mexican dental clinic context:
+Current catalog (34 procedures, 7 categories — deployed in production):
 
 | Code | Name | Category | Default Price |
 |------|------|----------|---------------|
-| CONS-001 | Consulta inicial | Consulta | $500 |
-| CONS-002 | Consulta de seguimiento | Consulta | $350 |
-| PREV-001 | Profilaxis (Limpieza dental) | Preventiva | $600 |
-| PREV-002 | Aplicación de flúor | Preventiva | $300 |
-| PREV-003 | Selladores de fosetas y fisuras (por diente) | Preventiva | $200 |
-| REST-001 | Resina 1 cara | Restauradora | $600 |
-| REST-002 | Resina 2 caras | Restauradora | $800 |
-| REST-003 | Resina 3 o más caras | Restauradora | $1,000 |
-| REST-004 | Corona de porcelana | Restauradora | $4,000 |
-| REST-005 | Corona de metal-porcelana | Restauradora | $3,500 |
-| ENDO-001 | Endodoncia unirradicular | Endodoncia | $2,500 |
-| ENDO-002 | Endodoncia birradicular | Endodoncia | $3,000 |
-| ENDO-003 | Endodoncia multirradicular | Endodoncia | $3,500 |
-| CIRU-001 | Extracción simple | Cirugía | $500 |
-| CIRU-002 | Extracción quirúrgica | Cirugía | $1,200 |
-| CIRU-003 | Extracción de cordal (tercer molar) | Cirugía | $1,500 |
-| PERIO-001 | Raspado y alisado radicular (por cuadrante) | Periodoncia | $800 |
-| PERIO-002 | Cirugía periodontal | Periodoncia | $2,000 |
-| ORTO-001 | Diagnóstico ortodóncico (modelos + radiografía) | Ortodoncia | $1,500 |
-| ORTO-002 | Colocación de brackets (por arcada) | Ortodoncia | $6,000 |
-| ORTO-003 | Ajuste de ortodoncia | Ortodoncia | $500 |
-| PROT-001 | Puente de 3 unidades | Prótesis | $8,000 |
-| PROT-002 | Prótesis total (por arcada) | Prótesis | $12,000 |
-| PROT-003 | Prótesis parcial removible | Prótesis | $5,000 |
-| RADIO-001 | Radiografía periapical | Radiología | $200 |
-| RADIO-002 | Radiografía panorámica | Radiología | $800 |
-| RADIO-003 | Radiografía cefalométrica | Radiología | $600 |
-| BLANQ-001 | Blanqueamiento dental (ambas arcadas) | Estética | $4,000 |
-| BLANQ-002 | Blanqueamiento dental (una arcada) | Estética | $2,500 |
+| CON-001 | Consulta | Consulta | $230 |
+| PREV-001 | Limpieza Dental | Preventiva | $550 |
+| PREV-002 | Aplicación de Flúor | Preventiva | $390 |
+| PREV-003 | Limpieza Niños con Fluor | Preventiva | $450 |
+| PREV-004 | Selladores de fosetas | Preventiva | $440 |
+| REST-001 | Restauración de resina | Restauradora | $830 |
+| REST-002 | Incrustación metálica | Restauradora | $1,840 |
+| REST-003 | Amalgamas | Restauradora | $430 |
+| REST-004 | Incrustación Estética | Restauradora | $1,860 |
+| REST-005 | Poste colado | Restauradora | $1,460 |
+| REST-006 | Poste estético prefabricado | Restauradora | $1,600 |
+| REST-007 | Curación | Restauradora | $350 |
+| END-001 | Endodoncia molares | Endodoncia | $1,860 |
+| END-002 | Endodoncia premolares | Endodoncia | $1,320 |
+| END-003 | Endodoncia anteriores | Endodoncia | $1,890 |
+| END-004 | Pulpotomia | Endodoncia | $720 |
+| CIR-001 | Extracciones | Cirugía | $670 |
+| CIR-002 | Extracción 3er molar - 1 | Cirugía | $450 |
+| CIR-003 | Extracción 3er molar - 2 | Cirugía | $830 |
+| CIR-004 | Cirugias 3ros molares (consulta externa) | Cirugía | $3,500 |
+| PROT-001 | Coronas Metal Porcelana | Prótesis | $2,980 |
+| PROT-002 | Coronas Zirconia | Prótesis | $4,280 |
+| PROT-003 | Coronita Infantil | Prótesis | $1,340 |
+| PROT-004 | Cementación | Prótesis | $380 |
+| PROT-005 | Provisional fijo (acrílico - unidad) | Prótesis | $440 |
+| PROT-006 | Provisional removible unilateral | Prótesis | $710 |
+| PROT-007 | Provisional removible bilateral | Prótesis | $830 |
+| PROT-008 | Removible Metálico unilateral | Prótesis | $715 |
+| PROT-009 | Removible Metálico bilateral | Prótesis | $830 |
+| PROT-010 | Val plas o Luciton unilateral | Prótesis | $2,300 |
+| PROT-011 | Val plas o Luciton bilateral | Prótesis | $2,830 |
+| PROT-012 | Placa total | Prótesis | $4,800 |
+| PROT-013 | Guardas oclusales | Prótesis | $560 |
+| RADIO-001 | RX | Radiología | $150 |
 
-> **Note:** Prices are illustrative. Each clinic should configure their own prices through the admin UI. The `defaultPrice` is a starting point — the actual `fee` on each `ProcedureLineItem` can be overridden per patient.
+> **Note:** This is the live catalog in production. Prices can be adjusted through the admin UI at `/catalogo-procedimientos`. The `defaultPrice` is a starting point — the actual `fee` on each `ProcedureLineItem` can be overridden per patient.
 
 ---
 
