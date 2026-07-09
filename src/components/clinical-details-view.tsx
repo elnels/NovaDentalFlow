@@ -78,7 +78,9 @@ function SectionCard({
           Editar
         </Button>
       </CardHeader>
-      <CardContent>{children}</CardContent>
+      <CardContent>
+        <div className="mx-auto max-w-2xl">{children}</div>
+      </CardContent>
     </Card>
   );
 }
@@ -163,7 +165,9 @@ export function ClinicalDetailsView({
       {formattedDate && (
         <Card>
           <CardContent className="pt-4">
-            <InfoRow label="Fecha de Creación" value={formattedDate} />
+            <div className="mx-auto max-w-2xl">
+              <InfoRow label="Fecha de Creación" value={formattedDate} />
+            </div>
           </CardContent>
         </Card>
       )}

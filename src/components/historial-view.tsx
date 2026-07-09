@@ -98,67 +98,69 @@ function RecordCard({
         </div>
       </CardHeader>
       <CardContent>
-        <InfoRow
-          label="Diagnóstico"
-          value={record.diagnostico}
-        />
-        <InfoRow
-          label="Tratamiento"
-          value={record.tratamiento}
-        />
-        <InfoRow
-          label="Prescripciones"
-          value={record.prescripciones}
-        />
-        <InfoRow
-          label="Observaciones"
-          value={record.notas}
-        />
-        {record.procedureLineItems && record.procedureLineItems.length > 0 ? (
-          <div className="grid grid-cols-[180px_1fr] gap-4 py-2 border-b last:border-b-0 text-sm">
-            <span className="text-muted-foreground font-medium">Procedimientos</span>
-            <div>
-              {record.procedureLineItems.map((pli) => (
-                <div key={pli.id} className="flex justify-between items-center py-0.5">
-                  <span>
-                    {pli.procedureCatalog?.name || "Procedimiento"}
-                    {pli.quantity > 1 && <span className="text-muted-foreground ml-1">x{pli.quantity}</span>}
-                  </span>
-                  <span className="font-mono text-xs">
-                    ${((pli.fee - pli.discount) * pli.quantity).toLocaleString()}
-                  </span>
+        <div className="mx-auto max-w-2xl">
+          <InfoRow
+            label="Diagnóstico"
+            value={record.diagnostico}
+          />
+          <InfoRow
+            label="Tratamiento"
+            value={record.tratamiento}
+          />
+          <InfoRow
+            label="Prescripciones"
+            value={record.prescripciones}
+          />
+          <InfoRow
+            label="Observaciones"
+            value={record.notas}
+          />
+          {record.procedureLineItems && record.procedureLineItems.length > 0 ? (
+            <div className="grid grid-cols-[180px_1fr] gap-4 py-2 border-b last:border-b-0 text-sm">
+              <span className="text-muted-foreground font-medium">Procedimientos</span>
+              <div>
+                {record.procedureLineItems.map((pli) => (
+                  <div key={pli.id} className="flex justify-between items-center py-0.5">
+                    <span>
+                      {pli.procedureCatalog?.name || "Procedimiento"}
+                      {pli.quantity > 1 && <span className="text-muted-foreground ml-1">x{pli.quantity}</span>}
+                    </span>
+                    <span className="font-mono text-xs">
+                      ${((pli.fee - pli.discount) * pli.quantity).toLocaleString()}
+                    </span>
+                  </div>
+                ))}
+                <div className="flex justify-between items-center pt-1 mt-1 border-t font-semibold">
+                  <span>Total</span>
+                  <span>${record.procedureLineItems
+                    .reduce((s, p) => s + (p.fee - p.discount) * p.quantity, 0)
+                    .toLocaleString()}</span>
                 </div>
-              ))}
-              <div className="flex justify-between items-center pt-1 mt-1 border-t font-semibold">
-                <span>Total</span>
-                <span>${record.procedureLineItems
-                  .reduce((s, p) => s + (p.fee - p.discount) * p.quantity, 0)
-                  .toLocaleString()}</span>
               </div>
             </div>
-          </div>
-        ) : record.costoTratamiento ? (
+          ) : record.costoTratamiento ? (
+            <InfoRow
+              label="Costo"
+              value={`$${parseFloat(record.costoTratamiento).toLocaleString()}`}
+            />
+          ) : null}
           <InfoRow
-            label="Costo"
-            value={`$${parseFloat(record.costoTratamiento).toLocaleString()}`}
+            label="Estado de Pago"
+            value={
+              <Badge
+                variant="outline"
+                className={paymentColors[record.estadoPago] || ""}
+              >
+                {record.estadoPago}
+              </Badge>
+            }
           />
-        ) : null}
-        <InfoRow
-          label="Estado de Pago"
-          value={
-            <Badge
-              variant="outline"
-              className={paymentColors[record.estadoPago] || ""}
-            >
-              {record.estadoPago}
-            </Badge>
-          }
-        />
-        {record.telefonoContacto && <InfoRow label="Teléfono de Contacto" value={record.telefonoContacto} />}
-        {record.motivoConsulta && <InfoRow label="Motivo de Consulta" value={record.motivoConsulta} />}
-        {record.antecedentesPersonales && (
-          <InfoRow label="Antecedentes Personales" value={record.antecedentesPersonales} />
-        )}
+          {record.telefonoContacto && <InfoRow label="Teléfono de Contacto" value={record.telefonoContacto} />}
+          {record.motivoConsulta && <InfoRow label="Motivo de Consulta" value={record.motivoConsulta} />}
+          {record.antecedentesPersonales && (
+            <InfoRow label="Antecedentes Personales" value={record.antecedentesPersonales} />
+          )}
+        </div>
       </CardContent>
     </Card>
   );

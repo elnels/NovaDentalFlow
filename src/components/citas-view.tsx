@@ -89,37 +89,39 @@ function AppointmentCard({
         </div>
       </CardHeader>
       <CardContent>
-        <InfoRow
-          label="Horario"
-          value={
-            <span className="flex items-center gap-1">
-              <Clock className="h-3.5 w-3.5 text-muted-foreground" />
-              {appointment.horaInicio} - {appointment.horaFin}
-            </span>
-          }
-        />
-        <InfoRow label="Motivo" value={appointment.motivoCita} />
-        <InfoRow
-          label="Doctor"
-          value={
-            <span className="flex items-center gap-1">
-              <User className="h-3.5 w-3.5 text-muted-foreground" />
-              {appointment.idDoctor}
-            </span>
-          }
-        />
-        {appointment.notasCita && <InfoRow label="Observaciones" value={appointment.notasCita} />}
-        <InfoRow
-          label="Estado"
-          value={
-            <Badge
-              variant="outline"
-              className={statusColors[appointment.estadoCita] || ""}
-            >
-              {appointment.estadoCita}
-            </Badge>
-          }
-        />
+        <div className="mx-auto max-w-2xl">
+          <InfoRow
+            label="Horario"
+            value={
+              <span className="flex items-center gap-1">
+                <Clock className="h-3.5 w-3.5 text-muted-foreground" />
+                {appointment.horaInicio} - {appointment.horaFin}
+              </span>
+            }
+          />
+          <InfoRow label="Motivo" value={appointment.motivoCita} />
+          <InfoRow
+            label="Doctor"
+            value={
+              <span className="flex items-center gap-1">
+                <User className="h-3.5 w-3.5 text-muted-foreground" />
+                {appointment.idDoctor}
+              </span>
+            }
+          />
+          {appointment.notasCita && <InfoRow label="Observaciones" value={appointment.notasCita} />}
+          <InfoRow
+            label="Estado"
+            value={
+              <Badge
+                variant="outline"
+                className={statusColors[appointment.estadoCita] || ""}
+              >
+                {appointment.estadoCita}
+              </Badge>
+            }
+          />
+        </div>
       </CardContent>
     </Card>
   );
