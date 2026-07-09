@@ -51,71 +51,73 @@ export function PacienteView({ patient, onDataUpdate }: PacienteViewProps) {
           </EditPatientModal>
         </CardHeader>
         <CardContent>
-          <InfoRow
-            label="Nombres"
-            value={patient.nombres}
-          />
-          <InfoRow
-            label="Apellidos"
-            value={patient.apellidos}
-          />
-          <InfoRow
-            label="Fecha de Nacimiento"
-            value={
-              patient.fechaNacimiento
-                ? `${formatDateDisplay(patient.fechaNacimiento)}${age !== null ? ` (${age} años)` : ""}`
-                : undefined
-            }
-          />
-          <InfoRow
-            label="Sexo"
-            value={patient.sexo}
-          />
-          <InfoRow
-            label="Estado Civil"
-            value={patient.estadoCivil}
-          />
-          <InfoRow
-            label="Ocupación"
-            value={patient.ocupacion}
-          />
-          <InfoRow
-            label="Escolaridad"
-            value={patient.escolaridad}
-          />
-          <InfoRow
-            label="Teléfono Principal"
-            value={patient.telefonoPrincipal}
-          />
-          <InfoRow
-            label="Teléfono Alternativo"
-            value={patient.telefonoAlternativo}
-          />
-          <InfoRow
-            label="Email"
-            value={patient.email}
-          />
-          <InfoRow
-            label="Dirección"
-            value={patient.direccion}
-          />
-          <InfoRow
-            label="Estado"
-            value={
-              <Badge variant="outline" className={patient.estado === "Activo" ? "bg-green-100 text-green-700 border-green-200" : "bg-red-100 text-red-700 border-red-200"}>
-                {patient.estado}
-              </Badge>
-            }
-          />
-          {patient.esMenor && (
-            <div className="mt-4 p-4 border rounded-lg bg-muted/30 space-y-3">
-              <p className="text-sm font-semibold text-muted-foreground">Datos del Tutor</p>
-              {patient.nombrePadre && <InfoRow label="Nombre del Padre" value={patient.nombrePadre} />}
-              {patient.telefonoPadre && <InfoRow label="Teléfono del Padre" value={patient.telefonoPadre} />}
-              {patient.nombreMadre && <InfoRow label="Nombre de la Madre" value={patient.nombreMadre} />}
-              {patient.telefonoMadre && <InfoRow label="Teléfono de la Madre" value={patient.telefonoMadre} />}
-            </div>
-          )}
+          <div className="mx-auto max-w-2xl">
+            <InfoRow
+              label="Nombres"
+              value={patient.nombres}
+            />
+            <InfoRow
+              label="Apellidos"
+              value={patient.apellidos}
+            />
+            <InfoRow
+              label="Fecha de Nacimiento"
+              value={
+                patient.fechaNacimiento
+                  ? `${formatDateDisplay(patient.fechaNacimiento)}${age !== null ? ` (${age} años)` : ""}`
+                  : undefined
+              }
+            />
+            <InfoRow
+              label="Sexo"
+              value={patient.sexo}
+            />
+            <InfoRow
+              label="Estado Civil"
+              value={patient.estadoCivil}
+            />
+            <InfoRow
+              label="Ocupación"
+              value={patient.ocupacion}
+            />
+            <InfoRow
+              label="Escolaridad"
+              value={patient.escolaridad}
+            />
+            <InfoRow
+              label="Teléfono Principal"
+              value={patient.telefonoPrincipal}
+            />
+            <InfoRow
+              label="Teléfono Alternativo"
+              value={patient.telefonoAlternativo}
+            />
+            <InfoRow
+              label="Email"
+              value={patient.email}
+            />
+            <InfoRow
+              label="Dirección"
+              value={patient.direccion}
+            />
+            <InfoRow
+              label="Estado"
+              value={
+                <Badge variant="outline" className={patient.estado === "Activo" ? "bg-green-100 text-green-700 border-green-200" : "bg-red-100 text-red-700 border-red-200"}>
+                  {patient.estado}
+                </Badge>
+              }
+            />
+            {patient.esMenor && (
+              <div className="mt-4 p-4 border rounded-lg bg-muted/30 space-y-3">
+                <p className="text-sm font-semibold text-muted-foreground">Datos del Tutor</p>
+                {patient.nombrePadre && <InfoRow label="Nombre del Padre" value={patient.nombrePadre} />}
+                {patient.telefonoPadre && <InfoRow label="Teléfono del Padre" value={patient.telefonoPadre} />}
+                {patient.nombreMadre && <InfoRow label="Nombre de la Madre" value={patient.nombreMadre} />}
+                {patient.telefonoMadre && <InfoRow label="Teléfono de la Madre" value={patient.telefonoMadre} />}
+              </div>
+            )}
+          </div>
         </CardContent>
       </Card>
     </>
