@@ -30,6 +30,16 @@ export default function HomePage() {
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
+  // Auto-expand to patient list when navigated back from patient profile
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('showPatients') === 'true') {
+      setIsExpanded(true);
+      // Clean URL without triggering re-render
+      window.history.replaceState({}, '', '/');
+    }
+  }, []);
+
   // Función para cargar datos
   const loadPatients = async (showLoadingState = true) => {
     try {

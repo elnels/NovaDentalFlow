@@ -99,9 +99,9 @@ export default function PatientDetailPage({
           <h1 className="text-2xl font-bold text-gray-900 mb-4">Paciente no encontrado</h1>
           <p className="text-gray-600 mb-6">No se pudo cargar la información del paciente con ID: {id}</p>
           <Button asChild>
-            <Link href="/">
+            <Link href="/?showPatients=true">
               <ChevronLeft className="mr-2 h-4 w-4" />
-              Volver al inicio
+              Volver a la lista de pacientes
             </Link>
           </Button>
         </div>
@@ -114,7 +114,7 @@ export default function PatientDetailPage({
       <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <Button variant="ghost" asChild>
-            <Link href="/">
+            <Link href="/?showPatients=true">
               <ChevronLeft className="mr-2 h-4 w-4" />
               Volver
             </Link>
