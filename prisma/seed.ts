@@ -43,55 +43,59 @@ const sampleDiagnostics = [
 ];
 
 const sampleProcedures = [
-  { code: "CON-001", name: "Consulta General", category: "Consulta", defaultPrice: 500 },
-  { code: "CON-002", name: "Consulta de Urgencia", category: "Consulta", defaultPrice: 700 },
-  { code: "CON-003", name: "Valoración Ortodóncica", category: "Consulta", defaultPrice: 600 },
-  { code: "DIAG-001", name: "Radiografía Periapical", category: "Diagnóstico", defaultPrice: 200 },
-  { code: "DIAG-002", name: "Radiografía Panorámica", category: "Diagnóstico", defaultPrice: 500 },
-  { code: "DIAG-003", name: "Radiografía Cefalométrica", category: "Diagnóstico", defaultPrice: 600 },
-  { code: "DIAG-004", name: "Tomografía CBCT", category: "Diagnóstico", defaultPrice: 2500 },
-  { code: "PREV-001", name: "Profilaxis (Limpieza Dental)", category: "Preventivo", defaultPrice: 600 },
-  { code: "PREV-002", name: "Aplicación de Flúor", category: "Preventivo", defaultPrice: 300 },
-  { code: "PREV-003", name: "Selladores de Fosetas y Fisuras", category: "Preventivo", defaultPrice: 350 },
-  { code: "OP-001", name: "Resina Simple (1 superficie)", category: "Operatoria", defaultPrice: 600 },
-  { code: "OP-002", name: "Resina Compuesta (2 superficies)", category: "Operatoria", defaultPrice: 900 },
-  { code: "OP-003", name: "Resina Compuesta (3+ superficies)", category: "Operatoria", defaultPrice: 1200 },
-  { code: "OP-004", name: "Incrustación Cerámica", category: "Operatoria", defaultPrice: 3500 },
-  { code: "END-001", name: "Endodoncia Unirradicular", category: "Endodoncia", defaultPrice: 2500 },
-  { code: "END-002", name: "Endodoncia Birradicular", category: "Endodoncia", defaultPrice: 3500 },
-  { code: "END-003", name: "Endodoncia Multirradicular", category: "Endodoncia", defaultPrice: 4500 },
-  { code: "PERIO-001", name: "Raspaje y Alisado Radicular (Cuadrante)", category: "Periodoncia", defaultPrice: 1200 },
-  { code: "PERIO-002", name: "Curetaje Gingival", category: "Periodoncia", defaultPrice: 800 },
-  { code: "PERIO-003", name: "Cirugía Periodontal", category: "Periodoncia", defaultPrice: 3000 },
-  { code: "EXO-001", name: "Extracción Simple", category: "Cirugía", defaultPrice: 800 },
-  { code: "EXO-002", name: "Extracción Quirúrgica (Incluye Cordales)", category: "Cirugía", defaultPrice: 2000 },
-  { code: "EXO-003", name: "Odontectomía Cordal Incluido", category: "Cirugía", defaultPrice: 3500 },
-  { code: "ORT-001", name: "Colocación de Brackets (Arco Completo)", category: "Ortodoncia", defaultPrice: 8000 },
-  { code: "PROT-001", name: "Corona de Metal-Cerámica", category: "Prótesis", defaultPrice: 5000 },
+  { code: "CON-001", name: "Consulta", category: "Consulta", defaultPrice: 230 },
+  { code: "PREV-001", name: "Limpieza Dental", category: "Preventiva", defaultPrice: 550 },
+  { code: "PREV-002", name: "Aplicación de Flúor", category: "Preventiva", defaultPrice: 390 },
+  { code: "PREV-003", name: "Limpieza Niños con Fluor", category: "Preventiva", defaultPrice: 450 },
+  { code: "PREV-004", name: "Selladores de fosetas", category: "Preventiva", defaultPrice: 440 },
+  { code: "REST-001", name: "Restauración de resina", category: "Restauradora", defaultPrice: 830 },
+  { code: "REST-002", name: "Incrustación metálica", category: "Restauradora", defaultPrice: 1840 },
+  { code: "REST-003", name: "Amalgamas", category: "Restauradora", defaultPrice: 430 },
+  { code: "REST-004", name: "Incrustación Estética", category: "Restauradora", defaultPrice: 1860 },
+  { code: "REST-005", name: "Poste colado", category: "Restauradora", defaultPrice: 1460 },
+  { code: "REST-006", name: "Poste estético prefabricado", category: "Restauradora", defaultPrice: 1600 },
+  { code: "REST-007", name: "Curación", category: "Restauradora", defaultPrice: 350 },
+  { code: "END-001", name: "Endodoncia molares", category: "Endodoncia", defaultPrice: 1860 },
+  { code: "END-002", name: "Endodoncia premolares", category: "Endodoncia", defaultPrice: 1320 },
+  { code: "END-003", name: "Endodoncia anteriores", category: "Endodoncia", defaultPrice: 1890 },
+  { code: "END-004", name: "Pulpotomia", category: "Endodoncia", defaultPrice: 720 },
+  { code: "CIR-001", name: "Extracciones", category: "Cirugía", defaultPrice: 670 },
+  { code: "CIR-002", name: "Extracción 3er molar - 1", category: "Cirugía", defaultPrice: 450 },
+  { code: "CIR-003", name: "Extracción 3er molar - 2", category: "Cirugía", defaultPrice: 830 },
+  { code: "CIR-004", name: "Cirugias 3ros molares (consulta externa)", category: "Cirugía", defaultPrice: 3500 },
+  { code: "PROT-001", name: "Coronas Metal Porcelana", category: "Prótesis", defaultPrice: 2980 },
+  { code: "PROT-002", name: "Coronas Zirconia", category: "Prótesis", defaultPrice: 4280 },
+  { code: "PROT-003", name: "Coronita Infantil", category: "Prótesis", defaultPrice: 1340 },
+  { code: "PROT-004", name: "Cementación", category: "Prótesis", defaultPrice: 380 },
+  { code: "PROT-005", name: "Provisional fijo (acrílico - unidad)", category: "Prótesis", defaultPrice: 440 },
+  { code: "PROT-006", name: "Provisional removible unilateral", category: "Prótesis", defaultPrice: 710 },
+  { code: "PROT-007", name: "Provisional removible bilateral", category: "Prótesis", defaultPrice: 830 },
+  { code: "PROT-008", name: "Removible Metálico unilateral", category: "Prótesis", defaultPrice: 715 },
+  { code: "PROT-009", name: "Removible Metálico bilateral", category: "Prótesis", defaultPrice: 830 },
+  { code: "PROT-010", name: "Val plas o Luciton unilateral", category: "Prótesis", defaultPrice: 2300 },
+  { code: "PROT-011", name: "Val plas o Luciton bilateral", category: "Prótesis", defaultPrice: 2830 },
+  { code: "PROT-012", name: "Placa total", category: "Prótesis", defaultPrice: 4800 },
+  { code: "PROT-013", name: "Guardas oclusales", category: "Prótesis", defaultPrice: 560 },
+  { code: "RADIO-001", name: "RX", category: "Radiología", defaultPrice: 150 },
 ];
 
 async function main() {
   console.log("Seeding sample data...");
 
-  const existingProcs = await prisma.procedureCatalog.count();
-  let procedures: Awaited<ReturnType<typeof prisma.procedureCatalog.create>>[];
-  if (existingProcs === 0) {
-    procedures = await Promise.all(
-      sampleProcedures.map((p) =>
-        prisma.procedureCatalog.create({ data: p })
-      )
-    );
-    console.log(`  ✓ Created ${procedures.length} procedure catalog items`);
-  } else {
-    procedures = await prisma.procedureCatalog.findMany();
-    console.log(`  ○ Using ${procedures.length} existing procedure catalog items`);
-  }
+  // Clear all existing data
+  console.log("  Clearing existing data...");
+  await prisma.procedureLineItem.deleteMany();
+  await prisma.procedureCatalog.deleteMany();
+  await prisma.patient.deleteMany();
+  console.log("  ✓ Existing data cleared");
 
-  const existing = await prisma.patient.count();
-  if (existing > 0) {
-    console.log(`Database already has ${existing} patients, skipping seed.`);
-    return;
-  }
+  // Create new procedure catalog
+  const procedures = await Promise.all(
+    sampleProcedures.map((p) =>
+      prisma.procedureCatalog.create({ data: p })
+    )
+  );
+  console.log(`  ✓ Created ${procedures.length} procedure catalog items`);
 
   for (const p of samplePatients) {
     const patient = await prisma.patient.create({
