@@ -79,9 +79,7 @@ export function Hc1Form({ patientId, action, onSuccess, onBack }: Hc1FormProps) 
               fechaHistorial: ch.fechaHistorial ? new Date(ch.fechaHistorial).toISOString().split("T")[0] : "",
               nombrePadre: ch.nombrePadre || undefined,
               nombreMadre: ch.nombreMadre || undefined,
-              telefonoContacto: ch.telefonoContacto || undefined,
               motivoConsulta: ch.motivoConsulta || undefined,
-              antecedentesPersonales: ch.antecedentesPersonales || undefined,
             })) || [],
             citas: res.appointments?.map((a: any) => ({
               id: a.id,

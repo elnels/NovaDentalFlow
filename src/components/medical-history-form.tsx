@@ -38,9 +38,7 @@ const medicalHistorySchema = z.object({
   estadoPago: z.enum(["Pendiente", "Pagado", "Parcial"], {
     required_error: "El estado de pago es requerido",
   }),
-  telefonoContacto: z.string().optional().or(z.literal("")),
   motivoConsulta: z.string().optional().or(z.literal("")),
-  antecedentesPersonales: z.string().optional().or(z.literal("")),
   procedureLineItems: z.string().optional(),
 });
 
@@ -97,9 +95,7 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
             prescripciones: initialData?.prescripciones || "",
             notas: initialData?.notas || "",
             estadoPago: initialData?.estadoPago || "Pendiente",
-            telefonoContacto: initialData?.telefonoContacto || "",
             motivoConsulta: initialData?.motivoConsulta || "",
-            antecedentesPersonales: initialData?.antecedentesPersonales || "",
         },
     });
 
@@ -114,9 +110,7 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
                 prescripciones: initialData.prescripciones || "",
                 notas: initialData.notas || "",
                 estadoPago: initialData.estadoPago || "Pendiente",
-                telefonoContacto: initialData.telefonoContacto || "",
                 motivoConsulta: initialData.motivoConsulta || "",
-                antecedentesPersonales: initialData.antecedentesPersonales || "",
             });
             clearErrorState();
         }
@@ -252,20 +246,6 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
 
                     <FormField
                         control={form.control}
-                        name="telefonoContacto"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Teléfono de Contacto</FormLabel>
-                                <FormControl>
-                                    <Input placeholder="Número de teléfono de contacto..." {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-
-                    <FormField
-                        control={form.control}
                         name="motivoConsulta"
                         render={({ field }) => (
                             <FormItem>
@@ -273,24 +253,6 @@ export function MedicalHistoryForm({ action, initialData, onSuccess, onCancel, p
                                 <FormControl>
                                     <Textarea
                                         placeholder="Describa el motivo de la consulta..."
-                                        className="resize-none"
-                                        {...field}
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-
-                    <FormField
-                        control={form.control}
-                        name="antecedentesPersonales"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Antecedentes Personales</FormLabel>
-                                <FormControl>
-                                    <Textarea
-                                        placeholder="Antecedentes médicos del paciente..."
                                         className="resize-none"
                                         {...field}
                                     />

@@ -39,9 +39,7 @@ export interface ClinicalHistory {
   notas: string;
   costoTratamiento: string;
   estadoPago: string;
-  telefonoContacto?: string;
   motivoConsulta?: string;
-  antecedentesPersonales?: string;
   idDoctor?: string;
   procedureLineItems?: ProcedureLineItem[];
   cancelled?: boolean;

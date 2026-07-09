@@ -12,8 +12,6 @@ import {
   MessageSquare,
   DollarSign,
   CreditCard,
-  Phone,
-  User,
   AlertCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -155,11 +153,7 @@ function RecordCard({
               </Badge>
             }
           />
-          {record.telefonoContacto && <InfoRow label="Teléfono de Contacto" value={record.telefonoContacto} />}
           {record.motivoConsulta && <InfoRow label="Motivo de Consulta" value={record.motivoConsulta} />}
-          {record.antecedentesPersonales && (
-            <InfoRow label="Antecedentes Personales" value={record.antecedentesPersonales} />
-          )}
         </div>
       </CardContent>
     </Card>
@@ -320,9 +314,7 @@ export function HistorialView({
                 prescripciones: editingRecord.prescripciones,
                 notas: editingRecord.notas,
                 estadoPago: editingRecord.estadoPago as "Pendiente" | "Pagado" | "Parcial" | "Cancelado",
-                telefonoContacto: editingRecord.telefonoContacto,
                 motivoConsulta: editingRecord.motivoConsulta,
-                antecedentesPersonales: editingRecord.antecedentesPersonales,
                 procedureLineItems: editingRecord.procedureLineItems
                   ? JSON.stringify(
                       editingRecord.procedureLineItems.map((pli) => ({

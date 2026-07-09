@@ -222,11 +222,7 @@ export function HistorialTable({ data, onUpdateField, onDeleteHistorial, onAddHi
     prescripciones: '',
     notas: '',
     estadoPago: 'Pendiente',
-    nombrePadre: '',
-    nombreMadre: '',
-    telefonoContacto: '',
     motivoConsulta: '',
-    antecedentesPersonales: ''
   });
   const { toast } = useToast();
 
@@ -260,11 +256,7 @@ export function HistorialTable({ data, onUpdateField, onDeleteHistorial, onAddHi
         prescripciones: '',
         notas: '',
         estadoPago: 'Pendiente',
-        nombrePadre: '',
-        nombreMadre: '',
-        telefonoContacto: '',
         motivoConsulta: '',
-        antecedentesPersonales: ''
       });
       toast({
         title: "Historial agregado",
@@ -382,36 +374,9 @@ export function HistorialTable({ data, onUpdateField, onDeleteHistorial, onAddHi
                 sx={{ gridColumn: 'span 2' }}
               />
               <TextField
-                label="Nombre del Padre"
-                value={newHistorial.nombrePadre}
-                onChange={(e) => setNewHistorial({ ...newHistorial, nombrePadre: e.target.value })}
-                fullWidth
-              />
-              <TextField
-                label="Nombre de la Madre"
-                value={newHistorial.nombreMadre}
-                onChange={(e) => setNewHistorial({ ...newHistorial, nombreMadre: e.target.value })}
-                fullWidth
-              />
-              <TextField
-                label="Teléfono de Contacto"
-                value={newHistorial.telefonoContacto}
-                onChange={(e) => setNewHistorial({ ...newHistorial, telefonoContacto: e.target.value })}
-                fullWidth
-              />
-              <TextField
                 label="Motivo de Consulta"
                 value={newHistorial.motivoConsulta}
                 onChange={(e) => setNewHistorial({ ...newHistorial, motivoConsulta: e.target.value })}
-                multiline
-                rows={2}
-                fullWidth
-                sx={{ gridColumn: 'span 2' }}
-              />
-              <TextField
-                label="Antecedentes Personales"
-                value={newHistorial.antecedentesPersonales}
-                onChange={(e) => setNewHistorial({ ...newHistorial, antecedentesPersonales: e.target.value })}
                 multiline
                 rows={2}
                 fullWidth
@@ -524,33 +489,8 @@ export function HistorialTable({ data, onUpdateField, onDeleteHistorial, onAddHi
                 </TableCell>
                 <TableCell>
                   <EditableCell
-                    value={historial.nombrePadre || ''}
-                    onSave={(newValue) => onUpdateField(historial.id, 'nombrePadre', newValue, 'history')}
-                  />
-                </TableCell>
-                <TableCell>
-                  <EditableCell
-                    value={historial.nombreMadre || ''}
-                    onSave={(newValue) => onUpdateField(historial.id, 'nombreMadre', newValue, 'history')}
-                  />
-                </TableCell>
-                <TableCell>
-                  <EditableCell
-                    value={historial.telefonoContacto || ''}
-                    onSave={(newValue) => onUpdateField(historial.id, 'telefonoContacto', newValue, 'history')}
-                  />
-                </TableCell>
-                <TableCell>
-                  <EditableCell
                     value={historial.motivoConsulta || ''}
                     onSave={(newValue) => onUpdateField(historial.id, 'motivoConsulta', newValue, 'history')}
-                    multiline
-                  />
-                </TableCell>
-                <TableCell>
-                  <EditableCell
-                    value={historial.antecedentesPersonales || ''}
-                    onSave={(newValue) => onUpdateField(historial.id, 'antecedentesPersonales', newValue, 'history')}
                     multiline
                   />
                 </TableCell>
@@ -632,36 +572,9 @@ export function HistorialTable({ data, onUpdateField, onDeleteHistorial, onAddHi
               sx={{ gridColumn: 'span 2' }}
             />
             <TextField
-              label="Nombre del Padre"
-              value={newHistorial.nombrePadre}
-              onChange={(e) => setNewHistorial({ ...newHistorial, nombrePadre: e.target.value })}
-              fullWidth
-            />
-            <TextField
-              label="Nombre de la Madre"
-              value={newHistorial.nombreMadre}
-              onChange={(e) => setNewHistorial({ ...newHistorial, nombreMadre: e.target.value })}
-              fullWidth
-            />
-            <TextField
-              label="Teléfono de Contacto"
-              value={newHistorial.telefonoContacto}
-              onChange={(e) => setNewHistorial({ ...newHistorial, telefonoContacto: e.target.value })}
-              fullWidth
-            />
-            <TextField
               label="Motivo de Consulta"
               value={newHistorial.motivoConsulta}
               onChange={(e) => setNewHistorial({ ...newHistorial, motivoConsulta: e.target.value })}
-              multiline
-              rows={2}
-              fullWidth
-              sx={{ gridColumn: 'span 2' }}
-            />
-            <TextField
-              label="Antecedentes Personales"
-              value={newHistorial.antecedentesPersonales}
-              onChange={(e) => setNewHistorial({ ...newHistorial, antecedentesPersonales: e.target.value })}
               multiline
               rows={2}
               fullWidth

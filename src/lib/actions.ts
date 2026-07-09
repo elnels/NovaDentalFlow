@@ -527,9 +527,7 @@ const medicalHistorySchema = z.object({
   notas: z.string().optional().or(z.literal("")),
   costoTratamiento: z.string().optional().or(z.literal("")),
   estadoPago: z.enum(["Pendiente", "Pagado", "Parcial", "Cancelado"], { required_error: "El estado de pago es requerido"}),
-  telefonoContacto: z.string().optional().or(z.literal("")),
   motivoConsulta: z.string().optional().or(z.literal("")),
-  antecedentesPersonales: z.string().optional().or(z.literal("")),
   procedureLineItems: z.string().optional().or(z.literal("")),
 });
 
@@ -804,9 +802,7 @@ export async function addHistorial(prevState: FormState, formData: FormData): Pr
         notas: validatedFields.data.notas || null,
         costoTratamiento: totalFee > 0 ? totalFee : (validatedFields.data.costoTratamiento ? Number(validatedFields.data.costoTratamiento) : null),
         estadoPago: validatedFields.data.estadoPago,
-        telefonoContacto: validatedFields.data.telefonoContacto || null,
         motivoConsulta: validatedFields.data.motivoConsulta || null,
-        antecedentesPersonales: validatedFields.data.antecedentesPersonales || null,
         procedureLineItems: parsedLineItems.length > 0
           ? {
               create: parsedLineItems.map((item: any) => ({
@@ -868,9 +864,7 @@ export async function addHistorialFromObject(historialData: any): Promise<FormSt
         notas: validatedFields.data.notas || null,
         costoTratamiento: totalFee > 0 ? totalFee : (validatedFields.data.costoTratamiento ? Number(validatedFields.data.costoTratamiento) : null),
         estadoPago: validatedFields.data.estadoPago,
-        telefonoContacto: validatedFields.data.telefonoContacto || null,
         motivoConsulta: validatedFields.data.motivoConsulta || null,
-        antecedentesPersonales: validatedFields.data.antecedentesPersonales || null,
         procedureLineItems: parsedLineItems.length > 0
           ? {
               create: parsedLineItems.map((item: any) => ({
@@ -1001,9 +995,7 @@ const historyFieldMap: Record<string, string> = {
   Estado_Pago: "estadoPago",
   Nombre_Padre: "nombrePadre",
   Nombre_Madre: "nombreMadre",
-  Telefono_Contacto: "telefonoContacto",
   Motivo_Consulta: "motivoConsulta",
-  Antecedentes_Personales: "antecedentesPersonales",
 };
 
 const appointmentFieldMap: Record<string, string> = {
@@ -1031,9 +1023,7 @@ export async function updatePatientField(
       updateData[prismaField] =
         fieldName === "Costo_Tratamiento"
           ? Number(newValue)
-          : fieldName === "Telefono_Contacto"
-            ? String(newValue)
-            : newValue;
+          : newValue;
 
       await prisma.clinicalHistory.update({
         where: { id: recordId },
@@ -1121,9 +1111,7 @@ export async function updateHistorial(id: string, prevState: FormState, formData
           notas: validatedFields.data.notas || null,
           costoTratamiento: totalFee > 0 ? totalFee : (validatedFields.data.costoTratamiento ? Number(validatedFields.data.costoTratamiento) : null),
           estadoPago: validatedFields.data.estadoPago,
-          telefonoContacto: validatedFields.data.telefonoContacto || null,
           motivoConsulta: validatedFields.data.motivoConsulta || null,
-          antecedentesPersonales: validatedFields.data.antecedentesPersonales || null,
         },
       });
 

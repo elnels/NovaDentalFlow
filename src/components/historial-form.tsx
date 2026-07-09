@@ -57,9 +57,7 @@ const historialSchema = z.object({
   prescripciones: z.string().optional(),
   notas: z.string().optional(),
   estadoPago: z.enum(["Pendiente", "Pagado", "Parcial", "Cancelado"]),
-  telefonoContacto: z.string().optional(),
   motivoConsulta: z.string().optional(),
-  antecedentesPersonales: z.string().optional(),
   procedureLineItems: z.string().optional(),
 });
 
@@ -122,9 +120,7 @@ export function HistorialForm({
       prescripciones: initialData?.prescripciones || "",
       notas: initialData?.notas || "",
       estadoPago: (initialData?.estadoPago as "Pendiente" | "Pagado" | "Parcial" | "Cancelado") || "Pendiente",
-      telefonoContacto: initialData?.telefonoContacto || "",
       motivoConsulta: initialData?.motivoConsulta || "",
-      antecedentesPersonales: initialData?.antecedentesPersonales || "",
     },
   });
 
@@ -411,41 +407,12 @@ export function HistorialForm({
           />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
-            name="telefonoContacto"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Teléfono de Contacto</FormLabel>
-                <FormControl>
-                  <Input placeholder="+51 987654321" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="motivoConsulta"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Motivo de Consulta</FormLabel>
-                <FormControl>
-                  <Textarea rows={2} {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
         <FormField
           control={form.control}
-          name="antecedentesPersonales"
+          name="motivoConsulta"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Antecedentes Personales</FormLabel>
+              <FormLabel>Motivo de Consulta</FormLabel>
               <FormControl>
                 <Textarea rows={2} {...field} />
               </FormControl>
