@@ -807,6 +807,26 @@ Replaced all 25 old seed procedures with 34 real procedures matching the clinic'
 - Old categories removed: Diagnóstico, Operatoria, Periodoncia, Ortodoncia, Estética
 - **Commit**: `5797710`
 
+### 46. `fix/remove-redundant-fields-from-historial-form` (merged to main)
+Removed `telefonoContacto` and `antecedentesPersonales` from ClinicalHistory (Nuevo Registro modal):
+- **Root cause**: `telefonoContacto` was redundant with `Patient.telefonoPrincipal`/`telefonoAlternativo`; `antecedentesPersonales` was redundant with `ClinicalDetails.antecedentesPersonales` (structured conditions)
+- **Files changed** (7 files, 185 lines removed):
+  - `types/index.ts` — removed from `ClinicalHistory` interface
+  - `historial-form.tsx` — removed from Zod schema, defaults, and UI
+  - `medical-history-form.tsx` — removed from schema, defaults, and UI
+  - `historial-view.tsx` — removed from RecordCard and edit dialog
+  - `historial-table.tsx` — removed from MUI dialogs and editable cells
+  - `hc1-form.tsx` — removed from prefill mapping
+  - `actions.ts` — removed from `medicalHistorySchema`, write calls, and `historyFieldMap`
+- **Commit**: `8c60553`
+
+### 47. `fix/timezone-date-display` (merged to main)
+Fixed date showing one day earlier in Citas tab due to UTC-to-local timezone shift:
+- **Root cause**: `formatDateDisplay` used `parseISO(dateStr)` which interprets `2026-07-13T00:00:00.000Z` as midnight UTC. In Mexico's UTC-6 timezone, this renders as `12/07/2026` (6 PM previous day).
+- **Fix**: Parse date string components directly (`dateStr.split("T")[0].split("-")`) and construct a local `Date`, avoiding timezone conversion entirely. Same pattern already used in `patients-table.tsx:450-460`.
+- **File**: `src/lib/formatDate.ts`
+- **Commit**: `0856406`
+
 ## Branch Status
 - Fixed `JSX.IntrinsicElements` error by running `npm install`
 - Confirmed no unit test framework exists in the project
