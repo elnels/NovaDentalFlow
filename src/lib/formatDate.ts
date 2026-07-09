@@ -1,9 +1,11 @@
-import { format, parseISO } from "date-fns";
+import { format } from "date-fns";
 import { es } from "date-fns/locale";
 
 export function formatDateDisplay(dateStr: string): string {
   if (!dateStr) return "-";
-  return format(parseISO(dateStr), "dd/MM/yyyy", { locale: es });
+  const [year, month, day] = dateStr.split("T")[0].split("-");
+  const date = new Date(Number(year), Number(month) - 1, Number(day));
+  return format(date, "dd/MM/yyyy", { locale: es });
 }
 
 export function formatTodayDate(): string {
