@@ -276,6 +276,34 @@ export function HistorialForm({
           )}
         />
 
+        <FormField
+          control={form.control}
+          name="prescripciones"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Prescripciones</FormLabel>
+              <FormControl>
+                <Textarea rows={2} {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="notas"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Observaciones Adicionales</FormLabel>
+              <FormControl>
+                <Textarea rows={2} {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <FormLabel className="text-base font-semibold">Procedimientos</FormLabel>
@@ -382,34 +410,6 @@ export function HistorialForm({
             )}
           />
         </div>
-
-        <FormField
-          control={form.control}
-          name="prescripciones"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Prescripciones</FormLabel>
-              <FormControl>
-                <Textarea rows={2} {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="notas"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Observaciones Adicionales</FormLabel>
-              <FormControl>
-                <Textarea rows={2} {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <FormField
