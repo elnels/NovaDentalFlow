@@ -13,6 +13,33 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  nextjs:
+    build: .
+    container_name: novadentalflow-app
+    ports:
+      - "9004:9004"
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/novadentalflow
+      DB_PASSWORD: postgres
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_USER: postgres
+      DB_NAME: novadentalflow
+      TIMEZONE: America/Mexico_City
+      NEXT_PUBLIC_GOOGLE_CALENDAR_ID: ${NEXT_PUBLIC_GOOGLE_CALENDAR_ID:-}
+      GOOGLE_APPLICATION_CREDENTIALS: /app/gcp-key.json
+    volumes:
+      - ./gcp-service-account-key.json:/app/gcp-key.json
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
 
 volumes:
   pgdata:

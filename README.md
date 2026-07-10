@@ -1,118 +1,116 @@
 # DentalFlow 🦷
 
-**Una plataforma de gestión de pacientes y citas, open-source y gratuita, diseñada para consultorios dentales modernos. Creada con Next.js y PostgreSQL.**
+**An open-source patient and appointment management platform, designed for modern dental clinics. Built with Next.js and PostgreSQL.**
 
 ---
 
-### ✨ Descripción del Proyecto
+### ✨ Project Description
 
-**DentalFlow** es una aplicación web intuitiva y potente que simplifica la administración de un consultorio dental. Permite registrar pacientes, agendar citas y llevar un historial clínico detallado, todo desde una interfaz limpia y accesible.
+**DentalFlow** is an intuitive and powerful web application that simplifies dental office administration. Register patients, schedule appointments, and maintain detailed clinical histories — all from a clean, accessible interface.
 
-Utiliza **PostgreSQL como base de datos** corriendo en Docker para un rendimiento confiable y escalable. Este repositorio contiene todo el código fuente y las instrucciones para que puedas desplegar tu propia versión de DentalFlow de forma **completamente gratuita**.
+It uses **PostgreSQL as its database** running in Docker for reliable, scalable performance. This repository contains all the source code and instructions to deploy your own version of DentalFlow **completely free**.
 
-### 🚀 Características Principales
+### 🚀 Key Features
 
-*   **Registro de Pacientes en 3 Pasos:**
-    1.  **Datos Personales:** Captura la información esencial del paciente.
-    2.  **Historial Clínico (6 sub-pasos):** Desde la ficha de revisión (HC1) hasta el odontograma interactivo (HC6) con antecedentes, exploración bucal y más.
-    3.  **Gestión de Citas:** Agenda la primera cita (fecha, hora, doctor).
-*   **Panel de Gestión de Pacientes:**
-    *   Visualiza a todos tus pacientes en una tabla clara, ordenada por la cita más próxima.
-    *   Accede al perfil individual de cada paciente con un solo clic.
-*   **Perfil del Paciente con 5 Pestañas:**
-    *   **Paciente:** Datos personales completos con botón Editar.
-    *   **Historial de Tratamientos:** Registros clínicos en formato de tarjetas.
-    *   **Citas:** Calendario de citas programadas.
-    *   **Historia Clínica:** HC1–HC5 en secciones editables vía diálogos.
-    *   **Odontograma:** Interactivo en modo oscuro con panel de 3 pestañas (Estado/Notas/Historial).
-*   **Odontograma Interactivo:** Selecciona dientes, aplica estados (caries, obturado, corona, etc.) por superficie vía SVG interactivo. Soporte para dientes temporales. Guardado/carga desde la base de datos.
-*   **Catálogo de Procedimientos:** Administre precios y procedimientos desde una página CRUD dedicada (`/catalogo-procedimientos`). Incluye 25 procedimientos comunes pre-cargados.
-*   **Costos por Procedimiento:** En lugar de un costo único por visita, los tratamientos ahora se registran como una lista detallada de procedimientos con cantidades, honorarios y descuentos — el total se calcula automáticamente.
-*   **Selección Inteligente de Procedimientos:** Componente `ProcedurePicker` con búsqueda por nombre/código para agregar procedimientos rápidamente desde el catálogo.
-*   **Historial Clínico en 6 Sub-pasos:** HC1 (Revisión), HC2 (Antecedentes Personales), HC3 (Heredo-Familiares), HC4 (No Patológicos), HC5 (Exploración Bucal), HC6 (Odontograma).
-*   **Base de datos local con PostgreSQL:** Datos persistentes y consultas eficientes a través de Prisma ORM.
-*   **Sincronización con Google Calendar:** Opcional, bidireccional para citas.
+*   **3-Step Patient Registration:**
+    1.  **Personal Data:** Capture essential patient information.
+    2.  **Clinical History (6 sub-steps):** From the initial checkup form (HC1) to the interactive odontogram (HC6) with history, oral examination, and more.
+    3.  **Appointment Management:** Schedule the first appointment (date, time, doctor).
+*   **Patient Management Panel:**
+    *   View all patients in a clear table, sorted by next upcoming appointment.
+    *   Access each patient's individual profile with a single click.
+*   **Patient Profile with 5 Tabs:**
+    *   **Patient:** Full personal data with Edit button.
+    *   **Treatment History:** Clinical records in card format.
+    *   **Appointments:** Calendar of scheduled appointments.
+    *   **Clinical History:** HC1–HC5 in editable sections via dialogs.
+    *   **Odontogram:** Interactive dark-mode chart with a 3-tab panel (Status/Notes/History).
+*   **Interactive Odontogram:** Select teeth, apply states (caries, filled, crown, etc.) by surface via interactive SVG. Supports deciduous teeth. Save/load from the database.
+*   **Procedure Catalog:** Manage prices and procedures from a dedicated CRUD page (`/catalogo-procedimientos`). Includes 34 pre-loaded common procedures.
+*   **Per-Procedure Costs:** Instead of a single cost per visit, treatments are recorded as a detailed list of procedures with quantities, fees, and discounts — the total is calculated automatically.
+*   **Smart Procedure Selection:** `ProcedurePicker` component with name/code search to quickly add procedures from the catalog.
+*   **Clinical History in 6 Sub-steps:** HC1 (Review), HC2 (Personal History), HC3 (Family History), HC4 (Non-Pathological), HC5 (Oral Examination), HC6 (Odontogram).
+*   **Local PostgreSQL Database:** Persistent data and efficient queries via Prisma ORM.
+*   **Google Calendar Sync:** Optional bidirectional sync for appointments.
 
-### 🛠️ Stack Tecnológico
+### 🛠️ Tech Stack
 
-*   **Framework Frontend:** [Next.js](https://nextjs.org/)
-*   **Librería UI:** [React](https://reactjs.org/)
-*   **Estilos:** [Tailwind CSS](https://tailwindcss.com/)
-*   **Base de Datos:** [PostgreSQL](https://www.postgresql.org/) via [Docker](https://www.docker.com/)
-*   **Alojamiento:** Local con Docker
+*   **Frontend Framework:** [Next.js](https://nextjs.org/)
+*   **UI Library:** [React](https://reactjs.org/)
+*   **Styling:** [Tailwind CSS](https://tailwindcss.com/)
+*   **Database:** [PostgreSQL](https://www.postgresql.org/) via [Docker](https://www.docker.com/)
+*   **Hosting:** Local with Docker
 
 ---
 
-## ⚙️ Guía de Instalación y Despliegue
+## ⚙️ Setup & Deployment Guide
 
-Sigue estos pasos para tener tu propia versión de DentalFlow funcionando en minutos.
+Follow these steps to get your own DentalFlow instance running in minutes.
 
-### **Paso 1: Configurar la Base de Datos (PostgreSQL con Docker)**
+### **Step 1: Set Up the Database (PostgreSQL with Docker)**
 
-1.  **Instala Docker Desktop** en tu máquina si no lo tienes (https://www.docker.com/products/docker-desktop/).
+1.  **Install Docker Desktop** on your machine if you don't have it (https://www.docker.com/products/docker-desktop/).
 
-2.  **Inicia el contenedor de PostgreSQL:**
+2.  **Start the PostgreSQL container:**
 
     ```bash
     docker compose up -d
     ```
 
-    Esto creará un contenedor con PostgreSQL 16 en el puerto `5432`.
+    This creates a PostgreSQL 16 container on port `5432`.
 
-3.  **Ejecuta las migraciones de Prisma:**
+3.  **Run Prisma migrations:**
 
     ```bash
     npx prisma migrate dev
     ```
 
-4.  **(Opcional) Siembra datos de ejemplo:**
+4.  **(Optional) Seed sample data:**
 
     ```bash
     npx prisma db seed
     ```
 
-### **Paso 2: Configurar el Proyecto Frontend (Next.js)**
+### **Step 2: Set Up the Frontend (Next.js)**
 
-1.  **Clona el Repositorio:**
-    *   Abre una terminal en tu computadora y ejecuta el siguiente comando:
+1.  **Clone the Repository:**
+    *   Open a terminal and run:
       ```bash
-      git clone https://github.com/tu-usuario/dentalflow.git
+      git clone https://github.com/your-username/dentalflow.git
       cd dentalflow
       ```
 
-2.  **Instala las Dependencias:**
+2.  **Install Dependencies:**
     ```bash
     npm install
     ```
 
-3.  **Actualiza tu Proyecto en GitHub:**
-    *   Después de hacer cambios, usa estos comandos para subir tus actualizaciones a tu repositorio.
+3.  **Update Your GitHub Project:**
+    *   After making changes, use these commands to push updates.
 
-    *   **Paso A: Prepara los archivos**
+    *   **Step A: Stage files**
         ```bash
-        # El punto (.) agrega todos los archivos modificados
+        # The dot (.) stages all modified files
         git add .
         ```
 
-    *   **Paso B: Guarda los cambios con un mensaje**
+    *   **Step B: Commit changes with a message**
         ```bash
-        # El mensaje describe el cambio que hiciste
-        git commit -m "Actualizo el archivo README"
+        # The message describes what you changed
+        git commit -m "Update README file"
         ```
 
-    *   **Paso C: Sube los cambios a GitHub**
+    *   **Step C: Push changes to GitHub**
         ```bash
-        # Esto envía tus cambios a la nube
+        # This sends your changes to the cloud
         git push
         ```
 
-### **Paso 3: Ejecutar el Proyecto Localmente**
+### **Step 3: Run the Project Locally**
 
-Sigue estos pasos para ejecutar DentalFlow en tu máquina local:
+1.  **Create the environment file**
 
-1.  **Crear el archivo de entorno**
-
-    Copia `.env.example` a `.env` o crea el archivo con las siguientes variables:
+    Copy `.env.example` to `.env` or create the file with the following variables:
 
     ```bash
     DATABASE_URL=postgresql://postgres:postgres@localhost:5432/novadentalflow
@@ -120,125 +118,125 @@ Sigue estos pasos para ejecutar DentalFlow en tu máquina local:
     TIMEZONE=America/Mexico_City
     ```
 
-2.  **Configurar el Calendario (Opcional)**
+2.  **Configure Calendar (Optional)**
 
-    Si deseas usar la sincronización con Google Calendar, agrega el ID de tu calendario al archivo `.env`:
+    To use Google Calendar sync, add your calendar ID to `.env`:
 
     ```bash
-    NEXT_PUBLIC_GOOGLE_CALENDAR_ID=tu-calendario@gmail.com
+    NEXT_PUBLIC_GOOGLE_CALENDAR_ID=your-calendar@gmail.com
     ```
 
-    También necesitas un archivo de credenciales de servicio de Google (`gcp-service-account-key.json`) en la raíz del proyecto y configurar `GOOGLE_APPLICATION_CREDENTIALS` en `.env`.
+    You also need a Google service account key file (`gcp-service-account-key.json`) in the project root and set `GOOGLE_APPLICATION_CREDENTIALS` in `.env`.
 
-    Luego comparte tu calendario con el email de la cuenta de servicio desde la configuración de Google Calendar (el calendario no necesita ser público).
+    Then share your calendar with the service account email from Google Calendar settings (the calendar does not need to be public).
 
-3.  **Instalar dependencias**
+3.  **Install dependencies**
 
-    Ejecuta `npm install`. Si PowerShell bloquea la ejecución de scripts (error con `npm.ps1`), usa una de estas opciones:
+    Run `npm install`. If PowerShell blocks script execution (error with `npm.ps1`), use one of these options:
 
-    - Temporalmente para la sesión actual (PowerShell):
+    - Temporarily for the current session (PowerShell):
       ```powershell
       Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
       npm install
       ```
 
-    - Usar el wrapper de CMD sin cambiar la política:
+    - Use the CMD wrapper without changing policy:
       ```powershell
       npm.cmd install
       ```
 
-    - O abrir una terminal `cmd.exe` y ejecutar:
+    - Or open a `cmd.exe` terminal and run:
       ```cmd
       npm install
       ```
 
-4.  **Ejecutar en desarrollo**
+4.  **Run in development mode**
 
-    Inicia el servidor de desarrollo (por defecto escucha en el puerto `9004` según `package.json`):
+    Start the development server (default port `9004` as set in `package.json`):
 
     ```bash
     npm run dev
     ```
 
-    Luego abre `http://localhost:9004` en tu navegador.
+    Then open `http://localhost:9004` in your browser.
 
-5.  **Compilar y ejecutar la versión de producción (opcional)**
+5.  **Build and run production version (optional)**
 
     ```bash
     npm run build
     npm run start
     ```
 
-6.  **Ejecutar pruebas automatizadas**
+6.  **Run automated tests**
 
     ```bash
-    npm test           # ejecutar una vez
-    npm run test:watch # modo vigilancia (watch)
+    npm test           # run once
+    npm run test:watch # watch mode
     ```
 
-7.  **Scripts adicionales**
+7.  **Additional scripts**
 
-    - Para trabajar con `genkit` (si lo usas):
-      - `npm run genkit:dev` — inicia `genkit` con `src/ai/dev.ts`.
-      - `npm run genkit:watch` — lo mismo en modo watch.
+    - For working with `genkit` (if you use it):
+      - `npm run genkit:dev` — starts `genkit` with `src/ai/dev.ts`.
+      - `npm run genkit:watch` — same in watch mode.
 
-Nota: No es necesario cambiar la política de ejecución del sistema de forma permanente; la opción `-Scope Process` solo afecta la sesión actual y es la más segura para desarrollo local.
+Note: No need to permanently change system execution policy; the `-Scope Process` option only affects the current session and is the safest for local development.
 
 ---
 
-### **Nota: Mantener este repositorio solo localmente (no subir)**
+### **Note: Keeping this repository local only (no push)**
 
-Si quieres trabajar en tu copia local y evitar subir cambios al repositorio original, puedes desvincular el `remote` o usar una rama/local-only.
+If you want to work on your local copy and avoid pushing changes to the original repository, you can unlink the `remote` or use a local-only branch.
 
-- Para eliminar la referencia al repositorio remoto (no se podrá hacer `git push` accidentalmente):
+- To remove the remote reference (no accidental `git push`):
 
 ```bash
-# elimina el remote llamado 'origin'
+# removes the remote named 'origin'
 git remote remove origin
 ```
 
-- Si prefieres mantener el `remote` pero evitar pushes accidentales, configura el siguiente alias seguro:
+- If you prefer to keep the `remote` but avoid accidental pushes, configure this safe alias:
 
 ```bash
 git config --local --add remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
 git config --local receive.denyCurrentBranch updateInstead
 ```
 
-- Otra opción: crear un nuevo repositorio privado y enlazarlo como `origin` si más tarde quieres respaldar los cambios:
+- Another option: create a new private repository and link it as `origin` if you later want to back up changes:
 
 ```bash
-git remote add origin https://github.com/tu-usuario/tu-repo-privado.git
+git remote add origin https://github.com/your-username/your-private-repo.git
 git push -u origin main
 ```
 
-Ejecuta estos comandos desde la carpeta del proyecto. Dime si quieres que los ejecute por ti en la terminal o prefieres que te guíe paso a paso.
+Run these commands from the project folder. Let me know if you want me to execute them for you or prefer step-by-step guidance.
 
-### 👨‍💻 Acerca del Desarrollo
+### 👨‍💻 About Development
 
-Este proyecto fue desarrollado por **[BillCodex](https://www.billcodex.com)** como una solución de código abierto para la comunidad de profesionales de la salud.
+This project was developed by **[BillCodex](https://www.billcodex.com)** as an open-source solution for the healthcare professional community.
 
-### 💬 Comentarios y Futuros Proyectos
+### 💬 Feedback & Future Projects
 
-¿Te ha sido útil esta plataforma? ¿Tienes alguna sugerencia? ¡Házmelo saber!
+Was this platform useful? Do you have any suggestions? Let me know!
 
-Déjame un comentario o abre un *issue* en GitHub. ¿Qué otro tipo de proyecto te gustaría que construyéramos y compartiéramos con la comunidad?
+Leave a comment or open an *issue* on GitHub. What other types of projects would you like us to build and share with the community?
 
 ---
 
-### 📄 Licencia
+### 📄 License
 
-Este proyecto se distribuye bajo la licencia Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International.
-*Puedes ver el texto completo de la licencia aquí: (https://creativecommons.org/licenses/by-nc-sa/4.0/)*
+This project is distributed under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International license.
+*You can view the full license text here: (https://creativecommons.org/licenses/by-nc-sa/4.0/)*
 
-Esto significa que eres libre de:
+This means you are free to:
 
-Compartir — copiar y redistribuir el material en cualquier medio o formato.
-Adaptar — remezclar, transformar y construir sobre el material.
+Share — copy and redistribute the material in any medium or format.
+Adapt — remix, transform, and build upon the material.
 
-Bajo las siguientes condiciones:
+Under the following terms:
 
-Atribución — Debes dar el crédito apropiado, proporcionar un enlace a la licencia e indicar si se realizaron cambios.
-No Comercial — No puedes utilizar el material para fines comerciales.
-Compartir Igual — Si remezclas, transformas o creas a partir del material, debes distribuir tus contribuciones bajo la misma licencia que el original.
+Attribution — You must give appropriate credit, provide a link to the license, and indicate if changes were made.
+Non-Commercial — You may not use the material for commercial purposes.
+ShareAlike — If you remix, transform, or build upon the material, you must distribute your contributions under the same license as the original.
 
-En resumen: puedes usar y modificar este proyecto para fines personales o educativos, pero no para crear un producto comercial o venderlo.
+In summary: you may use and modify this project for personal or educational purposes, but not to create a commercial product or sell it.
