@@ -402,7 +402,7 @@ export function HistoriaClinicaTemplate({ data }: { data: HistoriaClinicaPrintDa
 
         {/* Footer */}
         <View style={styles.footer}>
-          <Text>{branding.clinicAddress || "Generado por DentalFlow"}</Text>
+          <Text>{branding.clinicAddress || "No Disponible"}</Text>
           <Text>{printDate}</Text>
         </View>
       </Page>
