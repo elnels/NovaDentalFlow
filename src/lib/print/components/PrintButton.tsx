@@ -88,7 +88,7 @@ function buildPrintData(patient: any, patientData: PrintButtonProps["patientData
     }),
     branding: {
       clinicName: process.env.NEXT_PUBLIC_CLINIC_NAME || "DentalFlow",
-      clinicAddress: process.env.CLINIC_ADDRESS || null,
+      clinicAddress: process.env.NEXT_PUBLIC_CLINIC_ADDRESS || null,
       clinicLogoUrl: process.env.NEXT_PUBLIC_CLINIC_LOGO_URL || null,
       clinicLogoBase64: null,
     },
