@@ -246,9 +246,6 @@ export function HistoriaClinicaTemplate({ data }: { data: HistoriaClinicaPrintDa
             <View>
               <Text style={styles.headerTitle}>HISTORIA CLÍNICA</Text>
               <Text style={styles.headerSubtitle}>{branding.clinicName}</Text>
-              {branding.clinicAddress && (
-                <Text style={styles.headerSubtitle}>{branding.clinicAddress}</Text>
-              )}
             </View>
           </View>
           <View style={{ alignItems: "flex-end" }}>
@@ -405,7 +402,7 @@ export function HistoriaClinicaTemplate({ data }: { data: HistoriaClinicaPrintDa
 
         {/* Footer */}
         <View style={styles.footer}>
-          <Text>Generado por DentalFlow</Text>
+          <Text>{branding.clinicAddress || "Generado por DentalFlow"}</Text>
           <Text>{printDate}</Text>
         </View>
       </Page>
