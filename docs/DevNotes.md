@@ -871,3 +871,20 @@ PDF print module for patient clinical history:
 - **Architecture**: Reusable `src/lib/print/` module — easy to add new templates (Treatment History, Patient Summary, etc.)
 - **Key technical**: `@react-pdf/renderer` uses `React.lazy` → must be dynamically imported with `next/dynamic` + `{ ssr: false }`
 - **Branch**: `feat/print-historia-clinica`
+
+### 51. `fix/audit-vulnerabilities` (merged to main)
+Resolved npm vulnerabilities (105 → 3) and fixed all pre-existing typecheck errors (23 → 0):
+- **`next` 15.3.3 → 15.5.21**: Fixed 1 critical + 17 CVEs (cache poisoning, SSRF, RCE, DoS, XSS) plus transitive `sharp` and `postcss`
+- **Removed `genkit` packages**: Deleted `genkit`, `@genkit-ai/googleai`, `@genkit-ai/next`, `genkit-cli` — all were dead code (`src/ai/genkit.ts` and `src/ai/dev.ts` had no imports). Eliminated entire `@opentelemetry/*` chain (~50 transitive vulns)
+- **Deleted**: `src/ai/genkit.ts`, `src/ai/dev.ts`, removed `genkit:dev`/`genkit:watch` scripts
+- **Remaining 3 vulnerabilities**: `postcss` and `sharp` bundled inside `next/node_modules/` — server-side only, not exploitable, must wait for Next.js to patch upstream
+- **Typecheck fixes (21 pre-existing errors)**:
+  - `prisma/seed.ts`: `Number()` conversion for Prisma `Decimal` arithmetic
+  - `edit-patient-modal.tsx`: Removed extra `handlePatientSuccess` arg, converted `esMenor` boolean → string
+  - `patient-form.tsx`: Removed impossible `=== true` comparison on string type
+  - `historial-form.tsx` / `historial-table.tsx`: Removed dead `instanceof Date` branches (always false)
+  - `patients-table.tsx`: Removed extra props (`isEven`, `onPatientSelect`) from `PatientRow`
+  - `api.ts`: Narrowed `error` type before accessing `.name` (`error instanceof Error`)
+  - `ColorLegend.tsx`: Standardized odontograma surface names to Spanish (`buccal` → `vestibular`, `occlusal` → `oclusal`)
+  - `odontograma/index.ts`: Added missing `import type { Tooth }` for local use
+- **Branch**: `fix/audit-vulnerabilities`
