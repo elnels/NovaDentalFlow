@@ -32,6 +32,7 @@ It uses **PostgreSQL as its database** running in Docker for reliable, scalable 
 *   **Clinical History in 6 Sub-steps:** HC1 (Review), HC2 (Personal History), HC3 (Family History), HC4 (Non-Pathological), HC5 (Oral Examination), HC6 (Odontogram).
 *   **Local PostgreSQL Database:** Persistent data and efficient queries via Prisma ORM.
 *   **Google Calendar Sync:** Optional bidirectional sync for appointments.
+*   **PDF Print Module:** Generate and print patient clinical history (Historia Clínica) as PDF. Includes patient data, HC1–HC5 sections, and configurable clinic branding (name/logo).
 
 ### 🛠️ Tech Stack
 
@@ -40,6 +41,7 @@ It uses **PostgreSQL as its database** running in Docker for reliable, scalable 
 *   **Styling:** [Tailwind CSS](https://tailwindcss.com/)
 *   **Database:** [PostgreSQL](https://www.postgresql.org/) via [Docker](https://www.docker.com/)
 *   **Hosting:** Local with Docker
+*   **PDF Generation:** [@react-pdf/renderer](https://react-pdf.org/)
 
 ---
 
