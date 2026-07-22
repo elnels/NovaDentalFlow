@@ -491,8 +491,8 @@ const patientSchema = z.object({
   nombres: z.string().min(2, "El nombre es requerido"),
   apellidos: z.string().min(2, "El apellido es requerido"),
   fechaNacimiento: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Formato de fecha inválida"),
-  telefonoPrincipal: z.string().min(7, "El teléfono principal es requerido"),
-  telefonoAlternativo: z.string().optional(),
+  telefonoPrincipal: z.string().min(1, "El teléfono principal es requerido").regex(/^[\d\s\-()+]+$/, "El teléfono solo puede contener números, espacios, guiones, paréntesis y el signo +").refine((val) => { const d = val.replace(/\D/g, ""); return d.length === 10 || (d.startsWith("52") && d.length === 12); }, "Ingrese un número de teléfono mexicano válido (10 dígitos)"),
+  telefonoAlternativo: z.string().regex(/^[\d\s\-()+]*$/, "El teléfono solo puede contener números, espacios, guiones, paréntesis y el signo +").refine((val) => { const d = val.replace(/\D/g, ""); return d === "" || d.length === 10 || (d.startsWith("52") && d.length === 12); }, "Ingrese un número de teléfono mexicano válido (10 dígitos)").optional(),
   email: z.string().email("Email inválido"),
   direccion: z.string().optional().or(z.literal("")),
   sexo: z.enum(["Masculino", "Femenino", "Otro"]).optional(),
@@ -501,8 +501,8 @@ const patientSchema = z.object({
   escolaridad: z.string().optional().or(z.literal("")),
   nombrePadre: z.string().optional().or(z.literal("")),
   nombreMadre: z.string().optional().or(z.literal("")),
-  telefonoPadre: z.string().optional().or(z.literal("")),
-  telefonoMadre: z.string().optional().or(z.literal("")),
+  telefonoPadre: z.string().regex(/^[\d\s\-()+]*$/, "El teléfono solo puede contener números, espacios, guiones, paréntesis y el signo +").refine((val) => { const d = val.replace(/\D/g, ""); return d === "" || d.length === 10 || (d.startsWith("52") && d.length === 12); }, "Ingrese un número de teléfono mexicano válido (10 dígitos)").optional(),
+  telefonoMadre: z.string().regex(/^[\d\s\-()+]*$/, "El teléfono solo puede contener números, espacios, guiones, paréntesis y el signo +").refine((val) => { const d = val.replace(/\D/g, ""); return d === "" || d.length === 10 || (d.startsWith("52") && d.length === 12); }, "Ingrese un número de teléfono mexicano válido (10 dígitos)").optional(),
   esMenor: z.string().optional(),
 });
 

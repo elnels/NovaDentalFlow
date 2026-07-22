@@ -33,8 +33,8 @@ const patientSchema = z.object({
   nombres: z.string().min(1, "El nombre es requerido").regex(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/, "El nombre solo puede contener letras"),
   apellidos: z.string().min(1, "El apellido es requerido").regex(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/, "El apellido solo puede contener letras"),
   fechaNacimiento: z.string().min(1, "La fecha de nacimiento es requerida"),
-  telefonoPrincipal: z.string().min(7, "El teléfono principal es requerido"),
-  telefonoAlternativo: z.string().optional().or(z.literal("")),
+  telefonoPrincipal: z.string().min(1, "El teléfono principal es requerido").regex(/^[\d\s\-()+]+$/, "El teléfono solo puede contener números, espacios, guiones, paréntesis y el signo +").refine((val) => { const d = val.replace(/\D/g, ""); return d.length === 10 || (d.startsWith("52") && d.length === 12); }, "Ingrese un número de teléfono mexicano válido (10 dígitos)"),
+  telefonoAlternativo: z.string().regex(/^[\d\s\-()+]*$/, "El teléfono solo puede contener números, espacios, guiones, paréntesis y el signo +").refine((val) => { const d = val.replace(/\D/g, ""); return d === "" || d.length === 10 || (d.startsWith("52") && d.length === 12); }, "Ingrese un número de teléfono mexicano válido (10 dígitos)").optional().or(z.literal("")),
   email: z.string().email("Email inválido"),
   direccion: z.string().optional().or(z.literal("")),
   sexo: z.enum(["Masculino", "Femenino", "Otro"]).optional(),
@@ -43,8 +43,8 @@ const patientSchema = z.object({
   escolaridad: z.string().optional().or(z.literal("")),
   nombrePadre: z.string().optional().or(z.literal("")),
   nombreMadre: z.string().optional().or(z.literal("")),
-  telefonoPadre: z.string().optional().or(z.literal("")),
-  telefonoMadre: z.string().optional().or(z.literal("")),
+  telefonoPadre: z.string().regex(/^[\d\s\-()+]*$/, "El teléfono solo puede contener números, espacios, guiones, paréntesis y el signo +").refine((val) => { const d = val.replace(/\D/g, ""); return d === "" || d.length === 10 || (d.startsWith("52") && d.length === 12); }, "Ingrese un número de teléfono mexicano válido (10 dígitos)").optional(),
+  telefonoMadre: z.string().regex(/^[\d\s\-()+]*$/, "El teléfono solo puede contener números, espacios, guiones, paréntesis y el signo +").refine((val) => { const d = val.replace(/\D/g, ""); return d === "" || d.length === 10 || (d.startsWith("52") && d.length === 12); }, "Ingrese un número de teléfono mexicano válido (10 dígitos)").optional(),
   esMenor: z.string().optional(),
 });
 
@@ -301,7 +301,7 @@ export function PatientForm({ action, initialData, onSuccess }: PatientFormProps
                 <FormItem>
                     <FormLabel>Teléfono Principal</FormLabel>
                     <FormControl>
-                    <Input placeholder="+51 987654321" {...field} />
+                    <Input inputMode="tel" placeholder="+52 55 1234 5678" {...field} />
                     </FormControl>
                     <FormMessage />
                 </FormItem>
@@ -314,7 +314,7 @@ export function PatientForm({ action, initialData, onSuccess }: PatientFormProps
                 <FormItem>
                     <FormLabel>Teléfono Alternativo (Opcional)</FormLabel>
                     <FormControl>
-                    <Input placeholder="+51 123456789" {...field} />
+                    <Input inputMode="tel" placeholder="+52 33 9876 5432" {...field} />
                     </FormControl>
                     <FormMessage />
                 </FormItem>
@@ -381,7 +381,7 @@ export function PatientForm({ action, initialData, onSuccess }: PatientFormProps
                       <FormItem>
                         <FormLabel>Teléfono del Padre</FormLabel>
                         <FormControl>
-                          <Input placeholder="+51 987654321" {...field} />
+                          <Input inputMode="tel" placeholder="+52 55 1234 5678" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -407,7 +407,7 @@ export function PatientForm({ action, initialData, onSuccess }: PatientFormProps
                       <FormItem>
                         <FormLabel>Teléfono de la Madre</FormLabel>
                         <FormControl>
-                          <Input placeholder="+51 987654321" {...field} />
+                          <Input inputMode="tel" placeholder="+52 55 1234 5678" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
