@@ -352,8 +352,6 @@ export function PatientsTable({
                     <PatientRow 
                       key={patient.id} 
                       patient={patient} 
-                      isEven={index % 2 === 0}
-                      onPatientSelect={onPatientSelect}
                     />
                   ))}
                 </TableBody>

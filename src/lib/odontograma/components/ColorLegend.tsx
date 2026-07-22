@@ -15,47 +15,47 @@ export const ColorLegend: React.FC<ColorLegendProps> = ({ className = '', theme 
 
   const sampleTeeth: { tooth: Tooth; label: string; chipColorClass: string }[] = [
     {
-      tooth: { id: 1, clinicalId: '1.1', quadrant: 1, position: 1, status: 'healthy', surfaces: { mesial: 'healthy', distal: 'healthy', buccal: 'healthy', lingual: 'healthy', occlusal: 'healthy' } },
+      tooth: { id: 1, clinicalId: '1.1', quadrant: 1, position: 1, status: 'healthy', surfaces: { mesial: 'healthy', distal: 'healthy', vestibular: 'healthy', lingual: 'healthy', oclusal: 'healthy' } },
       label: 'Sano',
       chipColorClass: 'bg-green-600'
     },
     {
-      tooth: { id: 2, clinicalId: '1.2', quadrant: 1, position: 2, status: 'caries', surfaces: { mesial: 'healthy', distal: 'caries', buccal: 'healthy', lingual: 'healthy', occlusal: 'caries' } },
+      tooth: { id: 2, clinicalId: '1.2', quadrant: 1, position: 2, status: 'caries', surfaces: { mesial: 'healthy', distal: 'caries', vestibular: 'healthy', lingual: 'healthy', oclusal: 'caries' } },
       label: 'Caries',
       chipColorClass: 'bg-red-600'
     },
     {
-      tooth: { id: 3, clinicalId: '1.3', quadrant: 1, position: 3, status: 'filled', surfaces: { mesial: 'filled', distal: 'healthy', buccal: 'healthy', lingual: 'healthy', occlusal: 'filled' } },
+      tooth: { id: 3, clinicalId: '1.3', quadrant: 1, position: 3, status: 'filled', surfaces: { mesial: 'filled', distal: 'healthy', vestibular: 'healthy', lingual: 'healthy', oclusal: 'filled' } },
       label: 'Obturado',
       chipColorClass: 'bg-yellow-600'
     },
     {
-      tooth: { id: 4, clinicalId: '1.4', quadrant: 1, position: 4, status: 'crown', surfaces: { mesial: 'crown', distal: 'crown', buccal: 'crown', lingual: 'crown', occlusal: 'crown' } },
+      tooth: { id: 4, clinicalId: '1.4', quadrant: 1, position: 4, status: 'crown', surfaces: { mesial: 'crown', distal: 'crown', vestibular: 'crown', lingual: 'crown', oclusal: 'crown' } },
       label: 'Corona',
       chipColorClass: 'bg-purple-600'
     },
     {
-      tooth: { id: 5, clinicalId: '1.5', quadrant: 1, position: 5, status: 'extracted', surfaces: { mesial: 'extracted', distal: 'extracted', buccal: 'extracted', lingual: 'extracted', occlusal: 'extracted' } },
+      tooth: { id: 5, clinicalId: '1.5', quadrant: 1, position: 5, status: 'extracted', surfaces: { mesial: 'extracted', distal: 'extracted', vestibular: 'extracted', lingual: 'extracted', oclusal: 'extracted' } },
       label: 'Extraído',
       chipColorClass: 'bg-gray-700'
     },
     {
-      tooth: { id: 6, clinicalId: '1.6', quadrant: 1, position: 6, status: 'root_canal', surfaces: { mesial: 'root_canal', distal: 'root_canal', buccal: 'root_canal', lingual: 'root_canal', occlusal: 'root_canal' } },
+      tooth: { id: 6, clinicalId: '1.6', quadrant: 1, position: 6, status: 'root_canal', surfaces: { mesial: 'root_canal', distal: 'root_canal', vestibular: 'root_canal', lingual: 'root_canal', oclusal: 'root_canal' } },
       label: 'Endodoncia',
       chipColorClass: 'bg-indigo-600'
     },
     {
-      tooth: { id: 7, clinicalId: '1.7', quadrant: 1, position: 7, status: 'implant', surfaces: { mesial: 'implant', distal: 'implant', buccal: 'implant', lingual: 'implant', occlusal: 'implant' } },
+      tooth: { id: 7, clinicalId: '1.7', quadrant: 1, position: 7, status: 'implant', surfaces: { mesial: 'implant', distal: 'implant', vestibular: 'implant', lingual: 'implant', oclusal: 'implant' } },
       label: 'Implante',
       chipColorClass: 'bg-blue-600'
     },
     {
-      tooth: { id: 8, clinicalId: '1.8', quadrant: 1, position: 8, status: 'fracture', surfaces: { mesial: 'fracture', distal: 'fracture', buccal: 'fracture', lingual: 'fracture', occlusal: 'fracture' } },
+      tooth: { id: 8, clinicalId: '1.8', quadrant: 1, position: 8, status: 'fracture', surfaces: { mesial: 'fracture', distal: 'fracture', vestibular: 'fracture', lingual: 'fracture', oclusal: 'fracture' } },
       label: 'Fractura',
       chipColorClass: 'bg-orange-600'
     },
     {
-      tooth: { id: 9, clinicalId: '2.1', quadrant: 2, position: 1, status: 'not_erupted', surfaces: { mesial: 'not_erupted', distal: 'not_erupted', buccal: 'not_erupted', lingual: 'not_erupted', occlusal: 'not_erupted' } },
+      tooth: { id: 9, clinicalId: '2.1', quadrant: 2, position: 1, status: 'not_erupted', surfaces: { mesial: 'not_erupted', distal: 'not_erupted', vestibular: 'not_erupted', lingual: 'not_erupted', oclusal: 'not_erupted' } },
       label: 'No erupcionado',
       chipColorClass: 'bg-teal-600'
     }

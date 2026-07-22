@@ -333,7 +333,7 @@ export function HistorialTable({ data, onUpdateField, onDeleteHistorial, onAddHi
                 </MenuItem>
                 {availableCitas.map((cita) => (
                   <MenuItem key={cita.id} value={cita.id}>
-                    {cita.fechaCita instanceof Date ? cita.fechaCita.toLocaleDateString("es-MX", { day: "2-digit", month: "2-digit", year: "numeric" }) : formatDateDisplay(cita.fechaCita)} - {cita.motivoCita}
+                    {formatDateDisplay(cita.fechaCita)} - {cita.motivoCita}
                   </MenuItem>
                 ))}
               </TextField>

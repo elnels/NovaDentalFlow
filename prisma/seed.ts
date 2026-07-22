@@ -123,8 +123,9 @@ async function main() {
     let totalCost = 0;
     const lineItemsData = selected.map((proc) => {
       const qty = Math.floor(Math.random() * 2) + 1;
-      const discount = Math.random() < 0.3 ? Math.floor(proc.defaultPrice * 0.1) : 0;
-      const fee = proc.defaultPrice;
+      const price = Number(proc.defaultPrice);
+      const discount = Math.random() < 0.3 ? Math.floor(price * 0.1) : 0;
+      const fee = price;
       totalCost += (fee - discount) * qty;
       return {
         procedureCatalogId: proc.id,

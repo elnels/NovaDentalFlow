@@ -42,7 +42,7 @@ async function fetchAPI(url: string, returnArrayOnError = true) {
 
     } catch (error) {
         console.error("Error en fetchAPI:", error);
-        if (error.name === 'AbortError') {
+        if (error instanceof Error && error.name === 'AbortError') {
             console.error('Solicitud abortada por timeout');
         }
         // Devuelve el tipo de dato esperado en caso de error para no romper la UI.
