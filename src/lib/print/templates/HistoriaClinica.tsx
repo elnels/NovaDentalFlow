@@ -249,8 +249,10 @@ export function HistoriaClinicaTemplate({ data }: { data: HistoriaClinicaPrintDa
             </View>
           </View>
           <View style={{ alignItems: "flex-end" }}>
-            <Text style={styles.headerSubtitle}>Fecha de impresión</Text>
-            <Text style={{ fontSize: 9, fontWeight: "bold" }}>{printDate}</Text>
+            <Text style={styles.headerSubtitle}>Fecha de creación</Text>
+            <Text style={{ fontSize: 9, fontWeight: "bold" }}>
+              {createdAt ? new Date(createdAt).toLocaleDateString("es-MX", { year: "numeric", month: "long", day: "numeric" }) : "No disponible"}
+            </Text>
           </View>
         </View>
 
