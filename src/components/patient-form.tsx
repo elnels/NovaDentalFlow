@@ -83,7 +83,7 @@ export function PatientForm({ action, initialData, onSuccess }: PatientFormProps
   const [isLoading, setIsLoading] = useState(false);
   const [state, setState] = useState<FormState>({ message: "", success: false });
   const [esMenorEdad, setEsMenorEdad] = useState(
-    initialData?.esMenor === true || initialData?.esMenor === "true"
+    initialData?.esMenor === "true"
   );
 
   // Función para limpiar el estado de error

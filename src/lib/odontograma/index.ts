@@ -6,6 +6,7 @@ export { DetailedToothComponent } from './components/DetailedToothComponent';
 export type { DetailedToothComponentProps } from './components/DetailedToothComponent';
 
 // Types
+import type { Tooth } from './types';
 export type {
   Tooth,
   ToothStatus,

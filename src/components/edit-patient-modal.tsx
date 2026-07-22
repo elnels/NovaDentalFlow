@@ -38,7 +38,7 @@ export function EditPatientModal({
 
   const handleSuccess = () => {
     setOpen(false);
-    handlePatientSuccess(patient.id, 'update');
+    handlePatientSuccess(patient.id);
     onDataUpdate?.();
   };
 
@@ -82,7 +82,7 @@ export function EditPatientModal({
     nombreMadre: patient.nombreMadre ?? "",
     telefonoPadre: patient.telefonoPadre ?? "",
     telefonoMadre: patient.telefonoMadre ?? "",
-    esMenor: patient.esMenor || false,
+    esMenor: patient.esMenor ? "true" : "",
   };
 
   return (
