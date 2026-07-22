@@ -827,6 +827,16 @@ Fixed date showing one day earlier in Citas tab due to UTC-to-local timezone shi
 - **File**: `src/lib/formatDate.ts`
 - **Commit**: `0856406`
 
+### 48. `fix/mexican-phone-validation` (merged to main)
+Added flexible Mexican phone validation to all 4 phone fields:
+- **Problem**: Phone fields accepted any 7+ character string including alphabetic characters, no format enforcement. Placeholders showed `+51` (Peru) instead of `+52` (Mexico).
+- **Validation**: Two-layer check — regex rejects non-phone characters (`/^[\d\s\-()+]+$/`), then `.refine()` verifies exactly 10 digits (or `+52` prefix + 10 digits).
+- **Accepted formats**: `5512345678`, `+52 55 1234 5678`, `55-1234-5678`, `(55) 1234-5678`
+- **Files changed** (2 files):
+  - `src/lib/actions.ts` — server-side Zod `patientSchema`: all 4 phone fields (`telefonoPrincipal`, `telefonoAlternativo`, `telefonoPadre`, `telefonoMadre`)
+  - `src/components/patient-form.tsx` — client-side Zod schema + form inputs: added `inputMode="tel"`, updated placeholders to `+52 55 1234 5678` / `+52 33 9876 5432`
+- **Commit**: `2909068`
+
 ## Branch Status
 - Fixed `JSX.IntrinsicElements` error by running `npm install`
 - Confirmed no unit test framework exists in the project
