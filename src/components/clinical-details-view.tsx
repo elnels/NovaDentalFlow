@@ -21,6 +21,7 @@ import { Hc2Form } from "@/components/hc2-form";
 import { Hc3Form } from "@/components/hc3-form";
 import { Hc4Form } from "@/components/hc4-form";
 import { Hc5Form } from "@/components/hc5-form";
+import { PrintButton } from "@/lib/print";
 import {
   saveHc1Odontologo,
   saveHc2,
@@ -162,6 +163,12 @@ export function ClinicalDetailsView({
 
   return (
     <div className="space-y-6">
+      <div className="flex justify-end">
+        <PrintButton
+          patientId={patientId}
+          patientData={{ clinicalDetails, familyConditions, createdAt }}
+        />
+      </div>
       {formattedDate && (
         <Card>
           <CardContent className="pt-4">
