@@ -842,3 +842,32 @@ Added flexible Mexican phone validation to all 4 phone fields:
 - Confirmed no unit test framework exists in the project
 - Created session notes file `docs/DNIRemovedOptionalAddress.md` → renamed to `docs/DevNotes.md`
 - Added Google Calendar config to README
+
+### 49. `feat/docker-deploy` (merged to main)
+Docker production deployment — run the app as two Linux containers on any Windows PC with Docker Desktop:
+- **`Dockerfile`**: Multi-stage build (builder compiles Next.js, runner runs with Alpine + `postgresql-client` for `pg_isready`)
+- **`entrypoint.sh`**: Wait for PostgreSQL → `prisma migrate deploy` → `prisma db seed` → `node server.js`
+- **`.dockerignore`**: Excludes `node_modules`, `.next`, `.git`, `*.md`, `.env` from Docker context
+- **`docker-compose.yml`**: Added `nextjs` service with `environment:` overrides (`DATABASE_URL` uses service name `postgres` instead of `localhost`, `GOOGLE_APPLICATION_CREDENTIALS` uses Linux path `/app/gcp-key.json`), healthcheck on `postgres` service
+- **`next.config.ts`**: Added `output: "standalone"` for Docker
+- **`.env`**: Never modified — dev workflow unchanged; production values come from `docker-compose.yml`
+- **`docs/deploy-prod.md`**: Full English deployment guide (~400 lines) covering architecture, prerequisites, step-by-step deploy, update workflow, troubleshooting
+- **`README.md`**: Translated from Spanish to English
+- **Key design**: `.env` stays for dev, Docker Compose overrides the 2 values that differ via `environment:` block
+- **Bug fixes during testing**: (1) Added `postgresql-client` for `pg_isready`, (2) Added `COPY prisma.config.ts ./` for Prisma 7.x, (3) Reverted `prisma generate` in builder to run without `prisma.config.ts`
+- **Branch**: `feat/docker-deploy`
+
+### 50. `feat/print-historia-clinica` (merged to main)
+PDF print module for patient clinical history:
+- **`@react-pdf/renderer`** + **`@react-pdf/types`**: Installed for declarative PDF generation
+- **`src/lib/print/types.ts`**: 10 interfaces (`PrintData`, `BrandingConfig`, `Hc1Data`–`Hc5Data`, etc.)
+- **`src/lib/print/config.ts`**: Reads `NEXT_PUBLIC_CLINIC_NAME` / `NEXT_PUBLIC_CLINIC_LOGO_URL` from env
+- **`src/lib/print/utils.ts`**: Spanish date formatting, currency, HC2/HC5 JSON parsers
+- **`src/lib/print/templates/HistoriaClinica.tsx`**: Letter-size (8.5"×11") PDF template with clinic header, patient data, HC1–HC5 sections, footer
+- **`src/lib/print/components/PrintButton.tsx`**: "Imprimir Historia Clínica" button with dynamic import (no SSR), loading state, toast feedback
+- **`src/lib/print/components/PrintPreviewDialog.tsx`**: Dialog with embedded PDF preview via `BlobProvider`, Download and Print actions
+- **`src/components/clinical-details-view.tsx`**: Added PrintButton at top of Historia Clínica tab
+- **`.env.example`**: Added `NEXT_PUBLIC_CLINIC_NAME`, `NEXT_PUBLIC_CLINIC_LOGO_URL` for branding
+- **Architecture**: Reusable `src/lib/print/` module — easy to add new templates (Treatment History, Patient Summary, etc.)
+- **Key technical**: `@react-pdf/renderer` uses `React.lazy` → must be dynamically imported with `next/dynamic` + `{ ssr: false }`
+- **Branch**: `feat/print-historia-clinica`
