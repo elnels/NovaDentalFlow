@@ -323,13 +323,13 @@ export function HistoriaClinicaTemplate({ data }: { data: HistoriaClinicaPrintDa
 
         {/* HC1 */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>HC1 — ODONTÓLOGO</Text>
+          <Text style={styles.sectionTitle}>ODONTÓLOGO</Text>
           <FieldRow label="Nombre del odontólogo" value={hc1.nombreOdontologo} />
         </View>
 
         {/* HC2 */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>HC2 — ANTECEDENTES PERSONALES</Text>
+          <Text style={styles.sectionTitle}>ANTECEDENTES PERSONALES</Text>
           <FieldRow label="Motivo de consulta" value={hc2.motivoConsulta} />
           <View style={{ marginTop: 4 }}>
             <Text style={{ fontSize: 8, color: "#6b7280", marginBottom: 4 }}>Condiciones presentes:</Text>
@@ -349,13 +349,13 @@ export function HistoriaClinicaTemplate({ data }: { data: HistoriaClinicaPrintDa
 
         {/* HC3 */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>HC3 — ANTECEDENTES HEREDO-FAMILIARES</Text>
+          <Text style={styles.sectionTitle}>ANTECEDENTES HEREDO-FAMILIARES</Text>
           <HC3Section conditions={hc3} />
         </View>
 
         {/* HC4 */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>HC4 — ANTECEDENTES PERSONALES NO PATOLÓGICOS</Text>
+          <Text style={styles.sectionTitle}>ANTECEDENTES PERSONALES NO PATOLÓGICOS</Text>
           <FieldRow label="¿Bajo tratamiento médico?" value={hc4.bajoTratamientoMedico ? "Sí" : "No"} />
           {hc4.bajoTratamientoMedico && hc4.motivo && (
             <FieldRow label="Motivo" value={hc4.motivo} />
@@ -396,7 +396,7 @@ export function HistoriaClinicaTemplate({ data }: { data: HistoriaClinicaPrintDa
 
         {/* HC5 */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>HC5 — EXPLORACIÓN BUCAL</Text>
+          <Text style={styles.sectionTitle}>EXPLORACIÓN BUCAL</Text>
           <HC5Section hc5={hc5} />
         </View>
 
