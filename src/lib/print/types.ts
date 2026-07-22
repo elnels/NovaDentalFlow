@@ -1,5 +1,6 @@
 export interface BrandingConfig {
   clinicName: string;
+  clinicAddress: string | null;
   clinicLogoUrl: string | null;
   clinicLogoBase64: string | null;
 }

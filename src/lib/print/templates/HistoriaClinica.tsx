@@ -246,6 +246,9 @@ export function HistoriaClinicaTemplate({ data }: { data: HistoriaClinicaPrintDa
             <View>
               <Text style={styles.headerTitle}>HISTORIA CLÍNICA</Text>
               <Text style={styles.headerSubtitle}>{branding.clinicName}</Text>
+              {branding.clinicAddress && (
+                <Text style={styles.headerSubtitle}>{branding.clinicAddress}</Text>
+              )}
             </View>
           </View>
           <View style={{ alignItems: "flex-end" }}>
