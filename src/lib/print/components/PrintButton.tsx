@@ -41,6 +41,7 @@ function buildPrintData(patient: any, patientData: PrintButtonProps["patientData
       escolaridad: patient.escolaridad,
       nombrePadre: patient.nombrePadre,
       nombreMadre: patient.nombreMadre,
+      fechaRegistro: patient.fechaRegistro,
     },
     hc1: {
       nombreOdontologo: patientData.clinicalDetails?.nombreOdontologo || null,

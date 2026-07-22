@@ -19,8 +19,9 @@ export interface PatientPrintData {
   estadoCivil: string | null;
   ocupacion: string | null;
   escolaridad: string | null;
-  nombrePadre: string | null;
-  nombreMadre: string | null;
+    nombrePadre: string | null;
+    nombreMadre: string | null;
+    fechaRegistro: string;
 }
 
 export interface Hc1Data {
