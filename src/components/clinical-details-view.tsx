@@ -173,7 +173,7 @@ export function ClinicalDetailsView({
         <Card>
           <CardContent className="pt-4">
             <div className="mx-auto max-w-2xl">
-              <InfoRow label="Fecha de Creación" value={formattedDate} />
+              <InfoRow label="Fecha de Registro" value={formattedDate} />
             </div>
           </CardContent>
         </Card>
