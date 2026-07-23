@@ -15,7 +15,7 @@ const samplePatients = [
     telefonoPrincipal: "555-0101",
     email: "juan.perez@email.com",
     sexo: "Masculino",
-    fechaRegistro: new Date("2026-03-15"),
+    fechaRegistro: new Date("2026-03-15T12:00:00.000Z"),
   },
   {
     dni: "23456789",
@@ -24,7 +24,7 @@ const samplePatients = [
     telefonoPrincipal: "555-0102",
     email: "maria.lopez@email.com",
     sexo: "Femenino",
-    fechaRegistro: new Date("2026-04-20"),
+    fechaRegistro: new Date("2026-04-20T12:00:00.000Z"),
   },
   {
     dni: "34567890",
@@ -33,7 +33,7 @@ const samplePatients = [
     telefonoPrincipal: "555-0103",
     email: "carlos.martinez@email.com",
     sexo: "Masculino",
-    fechaRegistro: new Date("2026-05-10"),
+    fechaRegistro: new Date("2026-05-10T12:00:00.000Z"),
   },
   {
     dni: "99999999",
@@ -42,7 +42,7 @@ const samplePatients = [
     telefonoPrincipal: "555-9999",
     email: "test.paciente@email.com",
     sexo: "Femenino",
-    fechaRegistro: new Date("2026-06-01"),
+    fechaRegistro: new Date("2026-06-01T12:00:00.000Z"),
   },
 ];
 
@@ -113,7 +113,7 @@ async function main() {
     const patient = await prisma.patient.create({
       data: {
         ...p,
-        fechaNacimiento: new Date("1990-01-15"),
+        fechaNacimiento: new Date("1990-01-15T12:00:00.000Z"),
         fechaRegistro: p.fechaRegistro,
         direccion: "Calle Principal 123",
         estado: "Activo",
