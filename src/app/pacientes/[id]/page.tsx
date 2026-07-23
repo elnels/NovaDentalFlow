@@ -177,7 +177,7 @@ export default function PatientDetailPage({
                   patientId={patient.id}
                   clinicalDetails={patient.clinicalDetails}
                   familyConditions={patient.familyConditions}
-                  createdAt={patient.historialClinico?.[0]?.fechaHistorial}
+                  createdAt={patient.fechaRegistro}
                   onDataUpdate={handleDataUpdate}
                 />
               </TabsContent>
