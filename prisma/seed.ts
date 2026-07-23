@@ -15,6 +15,7 @@ const samplePatients = [
     telefonoPrincipal: "555-0101",
     email: "juan.perez@email.com",
     sexo: "Masculino",
+    fechaRegistro: new Date("2026-03-15"),
   },
   {
     dni: "23456789",
@@ -23,6 +24,7 @@ const samplePatients = [
     telefonoPrincipal: "555-0102",
     email: "maria.lopez@email.com",
     sexo: "Femenino",
+    fechaRegistro: new Date("2026-04-20"),
   },
   {
     dni: "34567890",
@@ -31,6 +33,16 @@ const samplePatients = [
     telefonoPrincipal: "555-0103",
     email: "carlos.martinez@email.com",
     sexo: "Masculino",
+    fechaRegistro: new Date("2026-05-10"),
+  },
+  {
+    dni: "99999999",
+    nombres: "Test",
+    apellidos: "Paciente Junio",
+    telefonoPrincipal: "555-9999",
+    email: "test.paciente@email.com",
+    sexo: "Femenino",
+    fechaRegistro: new Date("2026-06-01"),
   },
 ];
 
@@ -102,6 +114,7 @@ async function main() {
       data: {
         ...p,
         fechaNacimiento: new Date("1990-01-15"),
+        fechaRegistro: p.fechaRegistro,
         direccion: "Calle Principal 123",
         estado: "Activo",
       },
