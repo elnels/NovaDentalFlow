@@ -29,7 +29,7 @@ It uses **PostgreSQL as its database** running in Docker for reliable, scalable 
 *   **Procedure Catalog:** Manage prices and procedures from a dedicated CRUD page (`/catalogo-procedimientos`). Includes 34 pre-loaded common procedures.
 *   **Per-Procedure Costs:** Instead of a single cost per visit, treatments are recorded as a detailed list of procedures with quantities, fees, and discounts — the total is calculated automatically.
 *   **Smart Procedure Selection:** `ProcedurePicker` component with name/code search to quickly add procedures from the catalog.
-*   **Clinical History in 6 Sub-steps:** HC1 (Review), HC2 (Personal History), HC3 (Family History), HC4 (Non-Pathological), HC5 (Oral Examination), HC6 (Odontogram).
+*   **Clinical History in 6 Sub-steps:** HC1 (Review), HC2 (Personal History), HC3 (Family History), HC4 (Non-Pathological), HC5 (Oral Examination), HC6 (Odontogram). Includes a PDF print preview step between HC5 and HC6.
 *   **Local PostgreSQL Database:** Persistent data and efficient queries via Prisma ORM.
 *   **Google Calendar Sync:** Optional bidirectional sync for appointments.
 *   **PDF Print Module:** Generate and print patient clinical history (Historia Clínica) as PDF. Includes patient data, HC1–HC5 sections, and configurable clinic branding (name/logo).

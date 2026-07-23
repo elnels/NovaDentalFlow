@@ -888,3 +888,13 @@ Resolved npm vulnerabilities (105 → 3) and fixed all pre-existing typecheck er
   - `ColorLegend.tsx`: Standardized odontograma surface names to Spanish (`buccal` → `vestibular`, `occlusal` → `oclusal`)
   - `odontograma/index.ts`: Added missing `import type { Tooth }` for local use
 - **Branch**: `fix/audit-vulnerabilities`
+
+### 52. `feat/wizard-print-preview` (merged to main)
+Added PDF print preview step in registration wizard between HC5 (Exploración Bucal) and HC6 (Odontograma):
+- **`src/lib/print/build-data.ts`** (new): Extracted `buildPrintData` from `PrintButton.tsx` into a shared module so both the profile page and the wizard can use it
+- **`src/lib/print/components/PrintButton.tsx`**: Now imports `buildPrintData` from the shared module instead of defining it locally
+- **`src/components/print-preview-step.tsx`** (new): Wizard step component that fetches patient data via `getPacienteById`, builds print data via `buildPrintData`, and renders the HistoriaClinica PDF preview in an iframe (using `BlobProvider` from `@react-pdf/renderer`, dynamically imported with `ssr: false`). Shows header "Vista Previa — Historia Clinica" with subtitle, scrollable PDF preview, and Regresar/Continuar buttons. Uses `max-w-4xl` layout.
+- **`src/components/sequential-workflow.tsx`**: Added `"printPreview"` to `SubStep` type, updated `subStepIndex` (printPreview=5, odontograma=6). Flow is now: exploracionBucal → printPreview → odontograma. Updated handlers: `handleExploracionBucalSuccess` → printPreview, new `handlePrintPreviewSuccess` → odontograma, new `handleBackFromPrintPreview` → exploracionBucal, `handleBackFromOdontograma` → printPreview. Sub-step counter now shows "X de 6" correctly.
+- **Wizard flow**: HC5 → Print Preview → HC6 → Appointment. The preview shows HC1–HC5 data (no odontograma yet). No data is saved at the preview step — it's read-only.
+- **Key design**: `buildPrintData` is now in `src/lib/print/build-data.ts`, importable by both client and server components. The print preview step reuses the same `PDFPreviewFrame` pattern from `PrintPreviewDialog.tsx`.
+- **Branch**: `feat/wizard-print-preview`

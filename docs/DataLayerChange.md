@@ -189,7 +189,7 @@ When the user skips Historial Clínico during registration, the system creates a
 5. ✅ Build **HC3** step (condition cards with checkboxes + relative checkboxes → `family_conditions`)
 6. ✅ Build **HC4** step (yes/no questions with conditional text fields → `clinical_details`)
 7. ✅ Build **HC5** (Exploración Bucal → `clinical_details.observacionesHc5`) + **HC6** (Odontograma interactivo with full `op-odontogram` library integration → `FloatingToothDetailsCard` with SVG surface selector)
-8. ✅ Wire into workflow — 6-step mini-wizard (HC1 → HC2 → HC3 → HC4 → HC5 → HC6 → Cita)
+8. ✅ Wire into workflow — 6-step mini-wizard (HC1 → HC2 → HC3 → HC4 → HC5 → Print Preview → HC6 → Cita)
 9. Build patient detail tabs — "Ficha Clínica" / "Consultas"
 
 ---
