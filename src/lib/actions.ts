@@ -161,7 +161,7 @@ export async function saveHc4(
         tomaMedicamentos: parsed.tomaMedicamentos ?? false,
         cualesMedicamentos: parsed.cualesMedicamentos || null,
         embarazada: parsed.embarazada ?? false,
-        fechaUltimaMenstruacion: parsed.fechaUltimaMenstruacion ? new Date(parsed.fechaUltimaMenstruacion) : null,
+        fechaUltimaMenstruacion: parsed.fechaUltimaMenstruacion ? new Date(parsed.fechaUltimaMenstruacion + "T12:00:00.000Z") : null,
         transfusiones: parsed.transfusiones ?? false,
         sangradoExcesivo: parsed.sangradoExcesivo ?? false,
         sangradoTiempo: parsed.sangradoTiempo || null,
@@ -182,7 +182,7 @@ export async function saveHc4(
         tomaMedicamentos: parsed.tomaMedicamentos ?? false,
         cualesMedicamentos: parsed.cualesMedicamentos || null,
         embarazada: parsed.embarazada ?? false,
-        fechaUltimaMenstruacion: parsed.fechaUltimaMenstruacion ? new Date(parsed.fechaUltimaMenstruacion) : null,
+        fechaUltimaMenstruacion: parsed.fechaUltimaMenstruacion ? new Date(parsed.fechaUltimaMenstruacion + "T12:00:00.000Z") : null,
         transfusiones: parsed.transfusiones ?? false,
         sangradoExcesivo: parsed.sangradoExcesivo ?? false,
         sangradoTiempo: parsed.sangradoTiempo || null,
@@ -561,7 +561,7 @@ export async function addPatient(prevState: FormState, formData: FormData): Prom
       where: {
         nombres: validatedFields.data.nombres,
         apellidos: validatedFields.data.apellidos,
-        fechaNacimiento: new Date(validatedFields.data.fechaNacimiento),
+        fechaNacimiento: new Date(validatedFields.data.fechaNacimiento + "T12:00:00.000Z"),
         telefonoPrincipal: validatedFields.data.telefonoPrincipal,
       },
     });
@@ -574,7 +574,7 @@ export async function addPatient(prevState: FormState, formData: FormData): Prom
         dni: validatedFields.data.dni || null,
         nombres: validatedFields.data.nombres,
         apellidos: validatedFields.data.apellidos,
-        fechaNacimiento: new Date(validatedFields.data.fechaNacimiento),
+        fechaNacimiento: new Date(validatedFields.data.fechaNacimiento + "T12:00:00.000Z"),
         telefonoPrincipal: validatedFields.data.telefonoPrincipal,
         telefonoAlternativo: validatedFields.data.telefonoAlternativo || null,
         email: validatedFields.data.email,
@@ -617,7 +617,7 @@ export async function updatePatient(id: string, prevState: FormState, formData: 
         dni: validatedFields.data.dni || null,
         nombres: validatedFields.data.nombres,
         apellidos: validatedFields.data.apellidos,
-        fechaNacimiento: new Date(validatedFields.data.fechaNacimiento),
+        fechaNacimiento: new Date(validatedFields.data.fechaNacimiento + "T12:00:00.000Z"),
         telefonoPrincipal: validatedFields.data.telefonoPrincipal,
         telefonoAlternativo: validatedFields.data.telefonoAlternativo || null,
         email: validatedFields.data.email,
@@ -680,7 +680,7 @@ export async function addCita(prevState: FormState, formData: FormData): Promise
     const appointment = await prisma.appointment.create({
       data: {
         patientId: validatedFields.data.patientId,
-        fechaCita: new Date(validatedFields.data.fechaCita),
+        fechaCita: new Date(validatedFields.data.fechaCita + "T12:00:00.000Z"),
         horaInicio: validatedFields.data.horaInicio,
         horaFin: validatedFields.data.horaFin,
         motivoCita: validatedFields.data.motivoCita,
@@ -729,7 +729,7 @@ export async function addCitaFromObject(citaData: any): Promise<FormState> {
     const appointment = await prisma.appointment.create({
       data: {
         patientId: validatedFields.data.patientId,
-        fechaCita: new Date(validatedFields.data.fechaCita),
+        fechaCita: new Date(validatedFields.data.fechaCita + "T12:00:00.000Z"),
         horaInicio: validatedFields.data.horaInicio,
         horaFin: validatedFields.data.horaFin,
         motivoCita: validatedFields.data.motivoCita,
@@ -795,7 +795,7 @@ export async function addHistorial(prevState: FormState, formData: FormData): Pr
       data: {
         patientId: validatedFields.data.patientId,
         appointmentId: validatedFields.data.appointmentId || null,
-        fechaHistorial: new Date(validatedFields.data.fechaHistorial),
+        fechaHistorial: new Date(validatedFields.data.fechaHistorial + "T12:00:00.000Z"),
         diagnostico: validatedFields.data.diagnostico || null,
         tratamiento: validatedFields.data.tratamiento || null,
         prescripciones: validatedFields.data.prescripciones || null,
@@ -857,7 +857,7 @@ export async function addHistorialFromObject(historialData: any): Promise<FormSt
       data: {
         patientId: validatedFields.data.patientId,
         appointmentId: validatedFields.data.appointmentId || null,
-        fechaHistorial: new Date(validatedFields.data.fechaHistorial),
+        fechaHistorial: new Date(validatedFields.data.fechaHistorial + "T12:00:00.000Z"),
         diagnostico: validatedFields.data.diagnostico || null,
         tratamiento: validatedFields.data.tratamiento || null,
         prescripciones: validatedFields.data.prescripciones || null,
@@ -942,7 +942,7 @@ export async function updateCita(id: string, prevState: FormState, formData: For
     await prisma.appointment.update({
       where: { id },
       data: {
-        fechaCita: new Date(validatedFields.data.fechaCita),
+        fechaCita: new Date(validatedFields.data.fechaCita + "T12:00:00.000Z"),
         horaInicio: validatedFields.data.horaInicio,
         horaFin: validatedFields.data.horaFin,
         motivoCita: validatedFields.data.motivoCita,
@@ -1036,7 +1036,7 @@ export async function updatePatientField(
       const updateData: any = {};
       updateData[prismaField] =
         fieldName === "Fecha_Cita"
-          ? new Date(newValue)
+          ? new Date(newValue + "T12:00:00.000Z")
           : fieldName === "ID_Doctor"
             ? String(newValue)
             : newValue;
@@ -1104,7 +1104,7 @@ export async function updateHistorial(id: string, prevState: FormState, formData
       await tx.clinicalHistory.update({
         where: { id },
         data: {
-          fechaHistorial: new Date(validatedFields.data.fechaHistorial),
+          fechaHistorial: new Date(validatedFields.data.fechaHistorial + "T12:00:00.000Z"),
           diagnostico: validatedFields.data.diagnostico || null,
           tratamiento: validatedFields.data.tratamiento || null,
           prescripciones: validatedFields.data.prescripciones || null,
