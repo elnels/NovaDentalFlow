@@ -21,11 +21,12 @@ import { Hc3Form } from "@/components/hc3-form";
 import { Hc4Form } from "@/components/hc4-form";
 import { Hc5Form } from "@/components/hc5-form";
 import { Hc6Form } from "@/components/hc6-form";
+import { PrintPreviewStep } from "@/components/print-preview-step";
 import { addPatient, addCita, saveHc1Odontologo, saveHc2, saveHc3, saveHc4, saveHc5, saveHc6, getPatientById, updatePatient, addEmptyHistorial, type FormState } from "@/lib/actions";
 import type { PatientFormData } from "@/components/patient-form";
 
 type WorkflowStep = "patient" | "hc1" | "clinicalHistory" | "appointment" | "completed";
-type SubStep = "antecedentesPersonales" | "antecedentesHeredoFamiliares" | "antecedentesNoPatologicos" | "exploracionBucal" | "odontograma";
+type SubStep = "antecedentesPersonales" | "antecedentesHeredoFamiliares" | "antecedentesNoPatologicos" | "exploracionBucal" | "printPreview" | "odontograma";
 
 interface StepData {
   patientId?: string;
@@ -73,7 +74,8 @@ function subStepIndex(currentSubStep: SubStep): number {
     case "antecedentesHeredoFamiliares": return 2;
     case "antecedentesNoPatologicos": return 3;
     case "exploracionBucal": return 4;
-    case "odontograma": return 5;
+    case "printPreview": return 5;
+    case "odontograma": return 6;
   }
 }
 
@@ -218,6 +220,11 @@ export function SequentialWorkflow({ onComplete, onClose }: SequentialWorkflowPr
 
   const handleExploracionBucalSuccess = () => {
     setCompletedSubSteps(prev => new Set([...prev, "exploracionBucal"]));
+    setCurrentSubStep("printPreview");
+  };
+
+  const handlePrintPreviewSuccess = () => {
+    setCompletedSubSteps(prev => new Set([...prev, "printPreview"]));
     setCurrentSubStep("odontograma");
   };
 
@@ -235,6 +242,10 @@ export function SequentialWorkflow({ onComplete, onClose }: SequentialWorkflowPr
     setCurrentSubStep("antecedentesNoPatologicos");
   };
 
+  const handleBackFromPrintPreview = () => {
+    setCurrentSubStep("exploracionBucal");
+  };
+
   const handleBackFromAntecedentesHeredoFamiliares = () => {
     setCurrentSubStep("antecedentesPersonales");
   };
@@ -244,7 +255,7 @@ export function SequentialWorkflow({ onComplete, onClose }: SequentialWorkflowPr
   };
 
   const handleBackFromOdontograma = () => {
-    setCurrentSubStep("exploracionBucal");
+    setCurrentSubStep("printPreview");
   };
 
   const handleBackFromAppointment = () => {
@@ -405,6 +416,22 @@ export function SequentialWorkflow({ onComplete, onClose }: SequentialWorkflowPr
               action={saveHc5}
               onSuccess={handleExploracionBucalSuccess}
               onBack={handleBackFromExploracionBucal}
+            />
+          </motion.div>
+        )}
+
+        {currentStep === "clinicalHistory" && stepData.patientId && currentSubStep === "printPreview" && (
+          <motion.div
+            key="printPreview"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.3 }}
+          >
+            <PrintPreviewStep
+              patientId={stepData.patientId}
+              onSuccess={handlePrintPreviewSuccess}
+              onBack={handleBackFromPrintPreview}
             />
           </motion.div>
         )}
