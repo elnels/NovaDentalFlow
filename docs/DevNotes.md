@@ -898,3 +898,21 @@ Added PDF print preview step in registration wizard between HC5 (Exploración Bu
 - **Wizard flow**: HC5 → Print Preview → HC6 → Appointment. The preview shows HC1–HC5 data (no odontograma yet). No data is saved at the preview step — it's read-only.
 - **Key design**: `buildPrintData` is now in `src/lib/print/build-data.ts`, importable by both client and server components. The print preview step reuses the same `PDFPreviewFrame` pattern from `PrintPreviewDialog.tsx`.
 - **Branch**: `feat/wizard-print-preview`
+
+### 53. `fix/print-template-labels` + `fix/hc3-quien-not-saving` (merged to main)
+Three fixes to Historia Clínica print template and HC3 data flow:
+
+**Print template fixes (`HistoriaClinica.tsx`):**
+- Removed DNI field from PDF patient grid (was removed from UI in session 2 but kept in template)
+- Changed "Fecha de creación" label → "Fecha de Registro"
+- Modified `FieldRow` to accept `React.ReactNode` values (for colored elements)
+- Applied green/red `YesNo` color scheme to all 10 HC4 boolean fields
+- Applied green/red `YesNo` color scheme to HC5 pure booleans (`bordeABorde`, `mordidaAbierta`); complex fields (espaciosTerminales, mordidaCruzada, etc.) keep plain text
+
+**HC3 bug fix (`actions.ts:109`):**
+- **Root cause**: Field name mismatch — form sends `quien` but `saveHc3` read `c.relatives` (undefined), so `relatives` column was always saved as `null`
+- **Fix**: Changed `c.relatives` → `c.quien` in `saveHc3`
+- Fixes both the print PDF (missing "Quién?" for Cáncer) and the edit form (not loading "Quién?")
+- Existing patients with the bug need HC3 data re-saved to populate the DB
+
+**DataLayerChange.md**: Fixed `relatives` column description from `{ padre: bool, ... }` to actual stored format (selected relative string)

@@ -150,7 +150,7 @@ Many per patient. HC3 data.
 | condition_name | TEXT | e.g. 'Diabetes', 'HTA', 'Cancer' |
 | has_condition | BOOLEAN | Default false |
 | tipo | TEXT? | For Cancer, Malformaciones |
-| relatives | JSONB | `{ padre: bool, madre: bool, abuelos: bool, hermanos: bool }` |
+| relatives | JSONB | Selected relative string (e.g. "Padre", "Madre", "Ambos padres") |
 | | | UNIQUE(patient_id, condition_name) |
 
 ---
