@@ -158,11 +158,15 @@ function YesNo({ value }: { value: boolean | null | undefined }) {
   );
 }
 
-function FieldRow({ label, value }: { label: string; value: string | null | undefined }) {
+function FieldRow({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <View style={styles.row}>
       <Text style={styles.label}>{label}</Text>
-      <Text style={styles.value}>{value || "No disponible"}</Text>
+      {typeof value === "string" || value === null || value === undefined ? (
+        <Text style={styles.value}>{value || "No disponible"}</Text>
+      ) : (
+        <View style={styles.value}>{value}</View>
+      )}
     </View>
   );
 }
@@ -222,8 +226,8 @@ function HC5Section({ hc5 }: { hc5: HistoriaClinicaPrintData["hc5"] }) {
           <FieldRow label="Mordida cruzada" value={o.mordidaCruzada?.presente ? `Sí — ${o.mordidaCruzada.ubicacion || ""}` : "No"} />
           <FieldRow label="Traslape horizontal" value={o.traslapeHorizontal?.presente ? `Sí — ${o.traslapeHorizontal.mm || ""} mm` : "No"} />
           <FieldRow label="Traslape vertical" value={o.traslapeVertical?.presente ? `Sí — ${o.traslapeVertical.mm || ""} mm` : "No"} />
-          <FieldRow label="Borde a borde" value={o.bordeABorde ? "Sí" : "No"} />
-          <FieldRow label="Mordida abierta" value={o.mordidaAbierta ? "Sí" : "No"} />
+          <FieldRow label="Borde a borde" value={<YesNo value={o.bordeABorde} />} />
+          <FieldRow label="Mordida abierta" value={<YesNo value={o.mordidaAbierta} />} />
           <FieldRow label="Hábitos nocivos" value={o.habitosNocivos?.presente ? `Sí — ${o.habitosNocivos.cual || ""}` : "No"} />
         </View>
       )}
@@ -249,7 +253,7 @@ export function HistoriaClinicaTemplate({ data }: { data: HistoriaClinicaPrintDa
             </View>
           </View>
           <View style={{ alignItems: "flex-end" }}>
-            <Text style={styles.headerSubtitle}>Fecha de creación</Text>
+            <Text style={styles.headerSubtitle}>Fecha de Registro</Text>
             <Text style={{ fontSize: 9, fontWeight: "bold" }}>
               {patient.fechaRegistro ? new Date(patient.fechaRegistro).toLocaleDateString("es-MX", { year: "numeric", month: "long", day: "numeric" }) : "No disponible"}
             </Text>
@@ -263,10 +267,6 @@ export function HistoriaClinicaTemplate({ data }: { data: HistoriaClinicaPrintDa
             <View style={styles.patientField}>
               <Text style={styles.patientLabel}>Nombre:</Text>
               <Text style={styles.patientValue}>{patient.nombres} {patient.apellidos}</Text>
-            </View>
-            <View style={styles.patientField}>
-              <Text style={styles.patientLabel}>DNI:</Text>
-              <Text style={styles.patientValue}>{patient.dni || "No disponible"}</Text>
             </View>
             <View style={styles.patientField}>
               <Text style={styles.patientLabel}>Fecha nacimiento:</Text>
@@ -358,39 +358,39 @@ export function HistoriaClinicaTemplate({ data }: { data: HistoriaClinicaPrintDa
         {/* HC4 */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>ANTECEDENTES PERSONALES NO PATOLÓGICOS</Text>
-          <FieldRow label="¿Bajo tratamiento médico?" value={hc4.bajoTratamientoMedico ? "Sí" : "No"} />
+          <FieldRow label="¿Bajo tratamiento médico?" value={<YesNo value={hc4.bajoTratamientoMedico} />} />
           {hc4.bajoTratamientoMedico && hc4.motivo && (
             <FieldRow label="Motivo" value={hc4.motivo} />
           )}
-          <FieldRow label="¿Toma medicamentos?" value={hc4.tomaMedicamentos ? "Sí" : "No"} />
+          <FieldRow label="¿Toma medicamentos?" value={<YesNo value={hc4.tomaMedicamentos} />} />
           {hc4.tomaMedicamentos && hc4.cualesMedicamentos && (
             <FieldRow label="¿Cuáles?" value={hc4.cualesMedicamentos} />
           )}
           {hc4.embarazada !== null && hc4.embarazada !== undefined && (
-            <FieldRow label="¿Embarazada?" value={hc4.embarazada ? "Sí" : "No"} />
+            <FieldRow label="¿Embarazada?" value={<YesNo value={hc4.embarazada} />} />
           )}
-          <FieldRow label="¿Transfusiones?" value={hc4.transfusiones ? "Sí" : "No"} />
-          <FieldRow label="¿Sangrado excesivo?" value={hc4.sangradoExcesivo ? "Sí" : "No"} />
+          <FieldRow label="¿Transfusiones?" value={<YesNo value={hc4.transfusiones} />} />
+          <FieldRow label="¿Sangrado excesivo?" value={<YesNo value={hc4.sangradoExcesivo} />} />
           {hc4.sangradoExcesivo && hc4.sangradoTiempo && (
             <FieldRow label="Tiempo de sangrado" value={hc4.sangradoTiempo} />
           )}
-          <FieldRow label="¿Cirugías?" value={hc4.cirugias ? "Sí" : "No"} />
+          <FieldRow label="¿Cirugías?" value={<YesNo value={hc4.cirugias} />} />
           {hc4.cirugias && hc4.cirugiasDetalle && (
             <FieldRow label="Detalle cirugías" value={hc4.cirugiasDetalle} />
           )}
-          <FieldRow label="¿Vacunas completas?" value={hc4.vacunasCompletas ? "Sí" : "No"} />
-          <FieldRow label="¿Alérgico a medicamentos?" value={hc4.alergicoMedicamentos ? "Sí" : "No"} />
+          <FieldRow label="¿Vacunas completas?" value={<YesNo value={hc4.vacunasCompletas} />} />
+          <FieldRow label="¿Alérgico a medicamentos?" value={<YesNo value={hc4.alergicoMedicamentos} />} />
           {hc4.alergicoMedicamentos && hc4.alergicoCual && (
             <FieldRow label="¿Cuál?" value={hc4.alergicoCual} />
           )}
-          <FieldRow label="¿Consume sustancias?" value={hc4.consumeSustancias ? "Sí" : "No"} />
+          <FieldRow label="¿Consume sustancias?" value={<YesNo value={hc4.consumeSustancias} />} />
           {hc4.consumeSustancias && hc4.cualesSustancias && (
             <FieldRow label="¿Cuáles?" value={hc4.cualesSustancias} />
           )}
           {hc4.consumeSustancias && hc4.frecuenciaSustancias && (
             <FieldRow label="Frecuencia" value={hc4.frecuenciaSustancias} />
           )}
-          <FieldRow label="¿Higiene bucal?" value={hc4.higieneBucal ? "Sí" : "No"} />
+          <FieldRow label="¿Higiene bucal?" value={<YesNo value={hc4.higieneBucal} />} />
           {hc4.higieneBucal && hc4.frecuenciaHigiene && (
             <FieldRow label="Frecuencia higiene" value={hc4.frecuenciaHigiene} />
           )}
