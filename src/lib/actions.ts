@@ -106,7 +106,7 @@ export async function saveHc3(
               conditionName: c.conditionName,
               hasCondition: true,
               tipo: c.tipo || null,
-              relatives: c.relatives || null,
+              relatives: c.quien || null,
             },
           });
         }
