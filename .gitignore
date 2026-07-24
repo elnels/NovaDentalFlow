@@ -49,3 +49,6 @@ gcp-service-account-key.json
 firebase-debug.log
 firestore-debug.log
 /src/generated/prisma
+
+# graphify knowledge graph output
+/graphify-out/
